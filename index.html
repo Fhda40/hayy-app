@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بطاقة حي النخيل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f1e;
+    --surface: #111827;
+    --surface2: #1a2540;
+    --gold: #d4a843;
+    --gold-light: #f0c96a;
+    --gold-dim: rgba(212,168,67,0.15);
+    --text: #e8e3d8;
+    --text-muted: #8a8070;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --border: rgba(212,168,67,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+
+  /* Background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% -10%, rgba(212,168,67,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(212,168,67,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Geometric grid lines */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(212,168,67,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,168,67,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 0;
+    animation: fadeUp 0.4s ease;
+  }
+  .screen.active { display: flex; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── HEADER ── */
+  .top-bar {
+    padding: 20px 24px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .logo-text { font-size: 15px; font-weight: 700; color: var(--gold); }
+  .logo-sub { font-size: 10px; color: var(--text-muted); }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ── HERO SECTION ── */
+  .hero {
+    padding: 40px 24px 32px;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--gold-dim);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 11px;
+    color: var(--gold);
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--text) 30%, var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    margin: 0 16px 16px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── INPUTS ── */
+  .input-group {
+    margin-bottom: 16px;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .phone-input-wrap {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .country-code {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0 14px;
+    font-size: 14px;
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  input[type="tel"], input[type="text"], input[type="number"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 16px;
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    direction: ltr;
+    text-align: center;
+  }
+
+  input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-dim);
+  }
+
+  /* ── OTP INPUT ── */
+  .otp-wrap {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    direction: ltr;
+  }
+
+  .otp-input {
+    width: 52px !important;
+    height: 60px;
+    font-size: 24px !important;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 14px !important;
+    padding: 0 !important;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: #0a0f1e;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(212,168,67,0.35);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .btn-ghost {
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 13px;
+  }
+
+  .btn-sm {
+    padding: 10px 16px;
+    font-size: 13px;
+    border-radius: 10px;
+    width: auto;
+  }
+
+  /* ── GEO CHECK ── */
+  .geo-animation {
+    text-align: center;
+    padding: 32px 0;
+  }
+
+  .radar {
+    width: 120px; height: 120px;
+    margin: 0 auto 24px;
+    position: relative;
+  }
+
+  .radar-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    animation: radarExpand 2s ease-out infinite;
+    opacity: 0;
+  }
+
+  .radar-ring:nth-child(2) { animation-delay: 0.5s; }
+  .radar-ring:nth-child(3) { animation-delay: 1s; }
+
+  @keyframes radarExpand {
+    0% { transform: scale(0.3); opacity: 0.8; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+
+  .radar-center {
+    position: absolute;
+    inset: 30%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  /* ── STORE LIST ── */
+  .stores-header {
+    padding: 20px 20px 12px;
+  }
+
+  .stores-header h2 {
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 4px;
+  }
+
+  .stores-header p {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .location-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(46,204,113,0.1);
+    border: 1px solid rgba(46,204,113,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--green);
+    margin-top: 8px;
+  }
+
+  .stores-list {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .store-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .store-card:hover {
+    border-color: var(--gold);
+    background: var(--surface2);
+    transform: translateX(-2px);
+  }
+
+  .store-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .store-info { flex: 1 }
+
+  .store-name {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .store-type {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .store-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--gold-dim);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .store-arrow {
+    color: var(--text-muted);
+    font-size: 18px;
+  }
+
+  /* ── COUPON SCREEN ── */
+  .coupon-wrap {
+    padding: 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .store-detail-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .store-detail-icon {
+    width: 72px; height: 72px;
+    border-radius: 20px;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    border: 2px solid var(--border);
+  }
+
+  .coupon-card {
+    background: linear-gradient(135deg, var(--surface2), var(--surface));
+    border: 1px solid var(--gold);
+    border-radius: 24px;
+    padding: 32px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .coupon-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(212,168,67,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* Notch cutouts */
+  .coupon-card::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -12px;
+    transform: translateY(-50%);
+    width: 24px; height: 24px;
+    background: var(--bg);
+    border-radius: 50%;
+    border: 1px solid var(--border);
+  }
+
+  .coupon-divider {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 16px 0;
+  }
+
+  .discount-big {
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .coupon-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  .code-display {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+
+  .code-number {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: 12px;
+    direction: ltr;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .code-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* ── TIMER ── */
+  .timer-ring-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .timer-ring {
+    position: relative;
+    width: 56px; height: 56px;
+  }
+
+  .timer-ring svg {
+    transform: rotate(-90deg);
+  }
+
+  .timer-ring .track {
+    fill: none;
+    stroke: var(--surface2);
+    stroke-width: 4;
+  }
+
+  .timer-ring .progress {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 138;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear, stroke 0.5s;
+  }
+
+  .timer-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .timer-label { font-size: 13px; color: var(--text-muted); }
+
+  /* ── MERCHANT PANEL ── */
+  .merchant-header {
+    background: linear-gradient(135deg, var(--surface), var(--surface2));
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--gold);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .verify-area {
+    padding: 16px;
+  }
+
+  .verify-result {
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 12px;
+    display: none;
+  }
+
+  .verify-result.success {
+    background: rgba(46,204,113,0.1);
+    border: 1px solid rgba(46,204,113,0.3);
+    display: block;
+  }
+
+  .verify-result.error {
+    background: rgba(231,76,60,0.1);
+    border: 1px solid rgba(231,76,60,0.3);
+    display: block;
+  }
+
+  .verify-icon { font-size: 32px; margin-bottom: 8px; }
+  .verify-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .verify-sub { font-size: 12px; color: var(--text-muted); }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    margin: 0 16px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 4px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Tajawal', sans-serif;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    background: var(--gold);
+    color: #0a0f1e;
+  }
+
+  /* ── HELPER ── */
+  .mt-8 { margin-top: 8px; }
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+  .center { text-align: center; }
+  .text-muted { color: var(--text-muted); font-size: 12px; }
+  .text-gold { color: var(--gold); }
+  .spacer { flex: 1; }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px 0;
+  }
+
+  .nav-link:hover { color: var(--gold); }
+
+  .bottom-pad { padding-bottom: 32px; }
+
+  .separator {
+    height: 1px;
+    background: var(--border);
+    margin: 0 16px 16px;
+  }
+
+  /* ── EXPIRED STATE ── */
+  .code-expired .code-number {
+    color: var(--red);
+    opacity: 0.5;
+    text-decoration: line-through;
+  }
+
+  .expired-badge {
+    display: none;
+    background: rgba(231,76,60,0.15);
+    border: 1px solid rgba(231,76,60,0.4);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: var(--red);
+    margin-top: 12px;
+  }
+
+  .code-expired .expired-badge { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ══════════════════════════════ SCREEN 1: WELCOME ══════════════════════════════ -->
+  <div class="screen active" id="screen-welcome">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-icon">🏡</div>
+        <div>
+          <div class="logo-text">حي النخيل</div>
+          <div class="logo-sub">بطاقة الخصم الذكية</div>
+        </div>
+      </div>
+      <div class="status-dot"></div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-badge">✦ حصري لسكان الحي</div>
+      <h1>خصومات<br>لجيرانك فقط</h1>
+      <p>تمتع بعروض حصرية من محلات حيّك.<br>للسكان داخل النطاق الجغرافي فقط.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📱 أدخل رقم جوالك</div>
+      <div class="input-group">
+        <label>رقم الجوال السعودي</label>
+        <div class="phone-input-wrap">
+          <div class="country-code">🇸🇦 +966</div>
+          <input type="tel" id="phone-input" placeholder="5X XXX XXXX" maxlength="9">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="sendOTP()">
+        إرسال رمز التحقق ←
+      </button>
+      <div class="mt-12 center text-muted">
+        سيتم إرسال رمز SMS إلى رقمك
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="center text-muted bottom-pad" style="padding: 16px;">
+      <span onclick="showMerchant()" style="cursor:pointer; color: var(--text-muted);">
+        🏪 دخول التجار
+      </span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ SCREEN 2: OTP ══════════════════════════════ -->
+  <div class="screen" id="screen-otp">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-icon">🏡</div>
+        <div>
+          <div class="logo-text">حي النخيل</div>
+          <div class="logo-sub">التحقق من الهوية</div>
+        </div>
+      </div>
+      <span class="nav-link" onclick="goScreen('screen-welcome')">← رجوع</span>
+    </div>
+
+    <div style="padding: 32px 24px 16px; text-align: center;">
+      <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
+      <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">أدخل رمز التحقق</h2>
+      <p class="text-muted">تم إرسال رمز SMS إلى<br>
+        <strong style="color: var(--text); direction: ltr; display: inline-block;">+966 <span id="otp-phone-display">5X XXX XXXX</span></strong>
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="otp-wrap" id="otp-inputs">
+        <input type="number" class="otp-input" maxlength="1" oninput="moveOTP(this, 0)">
+        <input type="number" class="otp-input" maxlength="1" oninput="moveOTP(this, 1)">
+        <input type="number" class="otp-input" maxlength="1" oninput="moveOTP(this, 2)">
+        <input type="number" class="otp-input" maxlength="1" oninput="moveOTP(this, 3)">
+      </div>
+      <div class="mt-16">
+        <button class="btn btn-primary" onclick="verifyOTP()">تحقق من الرمز ←</button>
+      </div>
+      <div class="mt-12 center text-muted">
+        لم يصلك الرمز؟ <span style="color: var(--gold); cursor:pointer;" onclick="sendOTP()">إعادة الإرسال</span>
+      </div>
+      <div class="mt-8 center" style="font-size: 11px; background: rgba(212,168,67,0.1); border-radius: 8px; padding: 8px; color: var(--gold);">
+        💡 للتجربة: الرمز هو <strong>1234</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ SCREEN 3: GEO CHECK ══════════════════════════════ -->
+  <div class="screen" id="screen-geo">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-icon">🏡</div>
+        <div>
+          <div class="logo-text">حي النخيل</div>
+          <div class="logo-sub">التحقق الجغرافي</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="geo-animation">
+      <div class="radar">
+        <div class="radar-ring"></div>
+        <div class="radar-ring"></div>
+        <div class="radar-ring"></div>
+        <div class="radar-center">📍</div>
+      </div>
+      <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;" id="geo-title">جاري التحقق من موقعك</h2>
+      <p class="text-muted" id="geo-sub">نتأكد أنك داخل نطاق حي النخيل<br>(نصف قطر 1 كم)</p>
+    </div>
+    <div class="spacer"></div>
+
+    <div style="padding: 16px 16px 32px;">
+      <button class="btn btn-primary" onclick="checkGeo()">السماح بالوصول للموقع ←</button>
+      <div class="mt-8 center text-muted">نحن نحمي خصوصيتك - لا نحفظ موقعك</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ SCREEN 4: STORES ══════════════════════════════ -->
+  <div class="screen" id="screen-stores">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-icon">🏡</div>
+        <div>
+          <div class="logo-text">حي النخيل</div>
+        </div>
+      </div>
+      <div class="location-chip">📍 داخل النطاق</div>
+    </div>
+
+    <div class="stores-header">
+      <h2>عروض الحي</h2>
+      <p class="text-muted">اختر المحل للحصول على كود الخصم</p>
+    </div>
+
+    <div class="stores-list">
+
+      <div class="store-card" onclick="openStore('cafe')">
+        <div class="store-icon" style="background: rgba(212,168,67,0.15);">☕</div>
+        <div class="store-info">
+          <div class="store-name">كافيه النخلة</div>
+          <div class="store-type">مقاهي ومشروبات</div>
+          <div class="store-badge">🏷️ خصم 20%</div>
+        </div>
+        <div class="store-arrow">←</div>
+      </div>
+
+      <div class="store-card" onclick="openStore('restaurant')">
+        <div class="store-icon" style="background: rgba(46,204,113,0.1);">🍽️</div>
+        <div class="store-info">
+          <div class="store-name">مطعم الديوانية</div>
+          <div class="store-type">مطاعم ومأكولات</div>
+          <div class="store-badge">🏷️ خصم 15%</div>
+        </div>
+        <div class="store-arrow">←</div>
+      </div>
+
+      <div class="store-card" onclick="openStore('pharmacy')">
+        <div class="store-icon" style="background: rgba(52,152,219,0.1);">💊</div>
+        <div class="store-info">
+          <div class="store-name">صيدلية الشفاء</div>
+          <div class="store-type">صيدليات</div>
+          <div class="store-badge">🏷️ خصم 10%</div>
+        </div>
+        <div class="store-arrow">←</div>
+      </div>
+
+      <div class="store-card" onclick="openStore('grocery')">
+        <div class="store-icon" style="background: rgba(155,89,182,0.1);">🛒</div>
+        <div class="store-info">
+          <div class="store-name">بقالة الأمين</div>
+          <div class="store-type">بقالات ومواد غذائية</div>
+          <div class="store-badge">🏷️ خصم 12%</div>
+        </div>
+        <div class="store-arrow">←</div>
+      </div>
+
+      <div class="store-card" onclick="openStore('barber')">
+        <div class="store-icon" style="background: rgba(231,76,60,0.1);">✂️</div>
+        <div class="store-info">
+          <div class="store-name">صالون الأناقة</div>
+          <div class="store-type">حلاقة وتجميل</div>
+          <div class="store-badge">🏷️ خصم 25%</div>
+        </div>
+        <div class="store-arrow">←</div>
+      </div>
+
+    </div>
+    <div class="bottom-pad" style="padding: 16px;"></div>
+  </div>
+
+  <!-- ══════════════════════════════ SCREEN 5: COUPON ══════════════════════════════ -->
+  <div class="screen" id="screen-coupon">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-icon">🏡</div>
+        <div>
+          <div class="logo-text">حي النخيل</div>
+        </div>
+      </div>
+      <span class="nav-link" onclick="goScreen('screen-stores')">← رجوع</span>
+    </div>
+
+    <div class="coupon-wrap">
+      <div class="store-detail-header">
+        <div class="store-detail-icon" id="coupon-store-icon">☕</div>
+        <div style="font-size: 18px; font-weight: 900;" id="coupon-store-name">كافيه النخلة</div>
+        <div class="text-muted mt-8" id="coupon-store-type">مقاهي ومشروبات</div>
+      </div>
+
+      <div class="coupon-card" id="coupon-card-el">
+        <div class="discount-big" id="coupon-discount">20%</div>
+        <div class="coupon-label">خصم حصري لسكان الحي</div>
+        <hr class="coupon-divider">
+
+        <div class="code-display">
+          <div class="code-number" id="coupon-code">----</div>
+          <div class="code-sub">أريه للكاشير عند الدفع</div>
+        </div>
+
+        <div class="expired-badge">⏱️ انتهت صلاحية الكود — اطلب كوداً جديداً</div>
+      </div>
+
+      <div class="timer-ring-wrap" id="timer-wrap">
+        <div class="timer-ring">
+          <svg viewBox="0 0 56 56" width="56" height="56">
+            <circle class="track" cx="28" cy="28" r="22"/>
+            <circle class="progress" cx="28" cy="28" r="22" id="timer-progress"/>
+          </svg>
+          <div class="timer-text" id="timer-display">3:00</div>
+        </div>
+        <div class="timer-label">صلاحية الكود<br><span style="font-size:11px">تنتهي خلال 3 دقائق</span></div>
+      </div>
+
+      <button class="btn btn-primary" id="generate-btn" onclick="generateCode()">
+        ⚡ توليد كود الخصم
+      </button>
+
+      <div class="mt-12 center text-muted">
+        الحد المسموح: مرة واحدة يومياً لكل محل
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ SCREEN 6: MERCHANT ══════════════════════════════ -->
+  <div class="screen" id="screen-merchant">
+    <div class="merchant-header">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">مرحباً</div>
+          <div style="font-size: 18px; font-weight: 900;">كافيه النخلة ☕</div>
+        </div>
+        <span class="nav-link" onclick="goScreen('screen-welcome')">← خروج</span>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab active" onclick="switchTab(this, 'tab-stats')">📊 الإحصائيات</button>
+      <button class="tab" onclick="switchTab(this, 'tab-verify')">✅ التحقق من كود</button>
+    </div>
+
+    <!-- Stats Tab -->
+    <div id="tab-stats">
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-num">12</span>
+          <div class="stat-label">استخدامات اليوم</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">74</span>
+          <div class="stat-label">استخدامات الأسبوع</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" style="font-size: 22px;">487</span>
+          <div class="stat-label">إجمالي الاستخدام</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" style="color: var(--green);">68%</span>
+          <div class="stat-label">معدل العودة</div>
+        </div>
+      </div>
+
+      <div class="separator"></div>
+      <div style="padding: 0 16px 16px;">
+        <div class="card-title" style="padding: 0 0 12px;">📈 آخر الاستخدامات</div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: var(--surface2); border-radius: 10px;">
+            <div>
+              <div style="font-size:13px; font-weight:600;">كود 4821</div>
+              <div class="text-muted">منذ 5 دقائق</div>
+            </div>
+            <div style="color: var(--green); font-size:12px; font-weight:700;">✓ مستخدم</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: var(--surface2); border-radius: 10px;">
+            <div>
+              <div style="font-size:13px; font-weight:600;">كود 7362</div>
+              <div class="text-muted">منذ 22 دقيقة</div>
+            </div>
+            <div style="color: var(--green); font-size:12px; font-weight:700;">✓ مستخدم</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: var(--surface2); border-radius: 10px;">
+            <div>
+              <div style="font-size:13px; font-weight:600;">كود 9154</div>
+              <div class="text-muted">منذ ساعة</div>
+            </div>
+            <div style="color: var(--red); font-size:12px; font-weight:700;">✗ منتهي</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Verify Tab -->
+    <div id="tab-verify" style="display:none;">
+      <div class="verify-area">
+        <div class="card-title">إدخال كود العميل</div>
+        <div class="input-group">
+          <label>رقم الكود (4–6 أرقام)</label>
+          <input type="number" id="merchant-code-input" placeholder="أدخل الكود هنا" style="font-size:24px; font-weight:800; letter-spacing:8px;">
+        </div>
+        <button class="btn btn-primary" onclick="verifyMerchantCode()">تحقق من الكود ←</button>
+
+        <div class="verify-result" id="verify-result">
+          <div class="verify-icon" id="verify-icon">✅</div>
+          <div class="verify-title" id="verify-title">كود صالح!</div>
+          <div class="verify-sub" id="verify-sub">تم تطبيق الخصم بنجاح</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-pad"></div>
+  </div>
+
+</div>
+
+<script>
+  // ── State ──
+  let currentCode = null;
+  let timerInterval = null;
+  let timerSeconds = 180;
+  let codeExpired = false;
+  const storeData = {
+    cafe:       { icon: '☕', name: 'كافيه النخلة',     type: 'مقاهي ومشروبات',       discount: '20%' },
+    restaurant: { icon: '🍽️', name: 'مطعم الديوانية',  type: 'مطاعم ومأكولات',       discount: '15%' },
+    pharmacy:   { icon: '💊', name: 'صيدلية الشفاء',   type: 'صيدليات',              discount: '10%' },
+    grocery:    { icon: '🛒', name: 'بقالة الأمين',    type: 'بقالات ومواد غذائية', discount: '12%' },
+    barber:     { icon: '✂️', name: 'صالون الأناقة',   type: 'حلاقة وتجميل',       discount: '25%' },
+  };
+
+  function goScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  function sendOTP() {
+    const phone = document.getElementById('phone-input').value.trim();
+    if (phone.length < 9) { alert('أدخل رقم جوال صحيح'); return; }
+    document.getElementById('otp-phone-display').textContent = phone;
+    goScreen('screen-otp');
+    // Focus first OTP input
+    setTimeout(() => document.querySelectorAll('.otp-input')[0].focus(), 300);
+  }
+
+  function moveOTP(el, idx) {
+    if (el.value.length > 1) el.value = el.value[0];
+    const inputs = document.querySelectorAll('.otp-input');
+    if (el.value && idx < 3) inputs[idx + 1].focus();
+  }
+
+  function verifyOTP() {
+    const inputs = document.querySelectorAll('.otp-input');
+    const code = Array.from(inputs).map(i => i.value).join('');
+    if (code === '1234') {
+      goScreen('screen-geo');
+    } else {
+      inputs.forEach(i => { i.style.borderColor = 'var(--red)'; i.value = ''; });
+      inputs[0].focus();
+      setTimeout(() => inputs.forEach(i => i.style.borderColor = ''), 1000);
+    }
+  }
+
+  function checkGeo() {
+    const title = document.getElementById('geo-title');
+    const sub = document.getElementById('geo-sub');
+    title.textContent = 'جاري تحديد موقعك...';
+
+    // Simulate geo check
+    setTimeout(() => {
+      // Always pass in demo
+      title.textContent = '✓ أنت داخل الحي!';
+      sub.textContent = 'تم التحقق - حي النخيل، جدة\nعلى بعد 0.4 كم من المركز';
+      document.querySelector('.radar-center').textContent = '✅';
+      setTimeout(() => goScreen('screen-stores'), 1200);
+    }, 1500);
+  }
+
+  function openStore(id) {
+    const s = storeData[id];
+    document.getElementById('coupon-store-icon').textContent = s.icon;
+    document.getElementById('coupon-store-name').textContent = s.name;
+    document.getElementById('coupon-store-type').textContent = s.type;
+    document.getElementById('coupon-discount').textContent = s.discount;
+
+    // Reset coupon state
+    document.getElementById('coupon-code').textContent = '----';
+    document.getElementById('coupon-card-el').classList.remove('code-expired');
+    document.getElementById('generate-btn').textContent = '⚡ توليد كود الخصم';
+    document.getElementById('generate-btn').disabled = false;
+    document.getElementById('timer-wrap').style.opacity = '0.3';
+    document.getElementById('timer-display').textContent = '3:00';
+    document.getElementById('timer-progress').style.strokeDashoffset = 0;
+    currentCode = null;
+    codeExpired = false;
+    if (timerInterval) clearInterval(timerInterval);
+
+    goScreen('screen-coupon');
+  }
+
+  function generateCode() {
+    if (currentCode && !codeExpired) return;
+
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    currentCode = code;
+    codeExpired = false;
+
+    document.getElementById('coupon-code').textContent = code;
+    document.getElementById('coupon-card-el').classList.remove('code-expired');
+    document.getElementById('timer-wrap').style.opacity = '1';
+    document.getElementById('generate-btn').textContent = '🔄 كود نشط — لا تولّد جديد';
+    document.getElementById('generate-btn').disabled = true;
+
+    startTimer();
+  }
+
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerSeconds = 180;
+    const total = 180;
+    const circumference = 138; // 2 * pi * 22
+
+    timerInterval = setInterval(() => {
+      timerSeconds--;
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      document.getElementById('timer-display').textContent =
+        `${mins}:${secs.toString().padStart(2,'0')}`;
+
+      const offset = circumference * (1 - timerSeconds / total);
+      document.getElementById('timer-progress').style.strokeDashoffset = offset;
+
+      if (timerSeconds <= 30) {
+        document.getElementById('timer-progress').style.stroke = 'var(--red)';
+        document.getElementById('timer-display').style.color = 'var(--red)';
+      }
+
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        codeExpired = true;
+        document.getElementById('coupon-card-el').classList.add('code-expired');
+        document.getElementById('generate-btn').textContent = '⚡ توليد كود جديد';
+        document.getElementById('generate-btn').disabled = false;
+        document.getElementById('timer-progress').style.stroke = 'var(--gold)';
+        document.getElementById('timer-display').style.color = 'var(--gold)';
+      }
+    }, 1000);
+  }
+
+  function showMerchant() {
+    goScreen('screen-merchant');
+  }
+
+  function switchTab(btn, tabId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-stats').style.display = tabId === 'tab-stats' ? 'block' : 'none';
+    document.getElementById('tab-verify').style.display = tabId === 'tab-verify' ? 'block' : 'none';
+  }
+
+  function verifyMerchantCode() {
+    const code = document.getElementById('merchant-code-input').value;
+    const result = document.getElementById('verify-result');
+    result.className = 'verify-result';
+
+    if (!code || code.length < 4) {
+      document.getElementById('verify-icon').textContent = '❌';
+      document.getElementById('verify-title').textContent = 'كود غير صحيح';
+      document.getElementById('verify-sub').textContent = 'أدخل كوداً مكوناً من 4-6 أرقام';
+      result.classList.add('error');
+      return;
+    }
+
+    // Demo: any 4-digit code works
+    if (code === currentCode) {
+      document.getElementById('verify-icon').textContent = '✅';
+      document.getElementById('verify-title').textContent = 'كود صالح!';
+      document.getElementById('verify-sub').textContent = 'خصم 20% — تم تطبيقه بنجاح';
+      result.classList.add('success');
+    } else {
+      document.getElementById('verify-icon').textContent = '❌';
+      document.getElementById('verify-title').textContent = 'كود غير صحيح';
+      document.getElementById('verify-sub').textContent = 'تأكد من الأرقام أو الصلاحية';
+      result.classList.add('error');
+    }
+  }
+</script>
+</body>
+</html>
