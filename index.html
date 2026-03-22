@@ -234,8 +234,18 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 .px16 { padding:0 16px; }
 
 /* إخفاء reCAPTCHA */
-.grecaptcha-badge { visibility:hidden !important; opacity:0 !important; width:0 !important; height:0 !important; }
-#recaptcha-container { position:fixed; bottom:-9999px; left:-9999px; width:0; height:0; overflow:hidden; }
+.grecaptcha-badge { visibility:hidden !important; opacity:0 !important; }
+#recaptcha-container,
+#recaptcha-container * {
+position:fixed !important;
+bottom:-9999px !important;
+left:-9999px !important;
+width:1px !important;
+height:1px !important;
+overflow:hidden !important;
+opacity:0 !important;
+pointer-events:none !important;
+}
 </style>
 
 </head>
@@ -413,7 +423,7 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 
 <div class="screen" id="screen-stores">
   <div style="padding:calc(env(safe-area-inset-top,0px) + 16px) 20px 0; display:flex; align-items:center; justify-content:space-between; min-height:52px;">
-    <img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png" style="height:26px; object-fit:contain;">
+    <img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png" style="height:36px; object-fit:contain;">
     <span class="status-chip"><span class="pulse"></span>شرورة</span>
   </div>
 
@@ -541,6 +551,32 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 </div>
 
 <div id="recaptcha-container"></div>
+
+<script>
+// إخفاء reCAPTCHA فوراً وبشكل دائم
+(function hideRecaptcha() {
+  var style = document.createElement('style');
+  style.innerHTML = `
+    #recaptcha-container { position:fixed !important; left:-99999px !important; top:-99999px !important; }
+    .grecaptcha-badge { display:none !important; }
+    [style*="z-index: 2147483647"] { display:none !important; }
+  `;
+  document.head.appendChild(style);
+
+  var observer = new MutationObserver(function() {
+    document.querySelectorAll('.grecaptcha-badge').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    // أي div يُضاف لـ body خارج الـ screens
+    document.querySelectorAll('body > div:not(.screen):not(#recaptcha-container)').forEach(function(div) {
+      if (div.innerHTML.includes('recaptcha') || div.querySelector('iframe')) {
+        div.style.cssText = 'position:fixed!important;left:-99999px!important;top:-99999px!important;width:0!important;height:0!important;overflow:hidden!important;';
+      }
+    });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+})();
+</script>
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
