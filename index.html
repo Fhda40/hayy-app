@@ -218,8 +218,8 @@
   }
 
   /* ── OTP ── */
-  .otp-wrap { display: flex; gap: 10px; justify-content: center; direction: ltr; }
-  .otp-input { width: 42px !important; height: 52px; font-size: 20px !important; font-weight: 700; border-radius: 12px !important; padding: 0 !important; }
+  .otp-wrap { display: flex; gap: 6px; justify-content: center; direction: ltr; }
+  .otp-input { width: 40px !important; height: 50px; font-size: 20px !important; font-weight: 700; border-radius: 10px !important; padding: 0 !important; }
 
   /* ── BUTTONS ── */
   .btn {
@@ -700,7 +700,7 @@
   function verifyOTP() {
     const inputs = document.querySelectorAll('.otp-input');
     const code = Array.from(inputs).map(i => i.value).join('');
-    if (code === '1234') {
+    if (code === '123456') {
       goScreen('screen-geo');
     } else {
       inputs.forEach(i => { i.style.borderColor = 'var(--red)'; i.value = ''; });
