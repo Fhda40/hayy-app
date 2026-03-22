@@ -87,15 +87,18 @@ outline:none; padding:14px 0;
 
 /* OTP */
 .otp-wrap {
-display: flex;
-gap: 10px;
+display: grid;
+grid-template-columns: repeat(6, 1fr);
+gap: 8px;
 direction: ltr;
-justify-content: center;
 padding: 0 20px 20px;
+max-width: 340px;
+margin: 0 auto;
 }
 .otp-box {
-width: 44px;
-height: 52px;
+width: 100%;
+aspect-ratio: 1;
+max-height: 52px;
 background: var(–bg2);
 border: 1.5px solid var(–separator);
 border-radius: 10px;
@@ -106,9 +109,8 @@ color: var(–text);
 font-family: ‘Tajawal’, sans-serif;
 outline: none;
 transition: border-color 0.15s;
-flex-shrink: 0;
 -webkit-appearance: none;
-appearance: none;
+caret-color: transparent;
 }
 .otp-box:focus { border-color: var(–text); background: #fff; }
 
@@ -829,41 +831,58 @@ iframe[src*=“recaptcha”] { display:none !important; }
       document.getElementById('app-icon-emoji').style.display = 'none';
     }
 
-    // OTP — انتقال سلس
-    const otpBoxes = document.querySelectorAll('.otp-box');
+    // OTP — انتقال سلس على iOS و Android
+    const otpBoxes = [...document.querySelectorAll('.otp-box')];
+
     otpBoxes.forEach((box, i) => {
-      box.addEventListener('input', (e) => {
-        // احتفظ برقم واحد فقط
-        box.value = e.target.value.replace(/[^0-9]/g, '').slice(-1);
-        // انتقل للتالية فوراً
-        if (box.value && i < otpBoxes.length - 1) {
-          otpBoxes[i + 1].focus();
-        }
-        // إذا اكتملت الخانات — اضغط تحقق تلقائياً
-        const code = [...otpBoxes].map(b => b.value).join('');
-        if (code.length === 6) {
-          document.getElementById('verify-otp-btn').click();
-        }
-      });
-      box.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace') {
-          if (box.value) {
-            box.value = '';
-          } else if (i > 0) {
-            otpBoxes[i - 1].focus();
-            otpBoxes[i - 1].value = '';
+      // منع الكيبورد من إغلاق
+      box.setAttribute('inputmode', 'numeric');
+
+      box.addEventListener('keyup', (e) => {
+        const digit = e.key.replace(/[^0-9]/g, '');
+        if (digit) {
+          box.value = digit;
+          if (i < otpBoxes.length - 1) {
+            setTimeout(() => otpBoxes[i + 1].focus(), 10);
           }
         }
+        if (e.key === 'Backspace') {
+          box.value = '';
+          if (i > 0) setTimeout(() => otpBoxes[i - 1].focus(), 10);
+        }
+        // تحقق تلقائي
+        const code = otpBoxes.map(b => b.value).join('');
+        if (code.length === 6) {
+          setTimeout(() => document.getElementById('verify-otp-btn').click(), 100);
+        }
       });
+
+      box.addEventListener('input', (e) => {
+        const val = e.target.value.replace(/[^0-9]/g, '');
+        if (val.length > 1) {
+          // لصق رقم متعدد
+          otpBoxes.forEach((b, j) => { b.value = val[j] || ''; });
+          const last = Math.min(val.length - 1, otpBoxes.length - 1);
+          otpBoxes[last].focus();
+          if (val.length >= 6) setTimeout(() => document.getElementById('verify-otp-btn').click(), 100);
+          return;
+        }
+        box.value = val;
+        if (val && i < otpBoxes.length - 1) {
+          setTimeout(() => otpBoxes[i + 1].focus(), 10);
+        }
+      });
+
       box.addEventListener('paste', (e) => {
         e.preventDefault();
         const digits = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
         otpBoxes.forEach((b, j) => { b.value = digits[j] || ''; });
         const last = Math.min(digits.length - 1, otpBoxes.length - 1);
-        otpBoxes[last]?.focus();
-        if (digits.length >= 6) document.getElementById('verify-otp-btn').click();
+        otpBoxes[Math.max(0, last)].focus();
+        if (digits.length >= 6) setTimeout(() => document.getElementById('verify-otp-btn').click(), 100);
       });
-      box.addEventListener('focus', () => box.select());
+
+      box.addEventListener('click', () => { box.select(); });
     });
 
     // rating
