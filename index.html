@@ -841,9 +841,16 @@
       switchTab(this, 'tab-verify');
     });
 
-    // OTP inputs
-    document.querySelectorAll('.otp-input').forEach((input, idx) => {
-      input.addEventListener('input', () => moveOTP(input, idx));
+    // OTP inputs - انتقال تلقائي
+    const otpInputs = document.querySelectorAll('.otp-input');
+    otpInputs.forEach((input, idx) => {
+      input.addEventListener('input', () => {
+        if (input.value.length > 1) input.value = input.value[0];
+        if (input.value && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && idx > 0) otpInputs[idx - 1].focus();
+      });
     });
   });
 
