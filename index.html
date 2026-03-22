@@ -576,6 +576,17 @@ body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !impo
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  // تهيئة reCAPTCHA مسبقاً عند تحميل الصفحة
+  window.addEventListener('load', () => {
+    try {
+      window.rv = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'invisible',
+        callback: () => {}
+      });
+      window.rv.render();
+    } catch(e) {}
+  });
+
   const CITY = { lat:17.5049999, lng:47.1025904 };
   const RADIUS = 5;
 
@@ -607,7 +618,7 @@ body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !impo
     const phone = document.getElementById('phone-input').value.trim();
     if (phone.length < 9) return;
     const btn = document.getElementById('send-otp-btn');
-    btn.textContent = '⏳'; btn.disabled = true;
+    btn.disabled = true;
     document.getElementById('otp-num').textContent = '+966 ' + phone;
     try {
       if (!window.rv) {
@@ -616,13 +627,17 @@ body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !impo
       }
       window.cr = await signInWithPhoneNumber(auth, '+966' + phone, window.rv);
       go('screen-otp');
-      setTimeout(() => document.querySelectorAll('.otp-box')[0].focus(), 300);
+      setTimeout(() => {
+        const first = document.querySelector('.otp-box');
+        if (first) first.focus();
+      }, 400);
     } catch(e) {
       console.error(e);
       window.rv = null;
       alert('خطأ في الإرسال — حاول مجدداً');
     }
-    btn.textContent = 'ابدأ الآن'; btn.disabled = false;
+    btn.textContent = 'ابدأ الآن';
+    btn.disabled = false;
   }
 
   async function verifyOTP() {
@@ -630,7 +645,7 @@ body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !impo
     const code = [...boxes].map(b => b.value).join('');
     if (code.length < 6) return;
     const btn = document.getElementById('verify-otp-btn');
-    btn.textContent = '...'; btn.disabled = true;
+    btn.disabled = true;
     try {
       const r = await window.cr.confirm(code);
       await setDoc(doc(db,'users',r.user.uid),{phone:r.user.phoneNumber,last_login:serverTimestamp()},{merge:true});
@@ -646,7 +661,7 @@ body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !impo
   // geo
   function checkGeo() {
     const btn = document.getElementById('geo-btn');
-    btn.textContent = '...'; btn.disabled = true;
+    btn.disabled = true;
     document.getElementById('geo-title').textContent = 'جاري التحديد...';
     navigator.geolocation.getCurrentPosition(async pos => {
       const d = haversine(pos.coords.latitude,pos.coords.longitude,CITY.lat,CITY.lng);
@@ -834,23 +849,26 @@ body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !impo
     document.getElementById('gen-btn').addEventListener('click', generateCode);
     document.getElementById('merchant-link').addEventListener('click', () => window.location.href='merchant.html');
 
-    // ── OTP انتقال سلس ──
+    // ── OTP ── طريقة موثوقة على iOS وAndroid
     function setupOTP() {
       const boxes = [...document.querySelectorAll('.otp-box')];
       if (!boxes.length) return;
 
       boxes.forEach((box, i) => {
-        box.addEventListener('input', function() {
-          const v = this.value.replace(/\D/g, '');
-          this.value = v ? v[v.length - 1] : '';
-          if (this.value && i < boxes.length - 1) {
-            boxes[i + 1].focus();
-          }
+
+        // عند كتابة رقم
+        box.addEventListener('keypress', function(e) {
+          const char = e.key;
+          if (!/[0-9]/.test(char)) { e.preventDefault(); return; }
+          e.preventDefault();
+          this.value = char;
+          if (i < boxes.length - 1) boxes[i + 1].focus();
           if (boxes.map(b => b.value).join('').length === 6) {
-            setTimeout(() => verifyOTP(), 200);
+            setTimeout(() => verifyOTP(), 300);
           }
         });
 
+        // Backspace
         box.addEventListener('keydown', function(e) {
           if (e.key === 'Backspace') {
             if (this.value) {
@@ -862,13 +880,26 @@ body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !impo
           }
         });
 
+        // لصق SMS
         box.addEventListener('paste', function(e) {
           e.preventDefault();
-          const d = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'');
+          const d = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'');
           boxes.forEach((b, j) => b.value = d[j] || '');
-          boxes[Math.min(d.length, boxes.length - 1)].focus();
-          if (d.length >= 6) setTimeout(() => verifyOTP(), 200);
+          boxes[Math.min(d.length, boxes.length) - 1]?.focus();
+          if (d.length >= 6) setTimeout(() => verifyOTP(), 300);
         });
+
+        // iOS: input event كـ fallback
+        box.addEventListener('input', function() {
+          const v = this.value.replace(/\D/g, '');
+          if (!v) return;
+          this.value = v[v.length - 1];
+          if (i < boxes.length - 1) boxes[i + 1].focus();
+          if (boxes.map(b => b.value).join('').length === 6) {
+            setTimeout(() => verifyOTP(), 300);
+          }
+        });
+
       });
     }
     setupOTP();
