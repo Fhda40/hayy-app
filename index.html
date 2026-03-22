@@ -663,7 +663,8 @@
 
 </div>
 
-<script>
+<div id="recaptcha-container"></div>
+<script type="module">
   let currentCode = null, timerInterval = null, timerSeconds = 180, codeExpired = false;
 
   const storeData = {
@@ -805,6 +806,78 @@
       document.getElementById('verify-title').textContent = 'كود غير صحيح';
       document.getElementById('verify-sub').textContent = 'تأكد من الأرقام أو الصلاحية';
       result.classList.add('error');
+    }
+  }
+
+  // ══════════════════════════════
+  // Firebase Integration
+  // ══════════════════════════════
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
+    authDomain: "fbrg87.firebaseapp.com",
+    projectId: "fbrg87",
+    storageBucket: "fbrg87.firebasestorage.app",
+    messagingSenderId: "811335912659",
+    appId: "1:811335912659:web:a923cc11d16315dfd4d826"
+  };
+
+  const firebaseApp = initializeApp(firebaseConfig);
+  const auth = getAuth(firebaseApp);
+  const db = getFirestore(firebaseApp);
+
+  // إرسال OTP حقيقي
+  async function sendRealOTP() {
+    const phone = document.getElementById('phone-input').value.trim();
+    if (phone.length < 9) { alert('أدخل رقم جوال صحيح'); return; }
+    const fullPhone = '+966' + phone;
+    try {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+      const confirmationResult = await signInWithPhoneNumber(auth, fullPhone, window.recaptchaVerifier);
+      window.confirmationResult = confirmationResult;
+      document.getElementById('otp-phone-display').textContent = phone;
+      goScreen('screen-otp');
+    } catch (error) {
+      console.error('OTP Error:', error);
+      alert('خطأ في إرسال الرمز — تأكد من الرقم');
+    }
+  }
+
+  // التحقق من OTP حقيقي
+  async function verifyRealOTP() {
+    const inputs = document.querySelectorAll('.otp-input');
+    const code = Array.from(inputs).map(i => i.value).join('');
+    try {
+      const result = await window.confirmationResult.confirm(code);
+      const user = result.user;
+      // حفظ المستخدم في Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        phone: user.phoneNumber,
+        last_login: serverTimestamp()
+      }, { merge: true });
+      goScreen('screen-geo');
+    } catch (error) {
+      inputs.forEach(i => { i.style.borderColor = 'var(--red)'; i.value = ''; });
+      inputs[0].focus();
+      setTimeout(() => inputs.forEach(i => i.style.borderColor = ''), 1000);
+    }
+  }
+
+  // حفظ استخدام الكوبون في Firestore
+  async function saveCouponUsage(businessId, code) {
+    try {
+      await addDoc(collection(db, 'coupons'), {
+        business_id: businessId,
+        code: code,
+        created_at: serverTimestamp(),
+        expires_at: new Date(Date.now() + 3 * 60 * 1000),
+        status: 'pending'
+      });
+    } catch (error) {
+      console.error('Error saving coupon:', error);
     }
   }
 </script>
