@@ -476,7 +476,7 @@
         <div class="radar-center">📍</div>
       </div>
       <h2 style="font-size:22px;font-weight:900;margin-bottom:8px;" id="geo-title">جاري التحقق من موقعك</h2>
-      <p class="text-muted" id="geo-sub">نتأكد أنك داخل شرورة<br>(نصف قطر 2 كم من مركز المدينة)</p>
+      <p class="text-muted" id="geo-sub">نتأكد أنك داخل شرورة<br>(نصف قطر 5 كم)</p>
     </div>
     <div class="spacer"></div>
     <div style="padding:16px 16px 32px;">
@@ -791,8 +791,8 @@
   // ══════════════════════════════
   // Geofencing — شرورة
   // ══════════════════════════════
-  const CITY_CENTER = { lat: 17.4850, lng: 47.1167 };
-  const MAX_RADIUS_KM = 2;
+  const CITY_CENTER = { lat: 17.5049999, lng: 47.1025904 };
+  const MAX_RADIUS_KM = 5;
 
   function haversineDistance(lat1, lng1, lat2, lng2) {
     const R = 6371;
