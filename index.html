@@ -218,45 +218,104 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 <!-- ══ WELCOME ══ -->
 
 <div class="screen active" id="screen-welcome">
-  <div class="nav">
-    <span></span>
-    <img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png" style="height:28px; object-fit:contain;">
-    <span class="nav-link" id="merchant-link">تاجر؟</span>
+
+  <!-- Top bar: minimal, logo centered -->
+
+  <div style="
+    padding: calc(env(safe-area-inset-top,0px) + 20px) 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 56px;
+  ">
+    <span style="width:48px;"></span>
+    <img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png"
+         style="height:32px; object-fit:contain;">
+    <span id="merchant-link" style="
+      font-size:15px; color:var(--text-3);
+      cursor:pointer; width:48px; text-align:left;
+      font-weight:400;
+    ">تاجر؟</span>
   </div>
 
-  <!-- Hero Section — vertically centered -->
+  <!-- Hero: logo large + headline -->
 
-  <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 32px; text-align:center; gap:0;">
+  <div style="
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:0 32px;
+    text-align:center;
+  ">
+    <img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png"
+         style="width:140px; object-fit:contain; margin-bottom:36px;">
 
 ```
-<!-- App Logo -->
-<div style="margin-bottom:28px;">
-  <img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png"
-       style="width:120px; object-fit:contain;">
+<div style="
+  font-size:36px;
+  font-weight:800;
+  letter-spacing:-0.8px;
+  line-height:1.2;
+  color:var(--text);
+  margin-bottom:16px;
+">خصومات مخصصة</div>
+
+<div style="
+  font-size:16px;
+  color:var(--text-3);
+  line-height:1.7;
+  max-width:248px;
+">حصري لسكان الحي فقط 🏡</div>
+```
+
+  </div>
+
+  <!-- Bottom: phone input + CTA -->
+
+  <div style="padding:0 0 8px;">
+
+```
+<div style="
+  margin:0 16px 10px;
+  background:var(--bg2);
+  border-radius:14px;
+  overflow:hidden;
+">
+  <div style="
+    display:flex; align-items:center;
+    padding:0 16px; min-height:54px;
+  ">
+    <span style="
+      font-size:16px; color:var(--text-3);
+      margin-left:12px; white-space:nowrap;
+    ">🇸🇦 +966</span>
+    <input
+      class="field-input"
+      type="tel"
+      id="phone-input"
+      placeholder="5X XXX XXXX"
+      maxlength="9"
+      style="font-size:18px; letter-spacing:1px;">
+  </div>
 </div>
 
-<div class="headline" style="margin-bottom:14px;">خصومات<br>لحيّك فقط</div>
+<button class="btn-main" id="send-otp-btn"
+  style="font-size:17px; padding:17px; letter-spacing:0.2px;">
+  ابدأ الآن
+</button>
 
-<div class="body-text secondary" style="max-width:260px; line-height:1.65;">
-  عروض حصرية لسكان شرورة — تحقق من موقعك وابدأ التوفير
+<div style="height:14px;"></div>
+<div style="text-align:center;">
+  <span style="font-size:12px; color:var(--text-4);">
+    متاح لسكان شرورة فقط · موقعك لن يُشارك
+  </span>
 </div>
 ```
 
   </div>
 
-  <!-- Bottom Input Section -->
-
-  <div style="padding-bottom:0;">
-    <div class="field-group">
-      <div class="field-row">
-        <span class="field-label">🇸🇦 +966</span>
-        <input class="field-input" type="tel" id="phone-input" placeholder="5X XXX XXXX" maxlength="9">
-      </div>
-    </div>
-    <button class="btn-main" id="send-otp-btn">متابعة</button>
-    <div class="h16"></div>
-    <div class="center"><span class="caption tertiary">سيتم التحقق من موقعك داخل شرورة</span></div>
-  </div>
   <div class="safe-bottom"></div>
 </div>
 
@@ -322,14 +381,14 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 <!-- ══ STORES ══ -->
 
 <div class="screen" id="screen-stores">
-  <div class="nav">
-    <span class="nav-title">عروض الحي</span>
+  <div style="padding:calc(env(safe-area-inset-top,0px) + 16px) 20px 0; display:flex; align-items:center; justify-content:space-between; min-height:52px;">
+    <img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png" style="height:26px; object-fit:contain;">
     <span class="status-chip"><span class="pulse"></span>شرورة</span>
   </div>
 
-  <div style="padding:16px 16px 8px; display:flex; align-items:baseline; justify-content:space-between;">
-    <span class="title-2">المحلات</span>
-    <span class="footnote secondary" id="stores-count"></span>
+  <div style="padding:20px 20px 10px; display:flex; align-items:baseline; justify-content:space-between;">
+    <span style="font-size:28px; font-weight:700; letter-spacing:-0.3px;">العروض</span>
+    <span style="font-size:13px; color:var(--text-4);" id="stores-count"></span>
   </div>
 
   <div id="stores-list" style="flex:1; overflow-y:auto; padding-bottom:32px;">
