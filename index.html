@@ -86,29 +86,44 @@ outline:none; padding:14px 0;
 .field-input::placeholder { color:var(–text-4); }
 
 /* OTP */
-.otp-wrap { display:flex; gap:8px; direction:ltr; padding:0 16px 16px; }
-.otp-box {
-flex:1; height:52px; background:var(–bg2);
-border:1.5px solid var(–separator); border-radius:10px;
-font-size:22px; font-weight:600; text-align:center;
-color:var(–text); font-family:‘Tajawal’,sans-serif;
-outline:none; transition:border-color 0.15s;
-max-width:46px;
+.otp-wrap {
+display: flex;
+gap: 10px;
+direction: ltr;
+justify-content: center;
+padding: 0 20px 20px;
 }
-.otp-box:focus { border-color:var(–text); }
+.otp-box {
+width: 44px;
+height: 52px;
+background: var(–bg2);
+border: 1.5px solid var(–separator);
+border-radius: 10px;
+font-size: 20px;
+font-weight: 600;
+text-align: center;
+color: var(–text);
+font-family: ‘Tajawal’, sans-serif;
+outline: none;
+transition: border-color 0.15s;
+flex-shrink: 0;
+-webkit-appearance: none;
+appearance: none;
+}
+.otp-box:focus { border-color: var(–text); background: #fff; }
 
 /* BUTTONS */
 .btn-main {
 display:block; width:calc(100% - 32px); margin:0 16px;
-padding:16px; background:var(–green); color:#fff;
+padding:16px; background:#1D1D1F; color:#fff;
 border:none; border-radius:14px;
 font-size:17px; font-weight:600; font-family:‘Tajawal’,sans-serif;
 cursor:pointer; transition:opacity 0.15s, transform 0.1s;
-box-shadow:0 2px 10px rgba(0,0,0,0.12);
+-webkit-appearance:none; appearance:none;
 }
-.btn-main:active { opacity:0.88; transform:scale(0.985); }
-.btn-main:disabled { opacity:0.38; box-shadow:none; }
-.btn-main.muted { background:var(–text-4); box-shadow:none; }
+.btn-main:active { opacity:0.8; transform:scale(0.985); }
+.btn-main:disabled { background:#AEAEB2 !important; cursor:not-allowed; }
+.btn-main.muted { background:#AEAEB2 !important; cursor:not-allowed; }
 
 .btn-ghost {
 background:none; border:none; font-family:‘Tajawal’,sans-serif;
@@ -301,7 +316,7 @@ iframe[src*=“recaptcha”] { display:none !important; }
 </div>
 
 <button class="btn-main" id="send-otp-btn"
-  style="font-size:17px; padding:17px; background:#1D1D1F !important; color:#fff !important; opacity:1 !important;">
+  style="font-size:17px; padding:17px;">
   ابدأ الآن
 </button>
 
@@ -337,8 +352,8 @@ iframe[src*=“recaptcha”] { display:none !important; }
   </div>
 </div>
 
-<!-- OTP boxes — 6 خانات صغيرة منضبطة -->
-<div style="display:flex; gap:8px; direction:ltr; justify-content:center; padding:0 24px 20px;">
+<!-- OTP boxes — 6 خانات منضبطة -->
+<div class="otp-wrap">
   <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1" autocomplete="one-time-code">
   <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
   <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
@@ -349,7 +364,7 @@ iframe[src*=“recaptcha”] { display:none !important; }
 
 <div style="padding:0 16px 12px;">
   <button class="btn-main" id="verify-otp-btn"
-    style="background:#1D1D1F !important; color:#fff !important;">
+    >
     تحقق
   </button>
 </div>
@@ -818,31 +833,35 @@ iframe[src*=“recaptcha”] { display:none !important; }
     const otpBoxes = document.querySelectorAll('.otp-box');
     otpBoxes.forEach((box, i) => {
       box.addEventListener('input', (e) => {
-        const val = e.target.value.replace(/[^0-9]/g, '');
-        box.value = val.slice(-1);
+        // احتفظ برقم واحد فقط
+        box.value = e.target.value.replace(/[^0-9]/g, '').slice(-1);
+        // انتقل للتالية فوراً
         if (box.value && i < otpBoxes.length - 1) {
           otpBoxes[i + 1].focus();
-          otpBoxes[i + 1].select();
+        }
+        // إذا اكتملت الخانات — اضغط تحقق تلقائياً
+        const code = [...otpBoxes].map(b => b.value).join('');
+        if (code.length === 6) {
+          document.getElementById('verify-otp-btn').click();
         }
       });
       box.addEventListener('keydown', (e) => {
         if (e.key === 'Backspace') {
-          if (!box.value && i > 0) {
+          if (box.value) {
+            box.value = '';
+          } else if (i > 0) {
             otpBoxes[i - 1].focus();
             otpBoxes[i - 1].value = '';
           }
         }
-        if (e.key === 'ArrowRight' && i > 0) otpBoxes[i-1].focus();
-        if (e.key === 'ArrowLeft' && i < otpBoxes.length-1) otpBoxes[i+1].focus();
       });
       box.addEventListener('paste', (e) => {
         e.preventDefault();
-        const paste = e.clipboardData.getData('text').replace(/[^0-9]/g,'');
-        otpBoxes.forEach((b, j) => {
-          b.value = paste[j] || '';
-        });
-        const last = Math.min(paste.length, otpBoxes.length) - 1;
+        const digits = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+        otpBoxes.forEach((b, j) => { b.value = digits[j] || ''; });
+        const last = Math.min(digits.length - 1, otpBoxes.length - 1);
         otpBoxes[last]?.focus();
+        if (digits.length >= 6) document.getElementById('verify-otp-btn').click();
       });
       box.addEventListener('focus', () => box.select());
     });
