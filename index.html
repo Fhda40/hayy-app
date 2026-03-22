@@ -522,9 +522,23 @@
 
     <div class="coupon-wrap">
       <div class="store-detail-header">
-        <div class="store-detail-icon" id="coupon-store-icon">☕</div>
+        <!-- شعار المحل — يظهر الصورة أو الإيموجي -->
+        <div id="coupon-logo-wrap" style="margin: 0 auto 14px; width:80px; height:80px;">
+          <div class="store-detail-icon" id="coupon-store-icon" style="width:80px; height:80px; font-size:40px;">☕</div>
+          <img id="coupon-store-logo" style="display:none; width:80px; height:80px; border-radius:20px; object-fit:cover; border:2px solid var(--border);" />
+        </div>
         <div style="font-size:18px;font-weight:900;" id="coupon-store-name">كافيه النخلة</div>
         <div class="text-muted mt-8" id="coupon-store-type">مقاهي ومشروبات</div>
+        <div class="text-muted" id="coupon-store-desc" style="font-size:12px; margin-top:4px;"></div>
+      </div>
+
+      <!-- صور النشاط -->
+      <div id="store-photos-wrap" style="display:none; margin-bottom:16px;">
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+          <img id="store-photo-0" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:12px; display:none;">
+          <img id="store-photo-1" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:12px; display:none;">
+          <img id="store-photo-2" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:12px; display:none;">
+        </div>
       </div>
 
       <div class="coupon-card" id="coupon-card-el">
@@ -858,10 +872,10 @@
 
       // أضف المحلات الافتراضية دائماً
       const defaultStores = [
-        { id: 'ooto',    icon: '☕', name: 'OOTO Coffee',    type: 'مقاهي ومشروبات',  discount: 35 },
-        { id: 'nahdi',   icon: '💊', name: 'صيدلية النهدي', type: 'صيدليات',          discount: 20 },
-        { id: 'barber',  icon: '✂️', name: 'حلاق الطايف',   type: 'حلاقة وتجميل',    discount: 15 },
-        { id: 'kabsati', icon: '🍚', name: 'مطعم كبساتي',   type: 'مطاعم ومأكولات',  discount: 10 },
+        { id: 'ooto',    icon: '☕', name: 'OOTO Coffee',    type: 'مقاهي ومشروبات',  discount: 35, logo_url:'', photos:[], description:'' },
+        { id: 'nahdi',   icon: '💊', name: 'صيدلية النهدي', type: 'صيدليات',          discount: 20, logo_url:'', photos:[], description:'' },
+        { id: 'barber',  icon: '✂️', name: 'حلاق الطايف',   type: 'حلاقة وتجميل',    discount: 15, logo_url:'', photos:[], description:'' },
+        { id: 'kabsati', icon: '🍚', name: 'مطعم كبساتي',   type: 'مطاعم ومأكولات',  discount: 10, logo_url:'', photos:[], description:'' },
       ];
 
       const allStores = [...defaultStores, ...businesses];
@@ -878,7 +892,10 @@
           icon: store.icon || '🏪',
           name: store.name,
           type: store.type,
-          discount: (store.discount || 0) + '%'
+          discount: (store.discount || 0) + '%',
+          logo_url: store.logo_url || '',
+          photos: store.photos || [],
+          description: store.description || ''
         };
 
         const card = document.createElement('div');
@@ -920,10 +937,45 @@
 
   function openStore(id) {
     const s = storeData[id];
-    document.getElementById('coupon-store-icon').textContent = s.icon;
+    if (!s) return;
+
+    // الإيموجي أو الشعار
+    const logoImg = document.getElementById('coupon-store-logo');
+    const iconEl = document.getElementById('coupon-store-icon');
+    if (s.logo_url) {
+      logoImg.src = s.logo_url;
+      logoImg.style.display = 'block';
+      iconEl.style.display = 'none';
+    } else {
+      iconEl.textContent = s.icon;
+      iconEl.style.display = 'flex';
+      logoImg.style.display = 'none';
+    }
+
     document.getElementById('coupon-store-name').textContent = s.name;
     document.getElementById('coupon-store-type').textContent = s.type;
     document.getElementById('coupon-discount').textContent = s.discount;
+    document.getElementById('coupon-store-desc').textContent = s.description || '';
+
+    // صور النشاط
+    const photos = s.photos || [];
+    const photosWrap = document.getElementById('store-photos-wrap');
+    if (photos.length > 0) {
+      photosWrap.style.display = 'block';
+      [0,1,2].forEach(i => {
+        const img = document.getElementById(`store-photo-${i}`);
+        if (photos[i]) {
+          img.src = photos[i];
+          img.style.display = 'block';
+        } else {
+          img.style.display = 'none';
+        }
+      });
+    } else {
+      photosWrap.style.display = 'none';
+    }
+
+    // إعادة تعيين الكوبون
     document.getElementById('coupon-code').textContent = '----';
     document.getElementById('coupon-card-el').classList.remove('code-expired');
     document.getElementById('generate-btn').textContent = '⚡ توليد كود الخصم';
