@@ -417,11 +417,7 @@
     </div>
 
     <div class="spacer"></div>
-    <div style="padding:16px;">
-      <button class="btn btn-ghost" id="merchant-login-btn" style="border: 1px solid var(--border);">
-        🏪 دخول التجار وتسجيل النشاط
-      </button>
-    </div>
+    <div class="bottom-pad"></div>
   </div>
 
   <!-- ══ SCREEN 2: OTP ══ -->
@@ -811,7 +807,10 @@
   function checkGeo() {
     const title = document.getElementById('geo-title');
     const sub = document.getElementById('geo-sub');
+    const btn = document.getElementById('geo-btn');
     title.textContent = 'جاري تحديد موقعك...';
+    btn.textContent = '⏳ جاري التحقق...';
+    btn.disabled = true;
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -828,16 +827,19 @@
           await loadStores();
           setTimeout(() => goScreen('screen-stores'), 1200);
         } else {
-          title.textContent = '⚠️ أنت خارج النطاق';
-          sub.textContent = `أنت على بعد ${distanceStr} من شرورة\nالعروض متاحة فقط داخل المدينة`;
+          title.textContent = '🚫 أنت خارج النطاق';
+          sub.textContent = `أنت على بعد ${distanceStr} من شرورة\n\nالعروض متاحة فقط لسكان شرورة`;
           document.querySelector('.radar-center').textContent = '❌';
+          btn.textContent = '🔄 إعادة التحقق';
+          btn.disabled = false;
         }
       },
       (error) => {
-        // في حالة رفض الإذن أو الخطأ — للتجربة نسمح بالدخول
-        title.textContent = '⚠️ تعذر تحديد موقعك';
-        sub.textContent = 'تأكد من تفعيل GPS وإعادة المحاولة';
-        document.querySelector('.radar-center').textContent = '❓';
+        title.textContent = '🚫 لا يمكن تحديد موقعك';
+        sub.textContent = 'يجب السماح بالوصول للموقع\nللاستفادة من عروض حيّ';
+        document.querySelector('.radar-center').textContent = '🔒';
+        document.getElementById('geo-btn').textContent = '🔄 إعادة المحاولة';
+        document.getElementById('geo-btn').disabled = false;
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
@@ -1038,7 +1040,6 @@
     document.getElementById('geo-btn').addEventListener('click', checkGeo);
     document.getElementById('back-to-stores').addEventListener('click', () => goScreen('screen-stores'));
     document.getElementById('generate-btn').addEventListener('click', generateCode);
-    document.getElementById('merchant-login-btn').addEventListener('click', () => goScreen('screen-merchant'));
 
     // أزرار التاجر - شاشة الدخول
     document.getElementById('merchant-logout').addEventListener('click', () => goScreen('screen-welcome'));
