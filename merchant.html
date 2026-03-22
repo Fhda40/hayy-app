@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حيّ — بوابة التجار</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5EDD8;
+    --bg2: #EDE0C4;
+    --surface: #FFFAF2;
+    --surface2: #F0E6CC;
+    --gold: #B8860B;
+    --gold-light: #D4A843;
+    --gold-dim: rgba(184,134,11,0.12);
+    --text: #2C1F0E;
+    --text-muted: #8A7355;
+    --green: #2D7A4F;
+    --red: #C0392B;
+    --border: rgba(184,134,11,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% -5%, rgba(184,134,11,0.08) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .app {
+    width: 100%; max-width: 420px;
+    min-height: 100vh;
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+  }
+
+  .screen { display: none; flex-direction: column; min-height: 100vh; animation: fadeUp 0.4s ease; }
+  .screen.active { display: flex; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TOP BAR */
+  .top-bar {
+    padding: 20px 24px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,250,242,0.9);
+    backdrop-filter: blur(8px);
+  }
+
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(184,134,11,0.3);
+  }
+  .logo-text { font-size: 18px; font-weight: 900; color: var(--gold); }
+  .logo-sub { font-size: 10px; color: var(--text-muted); }
+
+  .nav-link {
+    font-size: 12px; color: var(--text-muted);
+    cursor: pointer; font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+    padding: 6px 12px;
+    background: var(--surface2);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+  }
+  .nav-link:hover { color: var(--gold); border-color: var(--gold); }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    margin: 0 16px 16px;
+    box-shadow: 0 2px 16px rgba(184,134,11,0.08);
+  }
+
+  .card-title {
+    font-size: 13px; font-weight: 700;
+    color: var(--gold); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* INPUTS */
+  .input-group { margin-bottom: 16px; }
+
+  label {
+    display: block; font-size: 12px;
+    color: var(--text-muted); margin-bottom: 8px; font-weight: 600;
+  }
+
+  .phone-input-wrap { display: flex; gap: 8px; }
+
+  .country-code {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 0 14px; font-size: 14px;
+    color: var(--text); font-family: 'Tajawal', sans-serif;
+    display: flex; align-items: center; white-space: nowrap;
+  }
+
+  input[type="tel"], input[type="text"], input[type="number"] {
+    width: 100%;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+    font-size: 16px; color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    direction: ltr; text-align: center;
+  }
+  input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-dim); }
+
+  select {
+    width: 100%; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 16px; font-size: 14px; color: var(--text);
+    font-family: 'Tajawal', sans-serif; outline: none;
+  }
+
+  /* OTP */
+  .otp-wrap { display: flex; gap: 6px; justify-content: center; direction: ltr; }
+  .otp-input {
+    width: 40px !important; height: 50px;
+    font-size: 20px !important; font-weight: 700;
+    border-radius: 10px !important; padding: 0 !important;
+    text-align: center;
+  }
+
+  /* BUTTONS */
+  .btn {
+    width: 100%; padding: 16px; border: none; border-radius: 14px;
+    font-size: 15px; font-weight: 700; font-family: 'Tajawal', sans-serif;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: #fff; box-shadow: 0 4px 16px rgba(184,134,11,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(184,134,11,0.4); }
+  .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); font-size: 13px; }
+
+  /* TABS */
+  .tab-bar {
+    display: flex; margin: 0 16px 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 4px;
+  }
+  .tab {
+    flex: 1; padding: 10px; text-align: center;
+    font-size: 12px; font-weight: 600;
+    font-family: 'Tajawal', sans-serif; border: none;
+    background: none; color: var(--text-muted);
+    border-radius: 10px; cursor: pointer; transition: all 0.2s;
+  }
+  .tab.active { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: white; }
+
+  /* STATS */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
+  .stat-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px; text-align: center;
+    box-shadow: 0 1px 8px rgba(184,134,11,0.06);
+  }
+  .stat-num { font-size: 28px; font-weight: 900; color: var(--gold); display: block; }
+  .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  /* VERIFY */
+  .verify-result { border-radius: 16px; padding: 20px; text-align: center; margin-top: 12px; display: none; }
+  .verify-result.success { background: rgba(45,122,79,0.08); border: 1px solid rgba(45,122,79,0.3); display: block; }
+  .verify-result.error { background: rgba(192,57,43,0.08); border: 1px solid rgba(192,57,43,0.3); display: block; }
+  .verify-icon { font-size: 32px; margin-bottom: 8px; }
+  .verify-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .verify-sub { font-size: 12px; color: var(--text-muted); }
+
+  /* PREVIEW CARD */
+  .preview-card {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 20px; padding: 20px; text-align: center;
+    color: white; margin-bottom: 12px;
+  }
+
+  /* HELPERS */
+  .mt-8 { margin-top: 8px; }
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+  .center { text-align: center; }
+  .text-muted { color: var(--text-muted); font-size: 12px; }
+  .spacer { flex: 1; }
+  .separator { height: 1px; background: var(--border); margin: 0 16px 16px; }
+  .bottom-pad { padding-bottom: 32px; }
+
+  /* EMOJI PICKER */
+  .emoji-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .emoji-btn {
+    font-size: 24px; padding: 6px; border-radius: 8px;
+    border: 1px solid var(--border); cursor: pointer;
+    background: var(--surface2); transition: all 0.2s;
+  }
+  .emoji-btn:hover { border-color: var(--gold); transform: scale(1.1); }
+  .emoji-btn.selected { border-color: var(--gold); background: var(--gold-dim); }
+
+  /* SUCCESS MSG */
+  .success-msg {
+    display: none;
+    background: rgba(45,122,79,0.1); border: 1px solid rgba(45,122,79,0.3);
+    border-radius: 12px; padding: 12px; text-align: center;
+    font-size: 13px; color: var(--green); margin-top: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ══ SCREEN 1: LOGIN ══ -->
+  <div class="screen active" id="screen-login">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-icon">🏪</div>
+        <div>
+          <div class="logo-text">حيّ</div>
+          <div class="logo-sub">بوابة التجار</div>
+        </div>
+      </div>
+      <a href="index.html" class="nav-link">🏠 للعملاء</a>
+    </div>
+
+    <div style="padding: 32px 24px 16px; text-align: center;">
+      <div style="font-size: 56px; margin-bottom: 16px;">🏪</div>
+      <h1 style="font-size: 26px; font-weight: 900; margin-bottom: 8px;">بوابة التجار</h1>
+      <p class="text-muted">سجّل نشاطك التجاري وابدأ في<br>استقبال زبائن من حيّك</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📱 رقم جوال النشاط</div>
+      <div class="input-group">
+        <label>رقم الجوال السعودي</label>
+        <div class="phone-input-wrap">
+          <div class="country-code">🇸🇦 +966</div>
+          <input type="tel" id="merchant-phone" placeholder="5X XXX XXXX" maxlength="9">
+        </div>
+      </div>
+      <button class="btn btn-primary" id="send-otp-btn">إرسال رمز التحقق ←</button>
+      <div class="mt-8 center text-muted">سيتم إرسال رمز SMS للتحقق</div>
+    </div>
+
+    <div class="spacer"></div>
+    <div style="padding: 16px; text-align: center;">
+      <div class="text-muted">مميزات بوابة التجار:</div>
+      <div style="display: flex; justify-content: center; gap: 16px; margin-top: 12px; flex-wrap: wrap;">
+        <div style="font-size: 12px; color: var(--text-muted);">📊 إحصائيات</div>
+        <div style="font-size: 12px; color: var(--text-muted);">✅ تحقق من الكود</div>
+        <div style="font-size: 12px; color: var(--text-muted);">✏️ إدارة العروض</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 2: OTP ══ -->
+  <div class="screen" id="screen-otp">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-icon">🏪</div>
+        <div><div class="logo-text">حيّ</div><div class="logo-sub">التحقق</div></div>
+      </div>
+      <span class="nav-link" id="back-to-login">← رجوع</span>
+    </div>
+
+    <div style="padding: 32px 24px 16px; text-align: center;">
+      <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
+      <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">أدخل رمز التحقق</h2>
+      <p class="text-muted">تم إرسال رمز SMS إلى<br>
+        <strong style="color: var(--text); direction: ltr; display: inline-block;">+966 <span id="phone-display">5X XXX XXXX</span></strong>
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="otp-wrap">
+        <input type="number" class="otp-input" maxlength="1">
+        <input type="number" class="otp-input" maxlength="1">
+        <input type="number" class="otp-input" maxlength="1">
+        <input type="number" class="otp-input" maxlength="1">
+        <input type="number" class="otp-input" maxlength="1">
+        <input type="number" class="otp-input" maxlength="1">
+      </div>
+      <div class="mt-16">
+        <button class="btn btn-primary" id="verify-otp-btn">تحقق من الرمز ←</button>
+      </div>
+      <div class="mt-12 center text-muted">
+        لم يصلك الرمز؟ <span style="color: var(--gold); cursor: pointer;" id="resend-btn">إعادة الإرسال</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 3: DASHBOARD ══ -->
+  <div class="screen" id="screen-dashboard">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-icon" id="dash-icon">🏪</div>
+        <div>
+          <div class="logo-text" id="dash-name">نشاطك</div>
+          <div class="logo-sub">لوحة التحكم</div>
+        </div>
+      </div>
+      <span class="nav-link" id="logout-btn">← خروج</span>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab active" id="tab-profile-btn">✏️ النشاط</button>
+      <button class="tab" id="tab-stats-btn">📊 إحصائيات</button>
+      <button class="tab" id="tab-verify-btn">✅ كود</button>
+    </div>
+
+    <!-- TAB: Profile -->
+    <div id="tab-profile">
+      <div style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px;">
+
+        <!-- Preview -->
+        <div class="preview-card">
+          <div id="preview-icon" style="font-size: 40px; margin-bottom: 8px;">🏪</div>
+          <div id="preview-name" style="font-size: 18px; font-weight: 900; margin-bottom: 4px;">اسم النشاط</div>
+          <div id="preview-type" style="font-size: 12px; opacity: 0.85; margin-bottom: 8px;">نوع النشاط</div>
+          <div id="preview-discount" style="background: rgba(255,255,255,0.25); border-radius: 20px; padding: 4px 16px; font-size: 13px; font-weight: 700; display: inline-block;">خصم 10%</div>
+        </div>
+
+        <!-- Form -->
+        <div class="card" style="margin: 0;">
+          <div class="card-title">🏪 معلومات النشاط</div>
+
+          <div class="input-group">
+            <label>اسم النشاط التجاري</label>
+            <input type="text" id="store-name" placeholder="مثال: كافيه الورد" style="text-align: right; direction: rtl;">
+          </div>
+
+          <div class="input-group">
+            <label>نوع النشاط</label>
+            <select id="store-type">
+              <option value="مقاهي ومشروبات">☕ مقاهي ومشروبات</option>
+              <option value="مطاعم ومأكولات">🍽️ مطاعم ومأكولات</option>
+              <option value="صيدليات">💊 صيدليات</option>
+              <option value="بقالات">🛒 بقالات</option>
+              <option value="حلاقة وتجميل">✂️ حلاقة وتجميل</option>
+              <option value="ملابس وأزياء">👗 ملابس وأزياء</option>
+              <option value="إلكترونيات">📱 إلكترونيات</option>
+              <option value="أخرى">🏪 أخرى</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>شعار النشاط</label>
+            <div class="emoji-grid" id="emoji-grid">
+              <span class="emoji-btn" data-emoji="☕">☕</span>
+              <span class="emoji-btn" data-emoji="🍽️">🍽️</span>
+              <span class="emoji-btn" data-emoji="💊">💊</span>
+              <span class="emoji-btn" data-emoji="🛒">🛒</span>
+              <span class="emoji-btn" data-emoji="✂️">✂️</span>
+              <span class="emoji-btn" data-emoji="🍕">🍕</span>
+              <span class="emoji-btn" data-emoji="🧴">🧴</span>
+              <span class="emoji-btn" data-emoji="📱">📱</span>
+              <span class="emoji-btn" data-emoji="🏪">🏪</span>
+              <span class="emoji-btn" data-emoji="🌿">🌿</span>
+              <span class="emoji-btn" data-emoji="🍰">🍰</span>
+              <span class="emoji-btn" data-emoji="💈">💈</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>نسبة الخصم: <span id="discount-label" style="color: var(--gold); font-weight: 700;">10%</span></label>
+            <input type="range" id="discount-slider" min="5" max="50" value="10" step="5"
+              style="width: 100%; accent-color: var(--gold); margin-top: 8px; cursor: pointer;">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+              <span>5%</span><span>25%</span><span>50%</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>وصف العرض (اختياري)</label>
+            <input type="text" id="store-desc" placeholder="مثال: خصم على جميع المشروبات" style="text-align: right; direction: rtl;">
+          </div>
+        </div>
+
+        <div class="card" style="margin: 0;">
+          <div class="card-title">📍 موقع النشاط</div>
+          <div class="input-group">
+            <label>الحي</label>
+            <input type="text" id="store-area" placeholder="مثال: حي الروضة" style="text-align: right; direction: rtl;">
+          </div>
+          <button class="btn btn-ghost" id="location-btn">📍 تحديد موقعي الحالي</button>
+          <div id="location-status" class="mt-8 center text-muted"></div>
+        </div>
+
+        <button class="btn btn-primary" id="save-btn">💾 حفظ معلومات النشاط ←</button>
+        <div class="success-msg" id="save-success">✅ تم حفظ معلومات النشاط بنجاح!</div>
+
+      </div>
+    </div>
+
+    <!-- TAB: Stats -->
+    <div id="tab-stats" style="display: none;">
+      <div class="stats-grid">
+        <div class="stat-box"><span class="stat-num" id="stat-today">0</span><div class="stat-label">استخدامات اليوم</div></div>
+        <div class="stat-box"><span class="stat-num" id="stat-week">0</span><div class="stat-label">استخدامات الأسبوع</div></div>
+        <div class="stat-box"><span class="stat-num" id="stat-total" style="font-size: 22px;">0</span><div class="stat-label">إجمالي الاستخدام</div></div>
+        <div class="stat-box"><span class="stat-num" id="stat-return" style="color: var(--green);">—</span><div class="stat-label">معدل العودة</div></div>
+      </div>
+      <div class="separator"></div>
+      <div style="padding: 0 16px 32px;">
+        <div class="card-title" style="padding: 0 0 12px;">📈 آخر الاستخدامات</div>
+        <div id="recent-logs">
+          <div class="center text-muted" style="padding: 24px;">لا توجد استخدامات بعد</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Verify -->
+    <div id="tab-verify" style="display: none;">
+      <div style="padding: 16px;">
+        <div class="card-title">إدخال كود العميل</div>
+        <div class="input-group">
+          <label>رقم الكود</label>
+          <input type="number" id="verify-code-input" placeholder="أدخل الكود" style="font-size: 28px; font-weight: 800; letter-spacing: 10px;">
+        </div>
+        <button class="btn btn-primary" id="verify-code-btn">✅ تحقق من الكود ←</button>
+        <div class="verify-result" id="verify-result">
+          <div class="verify-icon" id="verify-icon">✅</div>
+          <div class="verify-title" id="verify-title">كود صالح!</div>
+          <div class="verify-sub" id="verify-sub">تم تطبيق الخصم بنجاح</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-pad"></div>
+  </div>
+
+</div>
+
+<div id="recaptcha-container"></div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+  import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, limit, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
+    authDomain: "fbrg87.firebaseapp.com",
+    projectId: "fbrg87",
+    storageBucket: "fbrg87.firebasestorage.app",
+    messagingSenderId: "811335912659",
+    appId: "1:811335912659:web:a923cc11d16315dfd4d826"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let selectedEmoji = '🏪';
+  let merchantPhone = '';
+
+  // ── Navigation ──
+  function goScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+    if (id === 'screen-dashboard') {
+      localStorage.setItem('merchant_session', 'active');
+    }
+  }
+
+  // ── Session Restore ──
+  window.addEventListener('load', () => {
+    if (localStorage.getItem('merchant_session') === 'active') {
+      goScreen('screen-dashboard');
+      loadStats();
+    }
+  });
+
+  // ── OTP ──
+  async function sendOTP() {
+    const phone = document.getElementById('merchant-phone').value.trim();
+    if (phone.length < 9) { alert('أدخل رقم جوال صحيح'); return; }
+    merchantPhone = phone;
+    document.getElementById('phone-display').textContent = phone;
+
+    try {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+      const result = await signInWithPhoneNumber(auth, '+966' + phone, window.recaptchaVerifier);
+      window.confirmationResult = result;
+      goScreen('screen-otp');
+      setTimeout(() => document.querySelectorAll('.otp-input')[0].focus(), 300);
+    } catch (error) {
+      console.error(error);
+      alert('خطأ في إرسال الرمز — تأكد من الرقم');
+    }
+  }
+
+  async function verifyOTP() {
+    const inputs = document.querySelectorAll('.otp-input');
+    const code = Array.from(inputs).map(i => i.value).join('');
+    try {
+      await window.confirmationResult.confirm(code);
+      goScreen('screen-dashboard');
+      loadStats();
+    } catch (error) {
+      inputs.forEach(i => { i.style.borderColor = 'var(--red)'; i.value = ''; });
+      inputs[0].focus();
+      setTimeout(() => inputs.forEach(i => i.style.borderColor = ''), 1000);
+    }
+  }
+
+  // ── Tabs ──
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(tabId + '-btn').classList.add('active');
+    ['tab-profile', 'tab-stats', 'tab-verify'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = id === tabId ? 'block' : 'none';
+    });
+    if (tabId === 'tab-stats') loadStats();
+  }
+
+  // ── Preview ──
+  function updatePreview() {
+    const name = document.getElementById('store-name').value || 'اسم النشاط';
+    const type = document.getElementById('store-type').value;
+    document.getElementById('preview-name').textContent = name;
+    document.getElementById('preview-type').textContent = type;
+    document.getElementById('dash-name').textContent = name;
+    document.getElementById('dash-icon').textContent = selectedEmoji;
+    document.getElementById('preview-icon').textContent = selectedEmoji;
+  }
+
+  // ── Save Store ──
+  async function saveStore() {
+    const name = document.getElementById('store-name').value.trim();
+    const type = document.getElementById('store-type').value;
+    const discount = document.getElementById('discount-slider').value;
+    const desc = document.getElementById('store-desc').value.trim();
+    const area = document.getElementById('store-area').value.trim();
+
+    if (!name) { alert('أدخل اسم النشاط'); return; }
+
+    try {
+      await addDoc(collection(db, 'businesses'), {
+        name, type, discount: parseInt(discount),
+        icon: selectedEmoji, description: desc, area,
+        phone: merchantPhone, active: true,
+        created_at: serverTimestamp()
+      });
+    } catch (e) { console.error(e); }
+
+    const msg = document.getElementById('save-success');
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 3000);
+  }
+
+  // ── Location ──
+  function getLocation() {
+    const status = document.getElementById('location-status');
+    status.textContent = '⏳ جاري تحديد موقعك...';
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        status.textContent = `✅ تم — ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+        status.style.color = 'var(--green)';
+      },
+      () => {
+        status.textContent = '❌ تعذر تحديد الموقع';
+        status.style.color = 'var(--red)';
+      }
+    );
+  }
+
+  // ── Stats ──
+  async function loadStats() {
+    try {
+      const snapshot = await getDocs(collection(db, 'coupons'));
+      let total = 0, today = 0, week = 0;
+      const now = new Date();
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.status === 'used') {
+          total++;
+          if (data.created_at) {
+            const date = data.created_at.toDate();
+            const diffDays = (now - date) / (1000 * 60 * 60 * 24);
+            if (diffDays < 1) today++;
+            if (diffDays < 7) week++;
+          }
+        }
+      });
+      document.getElementById('stat-today').textContent = today;
+      document.getElementById('stat-week').textContent = week;
+      document.getElementById('stat-total').textContent = total;
+    } catch (e) { console.error(e); }
+  }
+
+  // ── Verify Code ──
+  function verifyCode() {
+    const code = document.getElementById('verify-code-input').value;
+    const result = document.getElementById('verify-result');
+    result.className = 'verify-result';
+
+    if (!code || code.length < 4) {
+      document.getElementById('verify-icon').textContent = '❌';
+      document.getElementById('verify-title').textContent = 'كود غير صحيح';
+      document.getElementById('verify-sub').textContent = 'أدخل كوداً صحيحاً';
+      result.classList.add('error');
+      return;
+    }
+
+    // للتجربة — أي كود 4 أرقام يُقبل
+    document.getElementById('verify-icon').textContent = '✅';
+    document.getElementById('verify-title').textContent = 'كود صالح!';
+    document.getElementById('verify-sub').textContent = 'تم تطبيق الخصم بنجاح';
+    result.classList.add('success');
+  }
+
+  // ── Event Listeners ──
+  document.addEventListener('DOMContentLoaded', () => {
+
+    document.getElementById('send-otp-btn').addEventListener('click', sendOTP);
+    document.getElementById('verify-otp-btn').addEventListener('click', verifyOTP);
+    document.getElementById('resend-btn').addEventListener('click', sendOTP);
+    document.getElementById('back-to-login').addEventListener('click', () => goScreen('screen-login'));
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('merchant_session');
+      goScreen('screen-login');
+    });
+
+    document.getElementById('tab-profile-btn').addEventListener('click', () => switchTab('tab-profile'));
+    document.getElementById('tab-stats-btn').addEventListener('click', () => switchTab('tab-stats'));
+    document.getElementById('tab-verify-btn').addEventListener('click', () => switchTab('tab-verify'));
+
+    document.getElementById('save-btn').addEventListener('click', saveStore);
+    document.getElementById('location-btn').addEventListener('click', getLocation);
+    document.getElementById('verify-code-btn').addEventListener('click', verifyCode);
+
+    document.getElementById('store-name').addEventListener('input', updatePreview);
+    document.getElementById('store-type').addEventListener('change', updatePreview);
+
+    document.getElementById('discount-slider').addEventListener('input', () => {
+      const val = document.getElementById('discount-slider').value;
+      document.getElementById('discount-label').textContent = val + '%';
+      document.getElementById('preview-discount').textContent = 'خصم ' + val + '%';
+    });
+
+    // Emoji picker
+    document.querySelectorAll('.emoji-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedEmoji = btn.dataset.emoji;
+        updatePreview();
+      });
+    });
+
+    // OTP inputs
+    const otpInputs = document.querySelectorAll('.otp-input');
+    otpInputs.forEach((input, idx) => {
+      input.addEventListener('input', () => {
+        if (input.value.length > 1) input.value = input.value[0];
+        if (input.value && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && idx > 0) otpInputs[idx - 1].focus();
+      });
+    });
+
+  });
+</script>
+</body>
+</html>
