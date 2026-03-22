@@ -279,22 +279,36 @@
       <span class="nav-link" id="back-from-password">← رجوع</span>
     </div>
 
-    <div style="padding: 32px 24px 16px; text-align: center;">
-      <div style="font-size: 48px; margin-bottom: 16px;">👋</div>
-      <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">أهلاً بعودتك!</h2>
-      <p class="text-muted">أدخل كلمة المرور للدخول<br>
-        <strong style="color:var(--gold); direction:ltr; display:inline-block; margin-top:4px;">+966 <span id="returning-phone">5X XXX XXXX</span></strong>
-      </p>
+    <div style="padding: 32px 24px 8px; text-align: center;">
+      <div style="font-size: 48px; margin-bottom: 12px;">👋</div>
+      <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 12px;">أهلاً بعودتك!</h2>
+      <div style="display:inline-flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:8px 20px;">
+        <span style="font-size:14px;">🇸🇦 +966</span>
+        <span id="returning-phone" style="font-size:15px; font-weight:700; direction:ltr;">5X XXX XXXX</span>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">🔑 كلمة المرور</div>
-      <div class="input-group">
-        <label>كلمة المرور</label>
-        <input type="password" id="login-password" placeholder="أدخل كلمة مرورك" style="direction:ltr; text-align:center; letter-spacing:3px;">
+    <div class="card" style="margin-top:20px;">
+      <div class="input-group" style="margin-bottom:8px;">
+        <label style="font-size:13px;">كلمة المرور</label>
+        <div style="position:relative;">
+          <input type="password" id="login-password"
+            placeholder="أدخل كلمة مرورك"
+            style="direction:rtl; text-align:right; padding-left:50px; font-size:16px; height:52px;">
+          <button id="toggle-login-pass"
+            style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:22px; padding:4px; line-height:1;">
+            👁️
+          </button>
+        </div>
       </div>
-      <button class="btn btn-primary" id="login-with-password-btn">دخول ←</button>
-      <div id="password-error" style="display:none; color:var(--red); text-align:center; font-size:13px; margin-top:8px;">❌ كلمة المرور غير صحيحة</div>
+
+      <div id="password-error" style="display:none; background:rgba(192,57,43,0.08); border:1px solid rgba(192,57,43,0.25); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--red); margin-bottom:12px; text-align:center;">
+        ❌ كلمة المرور غير صحيحة — حاول مجدداً
+      </div>
+
+      <button class="btn btn-primary" id="login-with-password-btn" style="font-size:16px; padding:18px; margin-top:4px;">
+        دخول ←
+      </button>
     </div>
     <div class="spacer"></div>
   </div>
@@ -316,26 +330,45 @@
     </div>
 
     <div class="card">
-      <div class="card-title">🔐 إنشاء كلمة مرور</div>
       <div class="input-group">
         <label>كلمة المرور (6 أحرف أو أكثر)</label>
-        <input type="password" id="new-password" placeholder="أنشئ كلمة مرور قوية" style="direction:ltr; text-align:center; letter-spacing:3px;">
-      </div>
-      <div class="input-group">
-        <label>تأكيد كلمة المرور</label>
-        <input type="password" id="confirm-password" placeholder="أعد كتابة كلمة المرور" style="direction:ltr; text-align:center; letter-spacing:3px;">
+        <div style="position:relative;">
+          <input type="password" id="new-password"
+            placeholder="أنشئ كلمة مرور"
+            style="direction:rtl; text-align:right; padding-left:50px; font-size:16px; height:52px;">
+          <button id="toggle-new-pass"
+            style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:22px; padding:4px; line-height:1;">
+            👁️
+          </button>
+        </div>
       </div>
 
-      <!-- مؤشر قوة كلمة المرور -->
-      <div id="password-strength" style="display:none; margin-bottom:12px;">
-        <div style="height:4px; border-radius:4px; background:var(--surface2); overflow:hidden;">
+      <!-- مؤشر قوة -->
+      <div id="password-strength" style="display:none; margin: -8px 0 16px;">
+        <div style="height:5px; border-radius:4px; background:var(--surface2); overflow:hidden;">
           <div id="strength-bar" style="height:100%; width:0%; transition:all 0.3s; border-radius:4px;"></div>
         </div>
-        <div id="strength-label" style="font-size:11px; margin-top:4px; text-align:center;"></div>
+        <div id="strength-label" style="font-size:12px; margin-top:6px; text-align:center; font-weight:600;"></div>
       </div>
 
-      <div id="register-error" style="display:none; color:var(--red); text-align:center; font-size:13px; margin-bottom:12px;"></div>
-      <button class="btn btn-primary" id="create-account-btn">إنشاء الحساب ←</button>
+      <div class="input-group">
+        <label>تأكيد كلمة المرور</label>
+        <div style="position:relative;">
+          <input type="password" id="confirm-password"
+            placeholder="أعد كتابة كلمة المرور"
+            style="direction:rtl; text-align:right; padding-left:50px; font-size:16px; height:52px;">
+          <button id="toggle-confirm-pass"
+            style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:22px; padding:4px; line-height:1;">
+            👁️
+          </button>
+        </div>
+      </div>
+
+      <div id="register-error" style="display:none; background:rgba(192,57,43,0.08); border:1px solid rgba(192,57,43,0.25); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--red); margin-bottom:12px; text-align:center;"></div>
+
+      <button class="btn btn-primary" id="create-account-btn" style="font-size:16px; padding:18px;">
+        إنشاء الحساب ←
+      </button>
     </div>
     <div class="spacer"></div>
   </div>
@@ -947,6 +980,21 @@
     document.getElementById('back-from-register').addEventListener('click', () => goScreen('screen-login'));
     document.getElementById('create-account-btn').addEventListener('click', createAccount);
     document.getElementById('new-password').addEventListener('input', e => checkPasswordStrength(e.target.value));
+
+    // إظهار/إخفاء كلمة المرور
+    function togglePasswordVisibility(inputId, btnId) {
+      const input = document.getElementById(inputId);
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        const isPass = input.type === 'password';
+        input.type = isPass ? 'text' : 'password';
+        btn.textContent = isPass ? '🙈' : '👁️';
+      });
+    }
+    togglePasswordVisibility('login-password', 'toggle-login-pass');
+    togglePasswordVisibility('new-password', 'toggle-new-pass');
+    togglePasswordVisibility('confirm-password', 'toggle-confirm-pass');
     document.getElementById('logout-btn').addEventListener('click', () => {
       localStorage.removeItem('merchant_session');
       goScreen('screen-login');
