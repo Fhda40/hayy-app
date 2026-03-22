@@ -87,18 +87,19 @@ outline:none; padding:14px 0;
 
 /* OTP */
 .otp-wrap {
-display: grid;
-grid-template-columns: repeat(6, 1fr);
+display: flex;
 gap: 8px;
 direction: ltr;
-padding: 0 20px 20px;
-max-width: 340px;
-margin: 0 auto;
+justify-content: center;
+align-items: center;
+padding: 0 24px 20px;
 }
 .otp-box {
-width: 100%;
-aspect-ratio: 1;
-max-height: 52px;
+width: 42px !important;
+height: 50px !important;
+min-width: 42px !important;
+max-width: 42px !important;
+flex: none !important;
 background: var(–bg2);
 border: 1.5px solid var(–separator);
 border-radius: 10px;
@@ -110,7 +111,10 @@ font-family: ‘Tajawal’, sans-serif;
 outline: none;
 transition: border-color 0.15s;
 -webkit-appearance: none;
+appearance: none;
+padding: 0;
 caret-color: transparent;
+box-sizing: border-box !important;
 }
 .otp-box:focus { border-color: var(–text); background: #fff; }
 
@@ -831,58 +835,58 @@ iframe[src*=“recaptcha”] { display:none !important; }
       document.getElementById('app-icon-emoji').style.display = 'none';
     }
 
-    // OTP — انتقال سلس على iOS و Android
+    // OTP — يعمل على iOS و Android
     const otpBoxes = [...document.querySelectorAll('.otp-box')];
 
+    function moveToNext(i) {
+      if (i < otpBoxes.length - 1) {
+        otpBoxes[i + 1].focus();
+      }
+    }
+
+    function checkComplete() {
+      const code = otpBoxes.map(b => b.value).join('');
+      if (code.length === 6) {
+        setTimeout(() => document.getElementById('verify-otp-btn').click(), 150);
+      }
+    }
+
     otpBoxes.forEach((box, i) => {
-      // منع الكيبورد من إغلاق
-      box.setAttribute('inputmode', 'numeric');
+      // iOS: input event
+      box.addEventListener('input', () => {
+        const val = box.value.replace(/[^0-9]/g, '');
+        if (val.length === 0) { box.value = ''; return; }
+        box.value = val[val.length - 1]; // رقم واحد فقط
+        moveToNext(i);
+        checkComplete();
+      });
 
-      box.addEventListener('keyup', (e) => {
-        const digit = e.key.replace(/[^0-9]/g, '');
-        if (digit) {
-          box.value = digit;
-          if (i < otpBoxes.length - 1) {
-            setTimeout(() => otpBoxes[i + 1].focus(), 10);
-          }
-        }
+      // Backspace
+      box.addEventListener('keydown', (e) => {
         if (e.key === 'Backspace') {
-          box.value = '';
-          if (i > 0) setTimeout(() => otpBoxes[i - 1].focus(), 10);
-        }
-        // تحقق تلقائي
-        const code = otpBoxes.map(b => b.value).join('');
-        if (code.length === 6) {
-          setTimeout(() => document.getElementById('verify-otp-btn').click(), 100);
-        }
-      });
-
-      box.addEventListener('input', (e) => {
-        const val = e.target.value.replace(/[^0-9]/g, '');
-        if (val.length > 1) {
-          // لصق رقم متعدد
-          otpBoxes.forEach((b, j) => { b.value = val[j] || ''; });
-          const last = Math.min(val.length - 1, otpBoxes.length - 1);
-          otpBoxes[last].focus();
-          if (val.length >= 6) setTimeout(() => document.getElementById('verify-otp-btn').click(), 100);
-          return;
-        }
-        box.value = val;
-        if (val && i < otpBoxes.length - 1) {
-          setTimeout(() => otpBoxes[i + 1].focus(), 10);
+          if (box.value) {
+            box.value = '';
+          } else if (i > 0) {
+            otpBoxes[i - 1].value = '';
+            otpBoxes[i - 1].focus();
+          }
+          e.preventDefault();
         }
       });
 
+      // لصق رمز SMS
       box.addEventListener('paste', (e) => {
         e.preventDefault();
         const digits = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
         otpBoxes.forEach((b, j) => { b.value = digits[j] || ''; });
         const last = Math.min(digits.length - 1, otpBoxes.length - 1);
         otpBoxes[Math.max(0, last)].focus();
-        if (digits.length >= 6) setTimeout(() => document.getElementById('verify-otp-btn').click(), 100);
+        checkComplete();
       });
 
-      box.addEventListener('click', () => { box.select(); });
+      box.addEventListener('focus', () => {
+        box.setSelectionRange(0, box.value.length);
+      });
     });
 
     // rating
