@@ -3,928 +3,886 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>حيّ — لوحة الإدارة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>حيّ — رابط حيّك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #22263a;
-    --gold: #D4A843;
-    --gold-dim: rgba(212,168,67,0.12);
-    --text: #e8e3d8;
-    --muted: #6b7280;
-    --green: #10b981;
-    --red: #ef4444;
-    --yellow: #f59e0b;
-    --blue: #3b82f6;
-    --border: rgba(212,168,67,0.15);
+    --bg: #FFFFFF;
+    --bg2: #F5F5F7;
+    --surface: #FFFFFF;
+    --green: #1D1D1F;
+    --green-dark: #1D1D1F;
+    --green-dim: rgba(29,29,31,0.06);
+    --text: #1D1D1F;
+    --text-2: #3A3A3C;
+    --text-3: #636366;
+    --text-4: #AEAEB2;
+    --separator: rgba(60,60,67,0.12);
+    --red: #FF3B30;
+    --blue: #007AFF;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.07);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
   }
 
-- { margin:0; padding:0; box-sizing:border-box; }
+- { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 body {
-font-family: ‘Tajawal’, sans-serif;
+font-family: ‘Tajawal’, -apple-system, sans-serif;
 background: var(–bg);
 color: var(–text);
 min-height: 100vh;
 }
 
-/* ── LOGIN ── */
-.login-wrap {
-min-height: 100vh;
-display: flex;
-align-items: center;
-justify-content: center;
-padding: 24px;
+.screen { display:none; flex-direction:column; min-height:100vh; animation: fadeIn 0.28s ease; }
+.screen.active { display:flex; }
+
+@keyframes fadeIn {
+from { opacity:0; transform:translateY(10px); }
+to { opacity:1; transform:translateY(0); }
 }
 
-.login-card {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 24px;
-padding: 40px 32px;
-width: 100%;
-max-width: 380px;
-text-align: center;
-}
-
-.login-icon { font-size: 48px; margin-bottom: 16px; }
-.login-title { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
-.login-sub { font-size: 13px; color: var(–muted); margin-bottom: 28px; }
-
-/* ── LAYOUT ── */
-.admin-layout {
-display: none;
-min-height: 100vh;
-}
-.admin-layout.active { display: flex; }
-
-.sidebar {
-width: 240px;
-background: var(–surface);
-border-left: 1px solid var(–border);
-padding: 24px 0;
-display: flex;
-flex-direction: column;
-position: fixed;
-right: 0;
-top: 0;
-height: 100vh;
-overflow-y: auto;
-}
-
-.sidebar-logo {
-padding: 0 20px 24px;
-border-bottom: 1px solid var(–border);
-margin-bottom: 16px;
-}
-
-.sidebar-logo .name { font-size: 20px; font-weight: 900; color: var(–gold); }
-.sidebar-logo .sub { font-size: 11px; color: var(–muted); }
-
-.nav-item {
-display: flex;
-align-items: center;
-gap: 10px;
-padding: 12px 20px;
-font-size: 14px;
-cursor: pointer;
-transition: all 0.2s;
-border-right: 3px solid transparent;
-color: var(–muted);
-}
-.nav-item:hover { background: var(–surface2); color: var(–text); }
-.nav-item.active { background: var(–gold-dim); color: var(–gold); border-right-color: var(–gold); }
-.nav-item .icon { font-size: 18px; }
-
-.nav-badge {
-margin-right: auto;
-background: var(–red);
-color: white;
-font-size: 10px;
-font-weight: 700;
-padding: 2px 6px;
-border-radius: 10px;
-min-width: 18px;
-text-align: center;
-}
-
-.main-content {
-flex: 1;
-margin-right: 240px;
-padding: 24px;
-overflow-y: auto;
-}
-
-/* ── HEADER ── */
-.page-header {
+/* NAV */
+.nav {
+padding: calc(env(safe-area-inset-top,0px) + 14px) 20px 0;
+min-height: 50px;
 display: flex;
 align-items: center;
 justify-content: space-between;
-margin-bottom: 24px;
-}
-
-.page-title { font-size: 22px; font-weight: 900; }
-.page-sub { font-size: 13px; color: var(–muted); margin-top: 2px; }
-
-/* ── STATS GRID ── */
-.stats-grid {
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-gap: 16px;
-margin-bottom: 24px;
-}
-
-.stat-card {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 16px;
-padding: 20px;
-}
-
-.stat-card .label { font-size: 12px; color: var(–muted); margin-bottom: 8px; }
-.stat-card .value { font-size: 32px; font-weight: 900; }
-.stat-card .change { font-size: 11px; color: var(–green); margin-top: 4px; }
-
-/* ── TABLE ── */
-.table-card {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 16px;
-overflow: hidden;
-margin-bottom: 24px;
-}
-
-.table-header {
-padding: 16px 20px;
-border-bottom: 1px solid var(–border);
-display: flex;
-align-items: center;
-justify-content: space-between;
-}
-
-.table-title { font-size: 15px; font-weight: 700; }
-
-table { width: 100%; border-collapse: collapse; }
-th {
-padding: 12px 16px;
-text-align: right;
-font-size: 12px;
-color: var(–muted);
-font-weight: 600;
-background: var(–surface2);
-border-bottom: 1px solid var(–border);
-}
-td {
-padding: 14px 16px;
-font-size: 13px;
-border-bottom: 1px solid rgba(255,255,255,0.04);
-vertical-align: middle;
-}
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: var(–surface2); }
-
-/* ── BADGES ── */
-.badge {
-display: inline-flex;
-align-items: center;
-gap: 4px;
-padding: 3px 10px;
-border-radius: 20px;
-font-size: 11px;
-font-weight: 700;
-}
-.badge-green { background: rgba(16,185,129,0.15); color: var(–green); }
-.badge-red { background: rgba(239,68,68,0.15); color: var(–red); }
-.badge-yellow { background: rgba(245,158,11,0.15); color: var(–yellow); }
-.badge-blue { background: rgba(59,130,246,0.15); color: var(–blue); }
-.badge-gray { background: rgba(107,114,128,0.15); color: var(–muted); }
-
-/* ── BUTTONS ── */
-.btn {
-padding: 8px 16px;
-border: none;
-border-radius: 8px;
-font-size: 12px;
-font-weight: 700;
-font-family: ‘Tajawal’, sans-serif;
-cursor: pointer;
-transition: all 0.2s;
-}
-.btn-primary { background: var(–gold); color: #0f1117; }
-.btn-danger { background: rgba(239,68,68,0.15); color: var(–red); border: 1px solid rgba(239,68,68,0.3); }
-.btn-success { background: rgba(16,185,129,0.15); color: var(–green); border: 1px solid rgba(16,185,129,0.3); }
-.btn-sm { padding: 5px 10px; font-size: 11px; }
-
-/* ── INPUTS ── */
-input[type=“password”], input[type=“text”], input[type=“search”] {
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 10px;
-padding: 12px 16px;
-font-size: 14px;
-color: var(–text);
-font-family: ‘Tajawal’, sans-serif;
-outline: none;
-width: 100%;
-transition: border-color 0.2s;
-}
-input:focus { border-color: var(–gold); }
-
-.btn-full {
-width: 100%;
-padding: 14px;
-margin-top: 16px;
-border: none;
-border-radius: 12px;
-font-size: 15px;
-font-weight: 700;
-font-family: ‘Tajawal’, sans-serif;
-background: linear-gradient(135deg, var(–gold), #f0c96a);
-color: #0f1117;
-cursor: pointer;
-}
-
-/* ── CHARTS ── */
-.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-
-.mini-chart {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 16px;
-padding: 20px;
-}
-
-.mini-chart .title { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
-
-.bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; }
-.bar {
-flex: 1;
-background: var(–gold-dim);
-border-radius: 4px 4px 0 0;
-border: 1px solid var(–border);
-transition: all 0.3s;
 position: relative;
 }
-.bar:hover { background: var(–gold); }
-.bar-label { font-size: 9px; color: var(–muted); text-align: center; margin-top: 4px; }
+.nav-title { font-size:17px; font-weight:600; position:absolute; left:50%; transform:translateX(50%); }
+.nav-back { background:none; border:none; font-family:‘Tajawal’,sans-serif; font-size:17px; color:var(–green); cursor:pointer; padding:8px 0; display:flex; align-items:center; gap:2px; }
+.nav-link { font-size:15px; color:var(–green); cursor:pointer; font-weight:400; }
 
-/* ── COMPLAINT CARD ── */
-.complaint-card {
-background: var(–surface2);
-border: 1px solid rgba(239,68,68,0.25);
-border-radius: 14px;
-padding: 16px;
-margin-bottom: 12px;
+/* TYPOGRAPHY */
+.headline { font-size:34px; font-weight:700; letter-spacing:-0.5px; line-height:1.15; }
+.title-1 { font-size:28px; font-weight:700; letter-spacing:-0.3px; }
+.title-2 { font-size:22px; font-weight:700; }
+.title-3 { font-size:20px; font-weight:600; }
+.body-text { font-size:17px; line-height:1.5; }
+.subhead { font-size:15px; }
+.footnote { font-size:13px; }
+.caption { font-size:12px; }
+.secondary { color:var(–text-3); }
+.tertiary { color:var(–text-4); }
+
+/* INPUTS */
+.field-group { background:var(–bg2); border-radius:14px; margin:0 16px 10px; overflow:hidden; }
+.field-row {
+display:flex; align-items:center;
+padding:0 16px; min-height:52px;
+border-bottom:1px solid var(–separator);
+}
+.field-row:last-child { border-bottom:none; }
+.field-label { font-size:17px; color:var(–text-3); margin-left:12px; white-space:nowrap; }
+.field-input {
+flex:1; border:none; background:none;
+font-size:17px; font-family:‘Tajawal’,sans-serif;
+color:var(–text); direction:ltr; text-align:left;
+outline:none; padding:14px 0;
+}
+.field-input::placeholder { color:var(–text-4); }
+
+/* OTP */
+.otp-wrap { display:flex; gap:8px; direction:ltr; padding:0 16px 16px; }
+.otp-box {
+flex:1; height:52px; background:var(–bg2);
+border:1.5px solid var(–separator); border-radius:10px;
+font-size:22px; font-weight:600; text-align:center;
+color:var(–text); font-family:‘Tajawal’,sans-serif;
+outline:none; transition:border-color 0.15s;
+max-width:46px;
+}
+.otp-box:focus { border-color:var(–text); }
+
+/* BUTTONS */
+.btn-main {
+display:block; width:calc(100% - 32px); margin:0 16px;
+padding:16px; background:#1D1D1F; color:#fff;
+border:none; border-radius:14px;
+font-size:17px; font-weight:600; font-family:‘Tajawal’,sans-serif;
+cursor:pointer; transition:opacity 0.15s, transform 0.1s;
+-webkit-appearance:none; appearance:none;
+}
+.btn-main:active { opacity:0.8; transform:scale(0.985); }
+.btn-main:disabled { background:#AEAEB2 !important; cursor:not-allowed; }
+.btn-main.muted { background:#AEAEB2 !important; cursor:not-allowed; }
+
+.btn-ghost {
+background:none; border:none; font-family:‘Tajawal’,sans-serif;
+font-size:17px; color:var(–green); cursor:pointer; padding:10px;
 }
 
-.complaint-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.complaint-store { font-size: 14px; font-weight: 700; }
-.complaint-time { font-size: 11px; color: var(–muted); }
-.complaint-body { font-size: 12px; color: var(–muted); }
-
-/* ── RATING ROW ── */
-.stars-display { color: var(–gold); font-size: 14px; letter-spacing: 1px; }
-
-/* ── PAGES ── */
-.page { display: none; }
-.page.active { display: block; }
-
-/* ── LOADING ── */
-.loading { text-align: center; padding: 40px; color: var(–muted); font-size: 13px; }
-
-/* ── EMPTY ── */
-.empty { text-align: center; padding: 32px; color: var(–muted); }
-.empty-icon { font-size: 32px; margin-bottom: 8px; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 768px) {
-.sidebar { display: none; }
-.main-content { margin-right: 0; }
-.stats-grid { grid-template-columns: 1fr 1fr; }
-.chart-row { grid-template-columns: 1fr; }
+/* APP ICON */
+.app-icon {
+width:72px; height:72px; border-radius:18px;
+background:#1D1D1F;
+display:flex; align-items:center; justify-content:center;
+font-size:36px; box-shadow:0 6px 20px rgba(0,0,0,0.15);
+margin:0 auto;
 }
+
+/* STATUS */
+.status-chip {
+display:inline-flex; align-items:center; gap:5px;
+background:rgba(29,29,31,0.06); color:var(–green-dark);
+font-size:13px; font-weight:500; padding:4px 12px; border-radius:20px;
+}
+.pulse { width:6px; height:6px; border-radius:50%; background:var(–green); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+/* GEO */
+.geo-ring {
+width:108px; height:108px; border-radius:50%;
+background:rgba(29,29,31,0.06); margin:0 auto 24px;
+display:flex; align-items:center; justify-content:center;
+position:relative; font-size:44px;
+}
+.geo-ring::before, .geo-ring::after {
+content:’’; position:absolute; inset:-14px; border-radius:50%;
+border:1.5px solid rgba(0,0,0,0.08);
+animation:ripple 2.5s ease-out infinite;
+}
+.geo-ring::after { inset:-28px; animation-delay:0.6s; }
+@keyframes ripple { 0%{transform:scale(0.75);opacity:0.7} 100%{transform:scale(1.2);opacity:0} }
+
+/* STORE CARD */
+.store-card {
+display:flex; align-items:center;
+margin:0 16px 10px; padding:14px 14px;
+background:var(–surface); border-radius:16px;
+border:1px solid var(–separator);
+box-shadow:var(–shadow-sm);
+cursor:pointer; transition:all 0.12s;
+}
+.store-card:active { background:var(–bg2); transform:scale(0.988); }
+.store-logo {
+width:52px; height:52px; border-radius:12px;
+background:rgba(29,29,31,0.06); display:flex;
+align-items:center; justify-content:center;
+font-size:26px; margin-left:14px; flex-shrink:0; overflow:hidden;
+}
+.store-logo img { width:100%; height:100%; object-fit:cover; }
+.store-name { font-size:17px; font-weight:600; }
+.store-type { font-size:13px; color:var(–text-3); margin-top:2px; }
+.discount-tag {
+display:inline-block; margin-top:5px;
+background:rgba(29,29,31,0.06); color:var(–green-dark);
+font-size:12px; font-weight:600; padding:3px 9px; border-radius:20px;
+}
+.chevron { color:var(–text-4); font-size:16px; margin-right:auto; margin-left:0; }
+
+/* COUPON */
+.coupon-wrap { margin:0 16px 14px; border-radius:20px; overflow:hidden; border:1px solid var(–separator); box-shadow:var(–shadow-md); background:var(–surface); }
+.coupon-top { padding:28px 24px 22px; text-align:center; border-bottom:1px dashed var(–separator); position:relative; }
+.coupon-bottom { padding:20px 24px 24px; text-align:center; }
+.notch { position:absolute; width:20px; height:20px; background:var(–bg); border-radius:50%; top:50%; transform:translateY(-50%); }
+.notch.r { right:-10px; }
+.notch.l { left:-10px; }
+
+.big-discount { font-size:60px; font-weight:800; letter-spacing:-2px; color:var(–text); line-height:1; }
+.big-sign { font-size:24px; font-weight:500; color:var(–text-3); vertical-align:super; }
+.code-display { font-size:38px; font-weight:700; letter-spacing:10px; direction:ltr; margin:10px 0 4px; }
+
+/* TIMER BAR */
+.t-bar { height:3px; background:var(–bg2); border-radius:2px; margin:14px 0 6px; overflow:hidden; }
+.t-fill { height:100%; background:var(–green); border-radius:2px; width:100%; transition:width 1s linear, background 0.4s; }
+
+/* CHOICE */
+.choice-pair { display:flex; gap:10px; padding:0 16px 16px; }
+.choice {
+flex:1; padding:18px 12px; border-radius:14px;
+background:var(–bg2); border:1.5px solid var(–separator);
+text-align:center; cursor:pointer; transition:all 0.15s;
+}
+.choice:active { transform:scale(0.97); }
+.choice.yes { background:rgba(29,29,31,0.06); border-color:var(–text); }
+.choice.no { background:rgba(255,59,48,0.06); border-color:var(–red); }
+
+/* STARS */
+.star { font-size:34px; background:none; border:none; cursor:pointer; padding:4px; opacity:0.22; transition:opacity 0.1s, transform 0.1s; }
+.star.on { opacity:1; transform:scale(1.1); }
+
+/* MISC */
+.spacer { flex:1; }
+.safe-bottom { height:env(safe-area-inset-bottom,20px); }
+.h8 { height:8px; } .h16 { height:16px; } .h24 { height:24px; } .h32 { height:32px; }
+.center { text-align:center; }
+.px16 { padding:0 16px; }
+
+/* إخفاء reCAPTCHA */
+.grecaptcha-badge { visibility:hidden !important; opacity:0 !important; }
+iframe[src*=“recaptcha”] { display:none !important; }
+#recaptcha-container { display:none !important; }
 </style>
 
 </head>
 <body>
 
-<!-- ══ LOGIN ══ -->
+<!-- ══ WELCOME ══ -->
 
-<div class="login-wrap" id="login-page">
-  <div class="login-card">
-    <div class="login-icon">🛡️</div>
-    <div class="login-title">لوحة إدارة حيّ</div>
-    <div class="login-sub">للمسؤولين فقط</div>
-    <input type="password" id="admin-pass" placeholder="كلمة المرور السرية" style="margin-bottom:8px; text-align:center;">
-    <div id="login-error" style="display:none; color:var(--red); font-size:13px; margin-bottom:8px;">❌ كلمة المرور خاطئة</div>
-    <button class="btn-full" id="login-btn">دخول ←</button>
+<div class="screen active" id="screen-welcome">
+
+  <!-- Top bar: تاجر؟ فقط -->
+
+  <div style="
+    padding: calc(env(safe-area-inset-top,0px) + 20px) 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 56px;
+  ">
+    <span style="width:48px;"></span>
+    <span style="width:48px;"></span>
+    <span id="merchant-link" style="
+      font-size:15px; color:var(--text-3);
+      cursor:pointer; width:48px; text-align:left;
+      font-weight:400;
+    ">تاجر؟</span>
+  </div>
+
+  <!-- Hero: شعار كبير + نص -->
+
+  <div style="
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:0 32px;
+    text-align:center;
+  ">
+    <img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png"
+         style="width:150px; object-fit:contain; margin-bottom:40px;">
+
+```
+<div style="
+  font-size:36px;
+  font-weight:800;
+  letter-spacing:-0.8px;
+  line-height:1.2;
+  color:var(--text);
+  margin-bottom:14px;
+">خصومات مخصصة</div>
+
+<div style="
+  font-size:16px;
+  color:var(--text-3);
+  line-height:1.7;
+  max-width:248px;
+">حصري لسكان الحي فقط 🏡</div>
+```
+
+  </div>
+
+  <!-- Bottom: رقم الجوال + زر -->
+
+  <div style="padding:0 0 8px;">
+
+```
+<div style="
+  margin:0 16px 10px;
+  background:var(--bg2);
+  border-radius:14px;
+  overflow:hidden;
+">
+  <div style="display:flex; align-items:center; padding:0 16px; min-height:54px;">
+    <span style="font-size:16px; color:var(--text-3); margin-left:12px; white-space:nowrap;">🇸🇦 +966</span>
+    <input
+      class="field-input"
+      type="tel"
+      id="phone-input"
+      placeholder="5X XXX XXXX"
+      maxlength="9"
+      style="font-size:18px; letter-spacing:1px;">
   </div>
 </div>
 
-<!-- ══ ADMIN LAYOUT ══ -->
+<button class="btn-main" id="send-otp-btn"
+  style="font-size:17px; padding:17px;">
+  ابدأ الآن
+</button>
 
-<div class="admin-layout" id="admin-layout">
-
-  <!-- Sidebar -->
-
-  <div class="sidebar">
-    <div class="sidebar-logo">
-      <div style="margin-bottom:4px;"><img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png" style="height:22px; object-fit:contain; filter:invert(1); opacity:0.9;"></div>
-      <div class="sub">لوحة التحكم الكاملة</div>
-    </div>
-
-```
-<nav>
-  <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard', this)">
-    <span class="icon">📊</span> الرئيسية
-  </div>
-  <div class="nav-item" data-page="complaints" onclick="showPage('complaints', this)">
-    <span class="icon">🚨</span> الشكاوى
-    <span class="nav-badge" id="complaints-badge">0</span>
-  </div>
-  <div class="nav-item" data-page="ratings" onclick="showPage('ratings', this)">
-    <span class="icon">⭐</span> التقييمات
-  </div>
-  <div class="nav-item" data-page="businesses" onclick="showPage('businesses', this)">
-    <span class="icon">🏪</span> المحلات
-  </div>
-  <div class="nav-item" data-page="users" onclick="showPage('users', this)">
-    <span class="icon">👥</span> المستخدمون
-  </div>
-  <div class="nav-item" data-page="coupons" onclick="showPage('coupons', this)">
-    <span class="icon">🎟️</span> الكوبونات
-  </div>
-</nav>
-
-<div style="margin-top: auto; padding: 20px;">
-  <button class="btn btn-danger" style="width:100%;" onclick="logout()">← خروج</button>
+<div style="height:14px;"></div>
+<div style="text-align:center;">
+  <span style="font-size:12px; color:var(--text-4);">
+    متاح لسكان شرورة فقط · موقعك لن يُشارك
+  </span>
 </div>
 ```
 
   </div>
 
-  <!-- Main Content -->
+  <div class="safe-bottom"></div>
+</div>
 
-  <div class="main-content">
+<!-- ══ OTP ══ -->
+
+<div class="screen" id="screen-otp">
+  <div class="nav">
+    <button class="nav-back" id="back-welcome" style="color:#007AFF;">‹ رجوع</button>
+  </div>
+
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding-bottom:48px;">
 
 ```
-<!-- ── PAGE: DASHBOARD ── -->
-<div class="page active" id="page-dashboard">
-  <div class="page-header">
-    <div>
-      <div class="page-title">الرئيسية 📊</div>
-      <div class="page-sub" id="last-updated">جاري التحميل...</div>
+<div style="padding:0 28px 28px; text-align:center;">
+  <div style="font-size:44px; margin-bottom:16px; line-height:1;">💬</div>
+  <div style="font-size:26px; font-weight:700; margin-bottom:10px; letter-spacing:-0.3px;">أدخل الرمز</div>
+  <div style="font-size:15px; color:var(--text-3); line-height:1.6;">
+    أُرسل رمز مكون من 6 أرقام إلى
+    <div id="otp-num" style="color:var(--text); font-weight:600; direction:ltr; margin-top:4px; font-size:16px;"></div>
+  </div>
+</div>
+
+<!-- OTP boxes — 6 خانات صغيرة منضبطة -->
+<div style="display:flex; gap:8px; direction:ltr; justify-content:center; padding:0 24px 20px;">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1" autocomplete="one-time-code">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
+</div>
+
+<div style="padding:0 16px 12px;">
+  <button class="btn-main" id="verify-otp-btn"
+    >
+    تحقق
+  </button>
+</div>
+
+<div style="text-align:center;">
+  <button class="btn-ghost" id="resend-btn"
+    style="color:#007AFF; font-size:15px;">
+    لم يصلك الرمز؟ إعادة الإرسال
+  </button>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- ══ GEO ══ -->
+
+<div class="screen" id="screen-geo">
+  <div class="nav"></div>
+  <div class="spacer"></div>
+
+  <div style="padding:0 24px; text-align:center;">
+    <div class="geo-ring" id="geo-icon-wrap">📍</div>
+    <div class="title-2" id="geo-title" style="margin-bottom:8px;">تحديد موقعك</div>
+    <div class="body-text secondary" id="geo-sub" style="max-width:260px; margin:0 auto; line-height:1.6;">
+      نتحقق أنك داخل شرورة للوصول إلى العروض
     </div>
-    <button class="btn btn-primary" onclick="loadAllData()">🔄 تحديث</button>
   </div>
 
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="label">👥 المستخدمون</div>
-      <div class="value" id="stat-users">—</div>
-      <div class="change">إجمالي المسجلين</div>
+  <div class="spacer"></div>
+
+  <div>
+    <button class="btn-main" id="geo-btn">السماح بالموقع</button>
+    <div class="h8"></div>
+    <div class="center"><span class="caption tertiary">موقعك لن يُحفظ أو يُشارك</span></div>
+  </div>
+  <div class="safe-bottom"></div>
+</div>
+
+<!-- ══ STORES ══ -->
+
+<div class="screen" id="screen-stores">
+  <div style="padding:calc(env(safe-area-inset-top,0px) + 16px) 20px 0; display:flex; align-items:center; justify-content:space-between; min-height:52px;">
+    <img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png" style="height:26px; object-fit:contain;">
+    <span class="status-chip"><span class="pulse"></span>شرورة</span>
+  </div>
+
+  <div style="padding:20px 20px 10px; display:flex; align-items:baseline; justify-content:space-between;">
+    <span style="font-size:28px; font-weight:700; letter-spacing:-0.3px;">العروض</span>
+    <span style="font-size:13px; color:var(--text-4);" id="stores-count"></span>
+  </div>
+
+  <div id="stores-list" style="flex:1; overflow-y:auto; padding-bottom:32px;">
+    <div class="center" style="padding:56px; color:var(--text-4);">
+      <div style="font-size:28px; margin-bottom:10px;">⏳</div>
+      <div class="subhead">جاري التحميل...</div>
     </div>
-    <div class="stat-card">
-      <div class="label">🏪 المحلات</div>
-      <div class="value" id="stat-businesses">—</div>
-      <div class="change">نشاط تجاري مسجل</div>
+  </div>
+</div>
+
+<!-- ══ COUPON ══ -->
+
+<div class="screen" id="screen-coupon">
+  <div class="nav">
+    <button class="nav-back" id="back-stores">‹ العروض</button>
+  </div>
+
+  <div style="padding:8px 16px 14px; text-align:center;">
+    <div id="store-icon-wrap" style="width:64px; height:64px; margin:0 auto 10px;">
+      <div id="coupon-icon" class="store-logo" style="width:64px; height:64px; font-size:30px; border-radius:16px; margin:0;"></div>
+      <img id="coupon-logo" style="display:none; width:64px; height:64px; border-radius:16px; object-fit:cover;">
     </div>
-    <div class="stat-card">
-      <div class="label">🎟️ الكوبونات اليوم</div>
-      <div class="value" id="stat-coupons-today">—</div>
-      <div class="change" id="stat-coupons-used">منها مستخدمة: —</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">🚨 شكاوى مفتوحة</div>
-      <div class="value" style="color:var(--red);" id="stat-complaints">—</div>
-      <div class="change" style="color:var(--yellow);">تحتاج متابعة</div>
+    <div class="title-3" id="coupon-name"></div>
+    <div class="footnote secondary" id="coupon-type" style="margin-top:3px;"></div>
+    <div class="footnote secondary" id="coupon-desc" style="margin-top:2px;"></div>
+  </div>
+
+  <!-- store photos -->
+
+  <div id="photos-wrap" style="display:none; padding:0 16px 12px;">
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+      <img id="p0" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; display:none;">
+      <img id="p1" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; display:none;">
+      <img id="p2" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; display:none;">
     </div>
   </div>
 
-  <div class="chart-row">
-    <div class="mini-chart">
-      <div class="title">📈 الكوبونات آخر 7 أيام</div>
-      <div class="bar-chart" id="bar-chart">
-        <div style="text-align:center; width:100%; color:var(--muted); font-size:12px;">جاري التحميل...</div>
+  <div class="coupon-wrap" id="coupon-card">
+    <div class="coupon-top">
+      <div class="notch r"></div>
+      <div class="notch l"></div>
+      <div style="margin-bottom:4px;">
+        <span class="big-sign">خصم</span>
+        <span class="big-discount" id="coupon-pct"> — </span>
+        <span class="big-sign">%</span>
+      </div>
+      <div class="caption secondary">حصري لسكان الحي</div>
+    </div>
+    <div class="coupon-bottom">
+      <div class="code-display" id="coupon-code">- - - -</div>
+      <div class="caption secondary">أريه للكاشير عند الدفع</div>
+      <div id="timer-wrap" style="opacity:0.3; margin-top:14px;">
+        <div class="t-bar"><div class="t-fill" id="t-fill"></div></div>
+        <div class="caption secondary" id="t-text">3:00</div>
+      </div>
+      <div id="expired-note" style="display:none; margin-top:12px; background:rgba(255,59,48,0.06); border-radius:10px; padding:10px;">
+        <span class="footnote" style="color:var(--red);">انتهت صلاحية الكود</span>
       </div>
     </div>
-    <div class="mini-chart">
-      <div class="title">⭐ متوسط التقييمات</div>
-      <div style="text-align:center; padding:20px 0;">
-        <div style="font-size:48px; font-weight:900; color:var(--gold);" id="avg-rating">—</div>
-        <div style="font-size:12px; color:var(--muted); margin-top:4px;">من أصل 5 نجوم</div>
-        <div style="font-size:20px; margin-top:8px;" id="avg-stars">☆☆☆☆☆</div>
-      </div>
-    </div>
   </div>
 
-  <!-- آخر الشكاوى -->
-  <div class="table-card">
-    <div class="table-header">
-      <div class="table-title">🚨 آخر الشكاوى</div>
-      <button class="btn btn-sm" onclick="showPage('complaints', document.querySelector('[data-page=complaints]'))">عرض الكل</button>
+<button class="btn-main" id="gen-btn">توليد كود الخصم</button>
+
+  <div class="h8"></div>
+  <div class="center"><span class="caption tertiary">مرة واحدة يومياً لكل محل</span></div>
+  <div class="spacer"></div>
+  <div class="safe-bottom"></div>
+</div>
+
+<!-- ══ RATING ══ -->
+
+<div class="screen" id="screen-rating">
+  <div class="nav">
+    <span class="nav-title">تقييم التجربة</span>
+  </div>
+
+  <div style="padding:16px 24px; flex:1; display:flex; flex-direction:column;">
+    <div class="center" style="margin-bottom:28px;">
+      <div style="font-size:52px; margin-bottom:16px;">🧾</div>
+      <div class="title-2" style="margin-bottom:8px;">هل طُبّق الخصم؟</div>
+      <div class="body-text secondary">ساعدنا في متابعة <strong id="r-store" style="color:var(--text);">المحل</strong></div>
     </div>
-    <div id="recent-complaints-list">
-      <div class="loading">جاري التحميل...</div>
-    </div>
+
+```
+<div class="choice-pair">
+  <div class="choice" id="yes-btn">
+    <div style="font-size:30px; margin-bottom:6px;">✅</div>
+    <div class="subhead" style="font-weight:600; color:var(--green-dark);">نعم، طُبّق</div>
+  </div>
+  <div class="choice" id="no-btn">
+    <div style="font-size:30px; margin-bottom:6px;">❌</div>
+    <div class="subhead" style="font-weight:600; color:var(--red);">لم يُطبَّق</div>
   </div>
 </div>
 
-<!-- ── PAGE: COMPLAINTS ── -->
-<div class="page" id="page-complaints">
-  <div class="page-header">
-    <div>
-      <div class="page-title">🚨 الشكاوى</div>
-      <div class="page-sub">حالات عدم تطبيق الخصم</div>
-    </div>
-  </div>
-  <div id="complaints-list"><div class="loading">جاري التحميل...</div></div>
-</div>
-
-<!-- ── PAGE: RATINGS ── -->
-<div class="page" id="page-ratings">
-  <div class="page-header">
-    <div>
-      <div class="page-title">⭐ التقييمات</div>
-      <div class="page-sub">تقييمات العملاء للمحلات</div>
-    </div>
-  </div>
-  <div class="table-card">
-    <table>
-      <thead>
-        <tr>
-          <th>المحل</th>
-          <th>التقييم</th>
-          <th>الخصم طُبّق؟</th>
-          <th>التعليق</th>
-          <th>التاريخ</th>
-        </tr>
-      </thead>
-      <tbody id="ratings-tbody">
-        <tr><td colspan="5" class="loading">جاري التحميل...</td></tr>
-      </tbody>
-    </table>
+<div style="padding:0 16px 16px;">
+  <div class="caption secondary" style="margin-bottom:10px;">قيّم تجربتك</div>
+  <div style="display:flex; gap:2px;" id="stars">
+    <button class="star" data-v="1">⭐</button>
+    <button class="star" data-v="2">⭐</button>
+    <button class="star" data-v="3">⭐</button>
+    <button class="star" data-v="4">⭐</button>
+    <button class="star" data-v="5">⭐</button>
   </div>
 </div>
 
-<!-- ── PAGE: BUSINESSES ── -->
-<div class="page" id="page-businesses">
-  <div class="page-header">
-    <div>
-      <div class="page-title">🏪 المحلات</div>
-      <div class="page-sub">جميع الأنشطة التجارية المسجلة</div>
-    </div>
-  </div>
-  <div class="table-card">
-    <table>
-      <thead>
-        <tr>
-          <th>المحل</th>
-          <th>النوع</th>
-          <th>الخصم</th>
-          <th>رقم التاجر</th>
-          <th>الحالة</th>
-          <th>إجراء</th>
-        </tr>
-      </thead>
-      <tbody id="businesses-tbody">
-        <tr><td colspan="6" class="loading">جاري التحميل...</td></tr>
-      </tbody>
-    </table>
+<div class="field-group" style="margin:0 16px 16px;">
+  <div class="field-row">
+    <input class="field-input" type="text" id="r-comment" placeholder="تعليق اختياري..." style="direction:rtl; text-align:right;">
   </div>
 </div>
 
-<!-- ── PAGE: USERS ── -->
-<div class="page" id="page-users">
-  <div class="page-header">
-    <div>
-      <div class="page-title">👥 المستخدمون</div>
-      <div class="page-sub">جميع العملاء المسجلين</div>
-    </div>
-  </div>
-  <div class="table-card">
-    <table>
-      <thead>
-        <tr>
-          <th>رقم الجوال</th>
-          <th>تاريخ التسجيل</th>
-          <th>آخر دخول</th>
-          <th>الكوبونات</th>
-        </tr>
-      </thead>
-      <tbody id="users-tbody">
-        <tr><td colspan="4" class="loading">جاري التحميل...</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ── PAGE: COUPONS ── -->
-<div class="page" id="page-coupons">
-  <div class="page-header">
-    <div>
-      <div class="page-title">🎟️ الكوبونات</div>
-      <div class="page-sub">سجل جميع الكوبونات</div>
-    </div>
-  </div>
-  <div class="table-card">
-    <table>
-      <thead>
-        <tr>
-          <th>الكود</th>
-          <th>المحل</th>
-          <th>الحالة</th>
-          <th>وقت الإنشاء</th>
-          <th>وقت الاستخدام</th>
-        </tr>
-      </thead>
-      <tbody id="coupons-tbody">
-        <tr><td colspan="5" class="loading">جاري التحميل...</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+<button class="btn-main" style="margin:0 16px; width:calc(100% - 32px);" id="submit-r">إرسال</button>
+<div class="h8"></div>
+<div class="center"><button class="btn-ghost" id="skip-r">تخطي</button></div>
 ```
 
   </div>
 </div>
+
+<div id="recaptcha-container"></div>
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-  import { getFirestore, collection, getDocs, doc, updateDoc, query, orderBy, limit, where, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, query, where, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
-    authDomain: "fbrg87.firebaseapp.com",
-    projectId: "fbrg87",
-    storageBucket: "fbrg87.firebasestorage.app",
-    messagingSenderId: "811335912659",
-    appId: "1:811335912659:web:a923cc11d16315dfd4d826"
+  const cfg = {
+    apiKey:"AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
+    authDomain:"fbrg87.firebaseapp.com",
+    projectId:"fbrg87",
+    storageBucket:"fbrg87.firebasestorage.app",
+    messagingSenderId:"811335912659",
+    appId:"1:811335912659:web:a923cc11d16315dfd4d826"
   };
-
-  const app = initializeApp(firebaseConfig);
+  const app = initializeApp(cfg);
+  const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // ── كلمة مرور الإدارة ──
-  const ADMIN_PASSWORD = 'hayy_admin_2026';
+  const CITY = { lat:17.5049999, lng:47.1025904 };
+  const RADIUS = 5;
 
-  // ── Login ──
-  document.getElementById('login-btn').addEventListener('click', () => {
-    const pass = document.getElementById('admin-pass').value;
-    if (pass === ADMIN_PASSWORD) {
-      document.getElementById('login-page').style.display = 'none';
-      document.getElementById('admin-layout').classList.add('active');
-      loadAllData();
-    } else {
-      document.getElementById('login-error').style.display = 'block';
-    }
+  let storeData = {}, currentStoreId = null, currentCode = null;
+  let currentCouponId = null, timer = null, timerSecs = 180, expired = false;
+  let rApplied = null, rStars = 0;
+
+  // nav
+  function go(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+    if (id === 'screen-stores') localStorage.setItem('h_screen','stores');
+  }
+
+  function haversine(a,b,c,d) {
+    const R=6371,dL=(c-a)*Math.PI/180,dN=(d-b)*Math.PI/180;
+    const x=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dN/2)**2;
+    return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+  }
+
+  // session restore
+  window.addEventListener('load', () => {
+    if (localStorage.getItem('h_screen') === 'stores') loadStores().then(() => go('screen-stores'));
   });
 
-  document.getElementById('admin-pass').addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('login-btn').click();
-  });
-
-  // ── Navigation ──
-  window.showPage = function(pageId, el) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('page-' + pageId).classList.add('active');
-    if (el) el.classList.add('active');
-    loadPageData(pageId);
-  };
-
-  window.logout = function() {
-    document.getElementById('admin-layout').classList.remove('active');
-    document.getElementById('login-page').style.display = 'flex';
-    document.getElementById('admin-pass').value = '';
-  };
-
-  // ── Load All Data ──
-  window.loadAllData = async function() {
-    document.getElementById('last-updated').textContent = 'جاري التحديث...';
-    await Promise.all([
-      loadDashboard(),
-      loadComplaints(),
-      loadRatings(),
-      loadBusinesses(),
-      loadUsers(),
-      loadCoupons()
-    ]);
-    document.getElementById('last-updated').textContent = 'آخر تحديث: ' + new Date().toLocaleTimeString('ar');
-  };
-
-  function loadPageData(pageId) {
-    if (pageId === 'dashboard') loadDashboard();
-    else if (pageId === 'complaints') loadComplaints();
-    else if (pageId === 'ratings') loadRatings();
-    else if (pageId === 'businesses') loadBusinesses();
-    else if (pageId === 'users') loadUsers();
-    else if (pageId === 'coupons') loadCoupons();
-  }
-
-  // ── Helper ──
-  function formatDate(ts) {
-    if (!ts) return '—';
-    const d = ts.toDate ? ts.toDate() : new Date(ts);
-    return d.toLocaleDateString('ar-SA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-  }
-
-  function starsHtml(n) {
-    return '⭐'.repeat(Math.round(n || 0)) + '☆'.repeat(5 - Math.round(n || 0));
-  }
-
-  // ── Dashboard ──
-  async function loadDashboard() {
+  // OTP
+  async function sendOTP() {
+    const phone = document.getElementById('phone-input').value.trim();
+    if (phone.length < 9) return;
+    const btn = document.getElementById('send-otp-btn');
+    btn.textContent = '...'; btn.disabled = true;
+    document.getElementById('otp-num').textContent = '+966 ' + phone;
     try {
-      const [usersSnap, businessSnap, couponsSnap, complaintsSnap, ratingsSnap] = await Promise.all([
-        getDocs(collection(db, 'users')),
-        getDocs(collection(db, 'businesses')),
-        getDocs(collection(db, 'coupons')),
-        getDocs(query(collection(db, 'complaints'), where('status', '==', 'open'))),
-        getDocs(collection(db, 'ratings'))
-      ]);
+      window.rv = new RecaptchaVerifier(auth,'recaptcha-container',{size:'invisible'});
+      window.cr = await signInWithPhoneNumber(auth,'+966'+phone,window.rv);
+      go('screen-otp');
+      setTimeout(() => document.querySelectorAll('.otp-box')[0].focus(), 250);
+    } catch(e) { alert('خطأ — تأكد من الرقم'); console.error(e); }
+    btn.textContent = 'متابعة'; btn.disabled = false;
+  }
 
-      document.getElementById('stat-users').textContent = usersSnap.size;
-      document.getElementById('stat-businesses').textContent = businessSnap.size;
-      document.getElementById('stat-complaints').textContent = complaintsSnap.size;
-      document.getElementById('complaints-badge').textContent = complaintsSnap.size;
+  async function verifyOTP() {
+    const boxes = document.querySelectorAll('.otp-box');
+    const code = [...boxes].map(b => b.value).join('');
+    if (code.length < 6) return;
+    const btn = document.getElementById('verify-otp-btn');
+    btn.textContent = '...'; btn.disabled = true;
+    try {
+      const r = await window.cr.confirm(code);
+      await setDoc(doc(db,'users',r.user.uid),{phone:r.user.phoneNumber,last_login:serverTimestamp()},{merge:true});
+      go('screen-geo');
+    } catch(e) {
+      boxes.forEach(b => {b.style.borderColor='var(--red)'; b.value='';});
+      boxes[0].focus();
+      setTimeout(() => boxes.forEach(b => b.style.borderColor=''), 1200);
+    }
+    btn.textContent = 'تحقق'; btn.disabled = false;
+  }
 
-      // كوبونات اليوم
+  // geo
+  function checkGeo() {
+    const btn = document.getElementById('geo-btn');
+    btn.textContent = '...'; btn.disabled = true;
+    document.getElementById('geo-title').textContent = 'جاري التحديد...';
+    navigator.geolocation.getCurrentPosition(async pos => {
+      const d = haversine(pos.coords.latitude,pos.coords.longitude,CITY.lat,CITY.lng);
+      if (d <= RADIUS) {
+        document.getElementById('geo-icon-wrap').textContent = '✅';
+        document.getElementById('geo-title').textContent = 'أنت في شرورة!';
+        document.getElementById('geo-sub').textContent = `على بعد ${d<1?Math.round(d*1000)+' متر':d.toFixed(1)+' كم'} من المركز`;
+        await loadStores();
+        setTimeout(() => go('screen-stores'), 900);
+      } else {
+        document.getElementById('geo-icon-wrap').textContent = '🚫';
+        document.getElementById('geo-title').textContent = 'خارج النطاق';
+        document.getElementById('geo-sub').textContent = 'العروض متاحة لسكان شرورة فقط';
+        btn.textContent = 'إعادة المحاولة'; btn.disabled = false;
+      }
+    }, () => {
+      document.getElementById('geo-icon-wrap').textContent = '🔒';
+      document.getElementById('geo-title').textContent = 'تعذّر الوصول';
+      document.getElementById('geo-sub').textContent = 'يجب السماح بالوصول للموقع';
+      btn.textContent = 'إعادة المحاولة'; btn.disabled = false;
+    }, {enableHighAccuracy:true, timeout:10000});
+  }
+
+  // stores
+  async function loadStores() {
+    const list = document.getElementById('stores-list');
+    list.innerHTML = '<div class="center" style="padding:56px; color:var(--text-4);"><div style="font-size:28px;margin-bottom:10px;">⏳</div><div class="subhead">جاري التحميل...</div></div>';
+    const defaults = [
+      {id:'ooto',   icon:'☕', name:'OOTO Coffee',    type:'مقاهي ومشروبات', discount:35, logo_url:'',photos:[],description:''},
+      {id:'nahdi',  icon:'💊', name:'صيدلية النهدي', type:'صيدليات',         discount:20, logo_url:'',photos:[],description:''},
+      {id:'barber', icon:'✂️', name:'حلاق الطايف',   type:'حلاقة وتجميل',   discount:15, logo_url:'',photos:[],description:''},
+      {id:'kabsati',icon:'🍚', name:'مطعم كبساتي',   type:'مطاعم ومأكولات', discount:10, logo_url:'',photos:[],description:''},
+    ];
+    try {
+      const snap = await getDocs(collection(db,'businesses'));
+      snap.forEach(d => defaults.push({id:d.id,...d.data()}));
+    } catch(e) {}
+    document.getElementById('stores-count').textContent = defaults.length + ' محل';
+    defaults.forEach(s => { storeData[s.id] = {...s, discount: (s.discount||0)+'%'}; });
+    list.innerHTML = defaults.map(s => `
+      <div class="store-card" data-id="${s.id}">
+        <div class="store-logo">
+          ${s.logo_url ? `<img src="${s.logo_url}">` : s.icon||'🏪'}
+        </div>
+        <div style="flex:1;">
+          <div class="store-name">${s.name}</div>
+          <div class="store-type">${s.type}</div>
+          <span class="discount-tag">خصم ${s.discount||0}%</span>
+        </div>
+        <span class="chevron">›</span>
+      </div>
+    `).join('');
+    document.querySelectorAll('.store-card').forEach(c => c.addEventListener('click', () => openStore(c.dataset.id)));
+  }
+
+  async function openStore(id) {
+    const s = storeData[id]; if (!s) return;
+    currentStoreId = id;
+
+    const logo = document.getElementById('coupon-logo');
+    const icon = document.getElementById('coupon-icon');
+    if (s.logo_url) { logo.src=s.logo_url; logo.style.display='block'; icon.style.display='none'; }
+    else { icon.textContent=s.icon||'🏪'; icon.style.display='flex'; logo.style.display='none'; }
+
+    document.getElementById('coupon-name').textContent = s.name;
+    document.getElementById('coupon-type').textContent = s.type;
+    document.getElementById('coupon-desc').textContent = s.description||'';
+    document.getElementById('coupon-pct').textContent = ' '+parseInt(s.discount);
+
+    const photos = s.photos||[];
+    const pw = document.getElementById('photos-wrap');
+    if (photos.length) {
+      pw.style.display='block';
+      [0,1,2].forEach(i => { const img=document.getElementById('p'+i); if(photos[i]){img.src=photos[i];img.style.display='block';}else img.style.display='none'; });
+    } else pw.style.display='none';
+
+    // reset
+    document.getElementById('coupon-code').textContent = '- - - -';
+    document.getElementById('expired-note').style.display='none';
+    document.getElementById('timer-wrap').style.opacity='0.3';
+    document.getElementById('t-fill').style.width='100%';
+    document.getElementById('t-fill').style.background='var(--green)';
+    document.getElementById('t-text').textContent='3:00';
+    currentCode=null; currentCouponId=null; expired=false;
+    if (timer) clearInterval(timer);
+
+    const btn = document.getElementById('gen-btn');
+    btn.className = 'btn-main';
+    btn.textContent = '⏳ جاري التحقق...';
+    btn.disabled = true;
+    go('screen-coupon');
+
+    // check daily
+    try {
       const today = new Date(); today.setHours(0,0,0,0);
-      let todayCount = 0, usedCount = 0;
-      const dayData = {};
+      const uid = auth.currentUser?.uid;
+      if (uid) {
+        const q = query(collection(db,'coupons'),where('user_id','==',uid),where('business_id','==',id),where('status','==','used'));
+        const snap = await getDocs(q);
+        if (snap.docs.some(d => { const t=d.data().used_at?.toDate?.(); return t&&t>=today; })) {
+          btn.textContent = 'استخدمت هذا العرض اليوم';
+          btn.classList.add('muted'); btn.disabled=true; return;
+        }
+      }
+    } catch(e) {}
+    btn.textContent = 'توليد كود الخصم';
+    btn.classList.remove('muted'); btn.disabled = false;
+  }
 
-      couponsSnap.forEach(d => {
-        const data = d.data();
-        const createdAt = data.created_at?.toDate?.();
-        if (createdAt) {
-          if (createdAt >= today) { todayCount++; if (data.status === 'used') usedCount++; }
-          // آخر 7 أيام
-          for (let i = 6; i >= 0; i--) {
-            const day = new Date(); day.setHours(0,0,0,0); day.setDate(day.getDate() - i);
-            const nextDay = new Date(day); nextDay.setDate(nextDay.getDate() + 1);
-            if (createdAt >= day && createdAt < nextDay) {
-              const key = day.toLocaleDateString('ar-SA', { weekday: 'short' });
-              dayData[key] = (dayData[key] || 0) + 1;
+  async function generateCode() {
+    if (currentCode && !expired) return;
+    // re-check
+    try {
+      const today = new Date(); today.setHours(0,0,0,0);
+      const uid = auth.currentUser?.uid;
+      if (uid) {
+        const q = query(collection(db,'coupons'),where('user_id','==',uid),where('business_id','==',currentStoreId),where('status','==','used'));
+        const snap = await getDocs(q);
+        if (snap.docs.some(d => { const t=d.data().used_at?.toDate?.(); return t&&t>=today; })) {
+          const btn=document.getElementById('gen-btn');
+          btn.textContent='استخدمت هذا العرض اليوم';
+          btn.classList.add('muted'); btn.disabled=true; return;
+        }
+      }
+    } catch(e) {}
+
+    const code = Math.floor(1000+Math.random()*9000).toString();
+    currentCode=code; expired=false;
+    document.getElementById('coupon-code').textContent = code.split('').join(' ');
+    document.getElementById('timer-wrap').style.opacity='1';
+    const btn=document.getElementById('gen-btn');
+    btn.textContent='الكود نشط'; btn.disabled=true;
+
+    try {
+      const uid=auth.currentUser?.uid||'guest';
+      const ref=await addDoc(collection(db,'coupons'),{
+        code,user_id:uid,business_id:currentStoreId,
+        business_name:storeData[currentStoreId]?.name||'',
+        created_at:serverTimestamp(),
+        expires_at:new Date(Date.now()+180000),
+        status:'pending'
+      });
+      currentCouponId=ref.id;
+    } catch(e) {}
+    startTimer();
+  }
+
+  function startTimer() {
+    if (timer) clearInterval(timer);
+    timerSecs = 180;
+    timer = setInterval(async () => {
+      timerSecs--;
+      const m=Math.floor(timerSecs/60), s=timerSecs%60;
+      document.getElementById('t-text').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+      document.getElementById('t-fill').style.width=(timerSecs/180*100)+'%';
+      if (timerSecs<=30) document.getElementById('t-fill').style.background='var(--red)';
+      if (timerSecs<=0) {
+        clearInterval(timer); expired=true;
+        if (currentCouponId) {
+          try {
+            const snap=await getDoc(doc(db,'coupons',currentCouponId));
+            if (snap.exists()&&snap.data().status==='used') {
+              document.getElementById('r-store').textContent=storeData[currentStoreId]?.name||'المحل';
+              go('screen-rating'); return;
             }
-          }
+          } catch(e) {}
+        }
+        document.getElementById('expired-note').style.display='block';
+        const btn=document.getElementById('gen-btn');
+        btn.textContent='توليد كود جديد';
+        btn.className='btn-main'; btn.disabled=false;
+      }
+    },1000);
+  }
+
+  // events
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('send-otp-btn').addEventListener('click', sendOTP);
+    document.getElementById('phone-input').addEventListener('keydown', e => e.key==='Enter'&&sendOTP());
+    document.getElementById('back-welcome').addEventListener('click', () => go('screen-welcome'));
+    document.getElementById('verify-otp-btn').addEventListener('click', verifyOTP);
+    document.getElementById('resend-btn').addEventListener('click', sendOTP);
+    document.getElementById('geo-btn').addEventListener('click', checkGeo);
+    document.getElementById('back-stores').addEventListener('click', () => go('screen-stores'));
+    document.getElementById('gen-btn').addEventListener('click', generateCode);
+    document.getElementById('merchant-link').addEventListener('click', () => window.location.href='merchant.html');
+
+    // رفع الشعار
+    document.getElementById('logo-upload').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = document.getElementById('app-icon-img');
+        const emoji = document.getElementById('app-icon-emoji');
+        img.src = ev.target.result;
+        img.style.display = 'block';
+        emoji.style.display = 'none';
+        localStorage.setItem('hayy_logo', ev.target.result);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // استعادة الشعار
+    const savedLogo = localStorage.getItem('hayy_logo');
+    if (savedLogo) {
+      document.getElementById('app-icon-img').src = savedLogo;
+      document.getElementById('app-icon-img').style.display = 'block';
+      document.getElementById('app-icon-emoji').style.display = 'none';
+    }
+
+    // OTP — انتقال سلس
+    const otpBoxes = document.querySelectorAll('.otp-box');
+    otpBoxes.forEach((box, i) => {
+      box.addEventListener('input', (e) => {
+        const val = e.target.value.replace(/[^0-9]/g, '');
+        box.value = val.slice(-1);
+        if (box.value && i < otpBoxes.length - 1) {
+          otpBoxes[i + 1].focus();
+          otpBoxes[i + 1].select();
         }
       });
-
-      document.getElementById('stat-coupons-today').textContent = todayCount;
-      document.getElementById('stat-coupons-used').textContent = `منها مستخدمة: ${usedCount}`;
-
-      // Bar Chart
-      const maxVal = Math.max(...Object.values(dayData), 1);
-      const barChart = document.getElementById('bar-chart');
-      barChart.innerHTML = Object.entries(dayData).map(([day, val]) => `
-        <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
-          <div class="bar" style="height:${Math.max((val/maxVal)*70, 4)}px; width:100%;" title="${val} كوبون"></div>
-          <div class="bar-label">${day}</div>
-        </div>
-      `).join('');
-
-      // متوسط التقييمات
-      let totalStars = 0, ratingCount = 0;
-      ratingsSnap.forEach(d => { if (d.data().stars) { totalStars += d.data().stars; ratingCount++; } });
-      const avg = ratingCount > 0 ? (totalStars / ratingCount).toFixed(1) : '—';
-      document.getElementById('avg-rating').textContent = avg;
-      document.getElementById('avg-stars').textContent = avg !== '—' ? starsHtml(parseFloat(avg)) : '☆☆☆☆☆';
-
-      // آخر الشكاوى
-      const complaintsList = document.getElementById('recent-complaints-list');
-      if (complaintsSnap.empty) {
-        complaintsList.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>لا توجد شكاوى مفتوحة</div>';
-      } else {
-        complaintsList.innerHTML = complaintsSnap.docs.slice(0, 5).map(d => {
-          const data = d.data();
-          return `
-            <div class="complaint-card">
-              <div class="complaint-header">
-                <div class="complaint-store">🚨 ${data.business_name || 'محل غير معروف'}</div>
-                <div class="complaint-time">${formatDate(data.created_at)}</div>
-              </div>
-              <div class="complaint-body">لم يُطبَّق الخصم — كوبون: ${data.coupon_id?.slice(-6) || '—'}</div>
-              <div style="margin-top:10px; display:flex; gap:8px;">
-                <button class="btn btn-success btn-sm" onclick="resolveComplaint('${d.id}', this)">✓ تم الحل</button>
-                <button class="btn btn-danger btn-sm" onclick="escalateComplaint('${d.id}')">⚠️ تصعيد</button>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-    } catch(e) { console.error(e); }
-  }
-
-  // ── Complaints ──
-  async function loadComplaints() {
-    try {
-      const snap = await getDocs(collection(db, 'complaints'));
-      const list = document.getElementById('complaints-list');
-      if (snap.empty) {
-        list.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>لا توجد شكاوى</div>';
-        return;
-      }
-      list.innerHTML = snap.docs.map(d => {
-        const data = d.data();
-        const statusBadge = data.status === 'open'
-          ? '<span class="badge badge-red">مفتوحة</span>'
-          : '<span class="badge badge-green">محلولة</span>';
-        return `
-          <div class="complaint-card" style="border-color: ${data.status === 'open' ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.2)'}">
-            <div class="complaint-header">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <div class="complaint-store">🏪 ${data.business_name || '—'}</div>
-                ${statusBadge}
-              </div>
-              <div class="complaint-time">${formatDate(data.created_at)}</div>
-            </div>
-            <div class="complaint-body" style="margin-bottom:12px;">
-              المستخدم لم يحصل على الخصم — رقم الكوبون: <strong>${data.coupon_id?.slice(-6) || '—'}</strong>
-            </div>
-            ${data.status === 'open' ? `
-              <div style="display:flex; gap:8px;">
-                <button class="btn btn-success btn-sm" onclick="resolveComplaint('${d.id}', this)">✓ تم الحل</button>
-                <button class="btn btn-danger btn-sm">⚠️ تصعيد للتاجر</button>
-              </div>
-            ` : ''}
-          </div>
-        `;
-      }).join('');
-    } catch(e) { console.error(e); }
-  }
-
-  window.resolveComplaint = async function(id, btn) {
-    btn.textContent = '⏳...';
-    btn.disabled = true;
-    await updateDoc(doc(db, 'complaints', id), { status: 'resolved', resolved_at: serverTimestamp() });
-    loadComplaints();
-    loadDashboard();
-  };
-
-  window.escalateComplaint = function(id) {
-    alert('سيتم إرسال تنبيه للتاجر — قريباً!');
-  };
-
-  // ── Ratings ──
-  async function loadRatings() {
-    try {
-      const snap = await getDocs(collection(db, 'ratings'));
-      const tbody = document.getElementById('ratings-tbody');
-      if (snap.empty) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty">لا توجد تقييمات بعد</td></tr>';
-        return;
-      }
-      tbody.innerHTML = snap.docs.map(d => {
-        const data = d.data();
-        const applied = data.discount_applied === true
-          ? '<span class="badge badge-green">✅ نعم</span>'
-          : data.discount_applied === false
-          ? '<span class="badge badge-red">❌ لا</span>'
-          : '<span class="badge badge-gray">—</span>';
-        return `
-          <tr>
-            <td><strong>${data.business_name || '—'}</strong></td>
-            <td><span style="color:var(--gold);">${'⭐'.repeat(data.stars || 0)}</span> ${data.stars || '—'}</td>
-            <td>${applied}</td>
-            <td style="color:var(--muted);">${data.comment || '—'}</td>
-            <td style="color:var(--muted);">${formatDate(data.created_at)}</td>
-          </tr>
-        `;
-      }).join('');
-    } catch(e) { console.error(e); }
-  }
-
-  // ── Businesses ──
-  async function loadBusinesses() {
-    try {
-      const snap = await getDocs(collection(db, 'businesses'));
-      const tbody = document.getElementById('businesses-tbody');
-      if (snap.empty) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty">لا توجد محلات</td></tr>';
-        return;
-      }
-      tbody.innerHTML = snap.docs.map(d => {
-        const data = d.data();
-        const status = data.active
-          ? '<span class="badge badge-green">نشط</span>'
-          : '<span class="badge badge-red">معطّل</span>';
-        return `
-          <tr>
-            <td><strong>${data.icon || '🏪'} ${data.name || '—'}</strong></td>
-            <td style="color:var(--muted);">${data.type || '—'}</td>
-            <td><span class="badge badge-blue">${data.discount || 0}%</span></td>
-            <td style="color:var(--muted); direction:ltr;">${data.phone || '—'}</td>
-            <td>${status}</td>
-            <td>
-              <button class="btn btn-sm ${data.active ? 'btn-danger' : 'btn-success'}"
-                onclick="toggleBusiness('${d.id}', ${data.active}, this)">
-                ${data.active ? '🚫 تعطيل' : '✅ تفعيل'}
-              </button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    } catch(e) { console.error(e); }
-  }
-
-  window.toggleBusiness = async function(id, currentStatus, btn) {
-    btn.textContent = '⏳...';
-    btn.disabled = true;
-    await updateDoc(doc(db, 'businesses', id), { active: !currentStatus });
-    loadBusinesses();
-  };
-
-  // ── Users ──
-  async function loadUsers() {
-    try {
-      const [usersSnap, couponsSnap] = await Promise.all([
-        getDocs(collection(db, 'users')),
-        getDocs(collection(db, 'coupons'))
-      ]);
-
-      const userCoupons = {};
-      couponsSnap.forEach(d => {
-        const uid = d.data().user_id;
-        if (uid) userCoupons[uid] = (userCoupons[uid] || 0) + 1;
+      box.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace') {
+          if (!box.value && i > 0) {
+            otpBoxes[i - 1].focus();
+            otpBoxes[i - 1].value = '';
+          }
+        }
+        if (e.key === 'ArrowRight' && i > 0) otpBoxes[i-1].focus();
+        if (e.key === 'ArrowLeft' && i < otpBoxes.length-1) otpBoxes[i+1].focus();
       });
-
-      const tbody = document.getElementById('users-tbody');
-      if (usersSnap.empty) {
-        tbody.innerHTML = '<tr><td colspan="4" class="empty">لا يوجد مستخدمون</td></tr>';
-        return;
-      }
-      tbody.innerHTML = usersSnap.docs.map(d => {
-        const data = d.data();
-        return `
-          <tr>
-            <td style="direction:ltr;"><strong>${data.phone || '—'}</strong></td>
-            <td style="color:var(--muted);">${formatDate(data.created_at)}</td>
-            <td style="color:var(--muted);">${formatDate(data.last_login)}</td>
-            <td><span class="badge badge-blue">${userCoupons[d.id] || 0} كوبون</span></td>
-          </tr>
-        `;
-      }).join('');
-    } catch(e) { console.error(e); }
-  }
-
-  // ── Coupons ──
-  async function loadCoupons() {
-    try {
-      const snap = await getDocs(collection(db, 'coupons'));
-      const tbody = document.getElementById('coupons-tbody');
-      if (snap.empty) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty">لا توجد كوبونات</td></tr>';
-        return;
-      }
-      // ترتيب من الأحدث
-      const docs = snap.docs.sort((a, b) => {
-        const aTime = a.data().created_at?.seconds || 0;
-        const bTime = b.data().created_at?.seconds || 0;
-        return bTime - aTime;
+      box.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const paste = e.clipboardData.getData('text').replace(/[^0-9]/g,'');
+        otpBoxes.forEach((b, j) => {
+          b.value = paste[j] || '';
+        });
+        const last = Math.min(paste.length, otpBoxes.length) - 1;
+        otpBoxes[last]?.focus();
       });
+      box.addEventListener('focus', () => box.select());
+    });
 
-      tbody.innerHTML = docs.slice(0, 50).map(d => {
-        const data = d.data();
-        let statusBadge = '';
-        if (data.status === 'used') statusBadge = '<span class="badge badge-green">✅ مستخدم</span>';
-        else if (data.status === 'pending') statusBadge = '<span class="badge badge-yellow">⏳ نشط</span>';
-        else statusBadge = '<span class="badge badge-gray">⏱️ منتهي</span>';
-        return `
-          <tr>
-            <td><strong style="font-family:monospace; font-size:16px; letter-spacing:4px;">${data.code || '—'}</strong></td>
-            <td>${data.business_name || '—'}</td>
-            <td>${statusBadge}</td>
-            <td style="color:var(--muted);">${formatDate(data.created_at)}</td>
-            <td style="color:var(--muted);">${data.status === 'used' ? formatDate(data.used_at) : '—'}</td>
-          </tr>
-        `;
-      }).join('');
-    } catch(e) { console.error(e); }
-  }
+    // rating
+    document.getElementById('yes-btn').addEventListener('click', function() { rApplied=true; this.className='choice yes'; document.getElementById('no-btn').className='choice'; });
+    document.getElementById('no-btn').addEventListener('click', function() { rApplied=false; this.className='choice no'; document.getElementById('yes-btn').className='choice'; });
+    document.querySelectorAll('.star').forEach(s => {
+      s.addEventListener('click', () => { rStars=parseInt(s.dataset.v); document.querySelectorAll('.star').forEach((x,i) => x.classList.toggle('on',i<rStars)); });
+    });
 
-  // ── Load on start if session exists ──
-  if (localStorage.getItem('admin_session') === 'active') {
-    document.getElementById('login-page').style.display = 'none';
-    document.getElementById('admin-layout').classList.add('active');
-    loadAllData();
-  }
-
-  // حفظ جلسة الإدارة
-  document.getElementById('login-btn').addEventListener('click', () => {
-    if (document.getElementById('admin-pass').value === ADMIN_PASSWORD) {
-      localStorage.setItem('admin_session', 'active');
-    }
-  }, true);
-
-  const origLogout = window.logout;
-  window.logout = function() {
-    localStorage.removeItem('admin_session');
-    origLogout();
-  };
+    document.getElementById('submit-r').addEventListener('click', async () => {
+      const btn=document.getElementById('submit-r');
+      btn.textContent='...'; btn.disabled=true;
+      try {
+        const uid=auth.currentUser?.uid||'guest';
+        await addDoc(collection(db,'ratings'),{
+          user_id:uid,business_id:currentStoreId,
+          business_name:storeData[currentStoreId]?.name||'',
+          coupon_id:currentCouponId||'',
+          discount_applied:rApplied,stars:rStars,
+          comment:document.getElementById('r-comment').value.trim(),
+          created_at:serverTimestamp()
+        });
+        if (rApplied===false) {
+          await addDoc(collection(db,'complaints'),{
+            user_id:uid,business_id:currentStoreId,
+            business_name:storeData[currentStoreId]?.name||'',
+            coupon_id:currentCouponId||'',
+            created_at:serverTimestamp(),status:'open'
+          });
+        }
+      } catch(e) {}
+      rApplied=null; rStars=0;
+      document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
+      document.querySelectorAll('.choice').forEach(c=>c.className='choice');
+      go('screen-stores');
+    });
+    document.getElementById('skip-r').addEventListener('click', () => go('screen-stores'));
+  });
 </script>
 
 </body>
