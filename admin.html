@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حيّ — لوحة الإدارة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --gold: #D4A843;
+    --gold-dim: rgba(212,168,67,0.12);
+    --text: #e8e3d8;
+    --muted: #6b7280;
+    --green: #10b981;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --blue: #3b82f6;
+    --border: rgba(212,168,67,0.15);
+  }
+
+- { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+font-family: ‘Tajawal’, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+}
+
+/* ── LOGIN ── */
+.login-wrap {
+min-height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 24px;
+}
+
+.login-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 24px;
+padding: 40px 32px;
+width: 100%;
+max-width: 380px;
+text-align: center;
+}
+
+.login-icon { font-size: 48px; margin-bottom: 16px; }
+.login-title { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+.login-sub { font-size: 13px; color: var(–muted); margin-bottom: 28px; }
+
+/* ── LAYOUT ── */
+.admin-layout {
+display: none;
+min-height: 100vh;
+}
+.admin-layout.active { display: flex; }
+
+.sidebar {
+width: 240px;
+background: var(–surface);
+border-left: 1px solid var(–border);
+padding: 24px 0;
+display: flex;
+flex-direction: column;
+position: fixed;
+right: 0;
+top: 0;
+height: 100vh;
+overflow-y: auto;
+}
+
+.sidebar-logo {
+padding: 0 20px 24px;
+border-bottom: 1px solid var(–border);
+margin-bottom: 16px;
+}
+
+.sidebar-logo .name { font-size: 20px; font-weight: 900; color: var(–gold); }
+.sidebar-logo .sub { font-size: 11px; color: var(–muted); }
+
+.nav-item {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 12px 20px;
+font-size: 14px;
+cursor: pointer;
+transition: all 0.2s;
+border-right: 3px solid transparent;
+color: var(–muted);
+}
+.nav-item:hover { background: var(–surface2); color: var(–text); }
+.nav-item.active { background: var(–gold-dim); color: var(–gold); border-right-color: var(–gold); }
+.nav-item .icon { font-size: 18px; }
+
+.nav-badge {
+margin-right: auto;
+background: var(–red);
+color: white;
+font-size: 10px;
+font-weight: 700;
+padding: 2px 6px;
+border-radius: 10px;
+min-width: 18px;
+text-align: center;
+}
+
+.main-content {
+flex: 1;
+margin-right: 240px;
+padding: 24px;
+overflow-y: auto;
+}
+
+/* ── HEADER ── */
+.page-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 24px;
+}
+
+.page-title { font-size: 22px; font-weight: 900; }
+.page-sub { font-size: 13px; color: var(–muted); margin-top: 2px; }
+
+/* ── STATS GRID ── */
+.stats-grid {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 16px;
+margin-bottom: 24px;
+}
+
+.stat-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 20px;
+}
+
+.stat-card .label { font-size: 12px; color: var(–muted); margin-bottom: 8px; }
+.stat-card .value { font-size: 32px; font-weight: 900; }
+.stat-card .change { font-size: 11px; color: var(–green); margin-top: 4px; }
+
+/* ── TABLE ── */
+.table-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 16px;
+overflow: hidden;
+margin-bottom: 24px;
+}
+
+.table-header {
+padding: 16px 20px;
+border-bottom: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.table-title { font-size: 15px; font-weight: 700; }
+
+table { width: 100%; border-collapse: collapse; }
+th {
+padding: 12px 16px;
+text-align: right;
+font-size: 12px;
+color: var(–muted);
+font-weight: 600;
+background: var(–surface2);
+border-bottom: 1px solid var(–border);
+}
+td {
+padding: 14px 16px;
+font-size: 13px;
+border-bottom: 1px solid rgba(255,255,255,0.04);
+vertical-align: middle;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(–surface2); }
+
+/* ── BADGES ── */
+.badge {
+display: inline-flex;
+align-items: center;
+gap: 4px;
+padding: 3px 10px;
+border-radius: 20px;
+font-size: 11px;
+font-weight: 700;
+}
+.badge-green { background: rgba(16,185,129,0.15); color: var(–green); }
+.badge-red { background: rgba(239,68,68,0.15); color: var(–red); }
+.badge-yellow { background: rgba(245,158,11,0.15); color: var(–yellow); }
+.badge-blue { background: rgba(59,130,246,0.15); color: var(–blue); }
+.badge-gray { background: rgba(107,114,128,0.15); color: var(–muted); }
+
+/* ── BUTTONS ── */
+.btn {
+padding: 8px 16px;
+border: none;
+border-radius: 8px;
+font-size: 12px;
+font-weight: 700;
+font-family: ‘Tajawal’, sans-serif;
+cursor: pointer;
+transition: all 0.2s;
+}
+.btn-primary { background: var(–gold); color: #0f1117; }
+.btn-danger { background: rgba(239,68,68,0.15); color: var(–red); border: 1px solid rgba(239,68,68,0.3); }
+.btn-success { background: rgba(16,185,129,0.15); color: var(–green); border: 1px solid rgba(16,185,129,0.3); }
+.btn-sm { padding: 5px 10px; font-size: 11px; }
+
+/* ── INPUTS ── */
+input[type=“password”], input[type=“text”], input[type=“search”] {
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 10px;
+padding: 12px 16px;
+font-size: 14px;
+color: var(–text);
+font-family: ‘Tajawal’, sans-serif;
+outline: none;
+width: 100%;
+transition: border-color 0.2s;
+}
+input:focus { border-color: var(–gold); }
+
+.btn-full {
+width: 100%;
+padding: 14px;
+margin-top: 16px;
+border: none;
+border-radius: 12px;
+font-size: 15px;
+font-weight: 700;
+font-family: ‘Tajawal’, sans-serif;
+background: linear-gradient(135deg, var(–gold), #f0c96a);
+color: #0f1117;
+cursor: pointer;
+}
+
+/* ── CHARTS ── */
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+
+.mini-chart {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 20px;
+}
+
+.mini-chart .title { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+
+.bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; }
+.bar {
+flex: 1;
+background: var(–gold-dim);
+border-radius: 4px 4px 0 0;
+border: 1px solid var(–border);
+transition: all 0.3s;
+position: relative;
+}
+.bar:hover { background: var(–gold); }
+.bar-label { font-size: 9px; color: var(–muted); text-align: center; margin-top: 4px; }
+
+/* ── COMPLAINT CARD ── */
+.complaint-card {
+background: var(–surface2);
+border: 1px solid rgba(239,68,68,0.25);
+border-radius: 14px;
+padding: 16px;
+margin-bottom: 12px;
+}
+
+.complaint-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.complaint-store { font-size: 14px; font-weight: 700; }
+.complaint-time { font-size: 11px; color: var(–muted); }
+.complaint-body { font-size: 12px; color: var(–muted); }
+
+/* ── RATING ROW ── */
+.stars-display { color: var(–gold); font-size: 14px; letter-spacing: 1px; }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── LOADING ── */
+.loading { text-align: center; padding: 40px; color: var(–muted); font-size: 13px; }
+
+/* ── EMPTY ── */
+.empty { text-align: center; padding: 32px; color: var(–muted); }
+.empty-icon { font-size: 32px; margin-bottom: 8px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+.sidebar { display: none; }
+.main-content { margin-right: 0; }
+.stats-grid { grid-template-columns: 1fr 1fr; }
+.chart-row { grid-template-columns: 1fr; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+
+<div class="login-wrap" id="login-page">
+  <div class="login-card">
+    <div class="login-icon">🛡️</div>
+    <div class="login-title">لوحة إدارة حيّ</div>
+    <div class="login-sub">للمسؤولين فقط</div>
+    <input type="password" id="admin-pass" placeholder="كلمة المرور السرية" style="margin-bottom:8px; text-align:center;">
+    <div id="login-error" style="display:none; color:var(--red); font-size:13px; margin-bottom:8px;">❌ كلمة المرور خاطئة</div>
+    <button class="btn-full" id="login-btn">دخول ←</button>
+  </div>
+</div>
+
+<!-- ══ ADMIN LAYOUT ══ -->
+
+<div class="admin-layout" id="admin-layout">
+
+  <!-- Sidebar -->
+
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="name">حيّ Admin</div>
+      <div class="sub">لوحة التحكم الكاملة</div>
+    </div>
+
+```
+<nav>
+  <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard', this)">
+    <span class="icon">📊</span> الرئيسية
+  </div>
+  <div class="nav-item" data-page="complaints" onclick="showPage('complaints', this)">
+    <span class="icon">🚨</span> الشكاوى
+    <span class="nav-badge" id="complaints-badge">0</span>
+  </div>
+  <div class="nav-item" data-page="ratings" onclick="showPage('ratings', this)">
+    <span class="icon">⭐</span> التقييمات
+  </div>
+  <div class="nav-item" data-page="businesses" onclick="showPage('businesses', this)">
+    <span class="icon">🏪</span> المحلات
+  </div>
+  <div class="nav-item" data-page="users" onclick="showPage('users', this)">
+    <span class="icon">👥</span> المستخدمون
+  </div>
+  <div class="nav-item" data-page="coupons" onclick="showPage('coupons', this)">
+    <span class="icon">🎟️</span> الكوبونات
+  </div>
+</nav>
+
+<div style="margin-top: auto; padding: 20px;">
+  <button class="btn btn-danger" style="width:100%;" onclick="logout()">← خروج</button>
+</div>
+```
+
+  </div>
+
+  <!-- Main Content -->
+
+  <div class="main-content">
+
+```
+<!-- ── PAGE: DASHBOARD ── -->
+<div class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div>
+      <div class="page-title">الرئيسية 📊</div>
+      <div class="page-sub" id="last-updated">جاري التحميل...</div>
+    </div>
+    <button class="btn btn-primary" onclick="loadAllData()">🔄 تحديث</button>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="label">👥 المستخدمون</div>
+      <div class="value" id="stat-users">—</div>
+      <div class="change">إجمالي المسجلين</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">🏪 المحلات</div>
+      <div class="value" id="stat-businesses">—</div>
+      <div class="change">نشاط تجاري مسجل</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">🎟️ الكوبونات اليوم</div>
+      <div class="value" id="stat-coupons-today">—</div>
+      <div class="change" id="stat-coupons-used">منها مستخدمة: —</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">🚨 شكاوى مفتوحة</div>
+      <div class="value" style="color:var(--red);" id="stat-complaints">—</div>
+      <div class="change" style="color:var(--yellow);">تحتاج متابعة</div>
+    </div>
+  </div>
+
+  <div class="chart-row">
+    <div class="mini-chart">
+      <div class="title">📈 الكوبونات آخر 7 أيام</div>
+      <div class="bar-chart" id="bar-chart">
+        <div style="text-align:center; width:100%; color:var(--muted); font-size:12px;">جاري التحميل...</div>
+      </div>
+    </div>
+    <div class="mini-chart">
+      <div class="title">⭐ متوسط التقييمات</div>
+      <div style="text-align:center; padding:20px 0;">
+        <div style="font-size:48px; font-weight:900; color:var(--gold);" id="avg-rating">—</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:4px;">من أصل 5 نجوم</div>
+        <div style="font-size:20px; margin-top:8px;" id="avg-stars">☆☆☆☆☆</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- آخر الشكاوى -->
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-title">🚨 آخر الشكاوى</div>
+      <button class="btn btn-sm" onclick="showPage('complaints', document.querySelector('[data-page=complaints]'))">عرض الكل</button>
+    </div>
+    <div id="recent-complaints-list">
+      <div class="loading">جاري التحميل...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE: COMPLAINTS ── -->
+<div class="page" id="page-complaints">
+  <div class="page-header">
+    <div>
+      <div class="page-title">🚨 الشكاوى</div>
+      <div class="page-sub">حالات عدم تطبيق الخصم</div>
+    </div>
+  </div>
+  <div id="complaints-list"><div class="loading">جاري التحميل...</div></div>
+</div>
+
+<!-- ── PAGE: RATINGS ── -->
+<div class="page" id="page-ratings">
+  <div class="page-header">
+    <div>
+      <div class="page-title">⭐ التقييمات</div>
+      <div class="page-sub">تقييمات العملاء للمحلات</div>
+    </div>
+  </div>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>المحل</th>
+          <th>التقييم</th>
+          <th>الخصم طُبّق؟</th>
+          <th>التعليق</th>
+          <th>التاريخ</th>
+        </tr>
+      </thead>
+      <tbody id="ratings-tbody">
+        <tr><td colspan="5" class="loading">جاري التحميل...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── PAGE: BUSINESSES ── -->
+<div class="page" id="page-businesses">
+  <div class="page-header">
+    <div>
+      <div class="page-title">🏪 المحلات</div>
+      <div class="page-sub">جميع الأنشطة التجارية المسجلة</div>
+    </div>
+  </div>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>المحل</th>
+          <th>النوع</th>
+          <th>الخصم</th>
+          <th>رقم التاجر</th>
+          <th>الحالة</th>
+          <th>إجراء</th>
+        </tr>
+      </thead>
+      <tbody id="businesses-tbody">
+        <tr><td colspan="6" class="loading">جاري التحميل...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── PAGE: USERS ── -->
+<div class="page" id="page-users">
+  <div class="page-header">
+    <div>
+      <div class="page-title">👥 المستخدمون</div>
+      <div class="page-sub">جميع العملاء المسجلين</div>
+    </div>
+  </div>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>رقم الجوال</th>
+          <th>تاريخ التسجيل</th>
+          <th>آخر دخول</th>
+          <th>الكوبونات</th>
+        </tr>
+      </thead>
+      <tbody id="users-tbody">
+        <tr><td colspan="4" class="loading">جاري التحميل...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── PAGE: COUPONS ── -->
+<div class="page" id="page-coupons">
+  <div class="page-header">
+    <div>
+      <div class="page-title">🎟️ الكوبونات</div>
+      <div class="page-sub">سجل جميع الكوبونات</div>
+    </div>
+  </div>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>الكود</th>
+          <th>المحل</th>
+          <th>الحالة</th>
+          <th>وقت الإنشاء</th>
+          <th>وقت الاستخدام</th>
+        </tr>
+      </thead>
+      <tbody id="coupons-tbody">
+        <tr><td colspan="5" class="loading">جاري التحميل...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+  import { getFirestore, collection, getDocs, doc, updateDoc, query, orderBy, limit, where, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
+    authDomain: "fbrg87.firebaseapp.com",
+    projectId: "fbrg87",
+    storageBucket: "fbrg87.firebasestorage.app",
+    messagingSenderId: "811335912659",
+    appId: "1:811335912659:web:a923cc11d16315dfd4d826"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ── كلمة مرور الإدارة ──
+  const ADMIN_PASSWORD = 'hayy_admin_2026';
+
+  // ── Login ──
+  document.getElementById('login-btn').addEventListener('click', () => {
+    const pass = document.getElementById('admin-pass').value;
+    if (pass === ADMIN_PASSWORD) {
+      document.getElementById('login-page').style.display = 'none';
+      document.getElementById('admin-layout').classList.add('active');
+      loadAllData();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+    }
+  });
+
+  document.getElementById('admin-pass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('login-btn').click();
+  });
+
+  // ── Navigation ──
+  window.showPage = function(pageId, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    if (el) el.classList.add('active');
+    loadPageData(pageId);
+  };
+
+  window.logout = function() {
+    document.getElementById('admin-layout').classList.remove('active');
+    document.getElementById('login-page').style.display = 'flex';
+    document.getElementById('admin-pass').value = '';
+  };
+
+  // ── Load All Data ──
+  window.loadAllData = async function() {
+    document.getElementById('last-updated').textContent = 'جاري التحديث...';
+    await Promise.all([
+      loadDashboard(),
+      loadComplaints(),
+      loadRatings(),
+      loadBusinesses(),
+      loadUsers(),
+      loadCoupons()
+    ]);
+    document.getElementById('last-updated').textContent = 'آخر تحديث: ' + new Date().toLocaleTimeString('ar');
+  };
+
+  function loadPageData(pageId) {
+    if (pageId === 'dashboard') loadDashboard();
+    else if (pageId === 'complaints') loadComplaints();
+    else if (pageId === 'ratings') loadRatings();
+    else if (pageId === 'businesses') loadBusinesses();
+    else if (pageId === 'users') loadUsers();
+    else if (pageId === 'coupons') loadCoupons();
+  }
+
+  // ── Helper ──
+  function formatDate(ts) {
+    if (!ts) return '—';
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString('ar-SA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function starsHtml(n) {
+    return '⭐'.repeat(Math.round(n || 0)) + '☆'.repeat(5 - Math.round(n || 0));
+  }
+
+  // ── Dashboard ──
+  async function loadDashboard() {
+    try {
+      const [usersSnap, businessSnap, couponsSnap, complaintsSnap, ratingsSnap] = await Promise.all([
+        getDocs(collection(db, 'users')),
+        getDocs(collection(db, 'businesses')),
+        getDocs(collection(db, 'coupons')),
+        getDocs(query(collection(db, 'complaints'), where('status', '==', 'open'))),
+        getDocs(collection(db, 'ratings'))
+      ]);
+
+      document.getElementById('stat-users').textContent = usersSnap.size;
+      document.getElementById('stat-businesses').textContent = businessSnap.size;
+      document.getElementById('stat-complaints').textContent = complaintsSnap.size;
+      document.getElementById('complaints-badge').textContent = complaintsSnap.size;
+
+      // كوبونات اليوم
+      const today = new Date(); today.setHours(0,0,0,0);
+      let todayCount = 0, usedCount = 0;
+      const dayData = {};
+
+      couponsSnap.forEach(d => {
+        const data = d.data();
+        const createdAt = data.created_at?.toDate?.();
+        if (createdAt) {
+          if (createdAt >= today) { todayCount++; if (data.status === 'used') usedCount++; }
+          // آخر 7 أيام
+          for (let i = 6; i >= 0; i--) {
+            const day = new Date(); day.setHours(0,0,0,0); day.setDate(day.getDate() - i);
+            const nextDay = new Date(day); nextDay.setDate(nextDay.getDate() + 1);
+            if (createdAt >= day && createdAt < nextDay) {
+              const key = day.toLocaleDateString('ar-SA', { weekday: 'short' });
+              dayData[key] = (dayData[key] || 0) + 1;
+            }
+          }
+        }
+      });
+
+      document.getElementById('stat-coupons-today').textContent = todayCount;
+      document.getElementById('stat-coupons-used').textContent = `منها مستخدمة: ${usedCount}`;
+
+      // Bar Chart
+      const maxVal = Math.max(...Object.values(dayData), 1);
+      const barChart = document.getElementById('bar-chart');
+      barChart.innerHTML = Object.entries(dayData).map(([day, val]) => `
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+          <div class="bar" style="height:${Math.max((val/maxVal)*70, 4)}px; width:100%;" title="${val} كوبون"></div>
+          <div class="bar-label">${day}</div>
+        </div>
+      `).join('');
+
+      // متوسط التقييمات
+      let totalStars = 0, ratingCount = 0;
+      ratingsSnap.forEach(d => { if (d.data().stars) { totalStars += d.data().stars; ratingCount++; } });
+      const avg = ratingCount > 0 ? (totalStars / ratingCount).toFixed(1) : '—';
+      document.getElementById('avg-rating').textContent = avg;
+      document.getElementById('avg-stars').textContent = avg !== '—' ? starsHtml(parseFloat(avg)) : '☆☆☆☆☆';
+
+      // آخر الشكاوى
+      const complaintsList = document.getElementById('recent-complaints-list');
+      if (complaintsSnap.empty) {
+        complaintsList.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>لا توجد شكاوى مفتوحة</div>';
+      } else {
+        complaintsList.innerHTML = complaintsSnap.docs.slice(0, 5).map(d => {
+          const data = d.data();
+          return `
+            <div class="complaint-card">
+              <div class="complaint-header">
+                <div class="complaint-store">🚨 ${data.business_name || 'محل غير معروف'}</div>
+                <div class="complaint-time">${formatDate(data.created_at)}</div>
+              </div>
+              <div class="complaint-body">لم يُطبَّق الخصم — كوبون: ${data.coupon_id?.slice(-6) || '—'}</div>
+              <div style="margin-top:10px; display:flex; gap:8px;">
+                <button class="btn btn-success btn-sm" onclick="resolveComplaint('${d.id}', this)">✓ تم الحل</button>
+                <button class="btn btn-danger btn-sm" onclick="escalateComplaint('${d.id}')">⚠️ تصعيد</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  // ── Complaints ──
+  async function loadComplaints() {
+    try {
+      const snap = await getDocs(collection(db, 'complaints'));
+      const list = document.getElementById('complaints-list');
+      if (snap.empty) {
+        list.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>لا توجد شكاوى</div>';
+        return;
+      }
+      list.innerHTML = snap.docs.map(d => {
+        const data = d.data();
+        const statusBadge = data.status === 'open'
+          ? '<span class="badge badge-red">مفتوحة</span>'
+          : '<span class="badge badge-green">محلولة</span>';
+        return `
+          <div class="complaint-card" style="border-color: ${data.status === 'open' ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.2)'}">
+            <div class="complaint-header">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div class="complaint-store">🏪 ${data.business_name || '—'}</div>
+                ${statusBadge}
+              </div>
+              <div class="complaint-time">${formatDate(data.created_at)}</div>
+            </div>
+            <div class="complaint-body" style="margin-bottom:12px;">
+              المستخدم لم يحصل على الخصم — رقم الكوبون: <strong>${data.coupon_id?.slice(-6) || '—'}</strong>
+            </div>
+            ${data.status === 'open' ? `
+              <div style="display:flex; gap:8px;">
+                <button class="btn btn-success btn-sm" onclick="resolveComplaint('${d.id}', this)">✓ تم الحل</button>
+                <button class="btn btn-danger btn-sm">⚠️ تصعيد للتاجر</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    } catch(e) { console.error(e); }
+  }
+
+  window.resolveComplaint = async function(id, btn) {
+    btn.textContent = '⏳...';
+    btn.disabled = true;
+    await updateDoc(doc(db, 'complaints', id), { status: 'resolved', resolved_at: serverTimestamp() });
+    loadComplaints();
+    loadDashboard();
+  };
+
+  window.escalateComplaint = function(id) {
+    alert('سيتم إرسال تنبيه للتاجر — قريباً!');
+  };
+
+  // ── Ratings ──
+  async function loadRatings() {
+    try {
+      const snap = await getDocs(collection(db, 'ratings'));
+      const tbody = document.getElementById('ratings-tbody');
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty">لا توجد تقييمات بعد</td></tr>';
+        return;
+      }
+      tbody.innerHTML = snap.docs.map(d => {
+        const data = d.data();
+        const applied = data.discount_applied === true
+          ? '<span class="badge badge-green">✅ نعم</span>'
+          : data.discount_applied === false
+          ? '<span class="badge badge-red">❌ لا</span>'
+          : '<span class="badge badge-gray">—</span>';
+        return `
+          <tr>
+            <td><strong>${data.business_name || '—'}</strong></td>
+            <td><span style="color:var(--gold);">${'⭐'.repeat(data.stars || 0)}</span> ${data.stars || '—'}</td>
+            <td>${applied}</td>
+            <td style="color:var(--muted);">${data.comment || '—'}</td>
+            <td style="color:var(--muted);">${formatDate(data.created_at)}</td>
+          </tr>
+        `;
+      }).join('');
+    } catch(e) { console.error(e); }
+  }
+
+  // ── Businesses ──
+  async function loadBusinesses() {
+    try {
+      const snap = await getDocs(collection(db, 'businesses'));
+      const tbody = document.getElementById('businesses-tbody');
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty">لا توجد محلات</td></tr>';
+        return;
+      }
+      tbody.innerHTML = snap.docs.map(d => {
+        const data = d.data();
+        const status = data.active
+          ? '<span class="badge badge-green">نشط</span>'
+          : '<span class="badge badge-red">معطّل</span>';
+        return `
+          <tr>
+            <td><strong>${data.icon || '🏪'} ${data.name || '—'}</strong></td>
+            <td style="color:var(--muted);">${data.type || '—'}</td>
+            <td><span class="badge badge-blue">${data.discount || 0}%</span></td>
+            <td style="color:var(--muted); direction:ltr;">${data.phone || '—'}</td>
+            <td>${status}</td>
+            <td>
+              <button class="btn btn-sm ${data.active ? 'btn-danger' : 'btn-success'}"
+                onclick="toggleBusiness('${d.id}', ${data.active}, this)">
+                ${data.active ? '🚫 تعطيل' : '✅ تفعيل'}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    } catch(e) { console.error(e); }
+  }
+
+  window.toggleBusiness = async function(id, currentStatus, btn) {
+    btn.textContent = '⏳...';
+    btn.disabled = true;
+    await updateDoc(doc(db, 'businesses', id), { active: !currentStatus });
+    loadBusinesses();
+  };
+
+  // ── Users ──
+  async function loadUsers() {
+    try {
+      const [usersSnap, couponsSnap] = await Promise.all([
+        getDocs(collection(db, 'users')),
+        getDocs(collection(db, 'coupons'))
+      ]);
+
+      const userCoupons = {};
+      couponsSnap.forEach(d => {
+        const uid = d.data().user_id;
+        if (uid) userCoupons[uid] = (userCoupons[uid] || 0) + 1;
+      });
+
+      const tbody = document.getElementById('users-tbody');
+      if (usersSnap.empty) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty">لا يوجد مستخدمون</td></tr>';
+        return;
+      }
+      tbody.innerHTML = usersSnap.docs.map(d => {
+        const data = d.data();
+        return `
+          <tr>
+            <td style="direction:ltr;"><strong>${data.phone || '—'}</strong></td>
+            <td style="color:var(--muted);">${formatDate(data.created_at)}</td>
+            <td style="color:var(--muted);">${formatDate(data.last_login)}</td>
+            <td><span class="badge badge-blue">${userCoupons[d.id] || 0} كوبون</span></td>
+          </tr>
+        `;
+      }).join('');
+    } catch(e) { console.error(e); }
+  }
+
+  // ── Coupons ──
+  async function loadCoupons() {
+    try {
+      const snap = await getDocs(collection(db, 'coupons'));
+      const tbody = document.getElementById('coupons-tbody');
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty">لا توجد كوبونات</td></tr>';
+        return;
+      }
+      // ترتيب من الأحدث
+      const docs = snap.docs.sort((a, b) => {
+        const aTime = a.data().created_at?.seconds || 0;
+        const bTime = b.data().created_at?.seconds || 0;
+        return bTime - aTime;
+      });
+
+      tbody.innerHTML = docs.slice(0, 50).map(d => {
+        const data = d.data();
+        let statusBadge = '';
+        if (data.status === 'used') statusBadge = '<span class="badge badge-green">✅ مستخدم</span>';
+        else if (data.status === 'pending') statusBadge = '<span class="badge badge-yellow">⏳ نشط</span>';
+        else statusBadge = '<span class="badge badge-gray">⏱️ منتهي</span>';
+        return `
+          <tr>
+            <td><strong style="font-family:monospace; font-size:16px; letter-spacing:4px;">${data.code || '—'}</strong></td>
+            <td>${data.business_name || '—'}</td>
+            <td>${statusBadge}</td>
+            <td style="color:var(--muted);">${formatDate(data.created_at)}</td>
+            <td style="color:var(--muted);">${data.status === 'used' ? formatDate(data.used_at) : '—'}</td>
+          </tr>
+        `;
+      }).join('');
+    } catch(e) { console.error(e); }
+  }
+
+  // ── Load on start if session exists ──
+  if (localStorage.getItem('admin_session') === 'active') {
+    document.getElementById('login-page').style.display = 'none';
+    document.getElementById('admin-layout').classList.add('active');
+    loadAllData();
+  }
+
+  // حفظ جلسة الإدارة
+  document.getElementById('login-btn').addEventListener('click', () => {
+    if (document.getElementById('admin-pass').value === ADMIN_PASSWORD) {
+      localStorage.setItem('admin_session', 'active');
+    }
+  }, true);
+
+  const origLogout = window.logout;
+  window.logout = function() {
+    localStorage.removeItem('admin_session');
+    origLogout();
+  };
+</script>
+
+</body>
+</html>
