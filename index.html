@@ -233,10 +233,26 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 .center { text-align:center; }
 .px16 { padding:0 16px; }
 
-/* إخفاء reCAPTCHA */
-.grecaptcha-badge { visibility:hidden !important; opacity:0 !important; }
-iframe[src*=“recaptcha”] { display:none !important; }
-#recaptcha-container { display:none !important; }
+/* إخفاء reCAPTCHA نهائياً */
+.grecaptcha-badge,
+[style*=“z-index: 2147483647”],
+iframe[src*=“recaptcha”],
+iframe[src*=“google.com/recaptcha”],
+#recaptcha-container,
+div[style*=“bottom: 14px”] {
+visibility: hidden !important;
+opacity: 0 !important;
+display: none !important;
+pointer-events: none !important;
+position: absolute !important;
+width: 0 !important;
+height: 0 !important;
+overflow: hidden !important;
+}
+
+/* إخفاء أي iframe مضاف للصفحة */
+body > iframe { display: none !important; }
+body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !important; }
 </style>
 
 </head>
@@ -835,33 +851,29 @@ iframe[src*=“recaptcha”] { display:none !important; }
       document.getElementById('app-icon-emoji').style.display = 'none';
     }
 
-    // OTP — يعمل على iOS و Android
+    // OTP — انتقال سلس iOS/Android
     const otpBoxes = [...document.querySelectorAll('.otp-box')];
-
-    function moveToNext(i) {
-      if (i < otpBoxes.length - 1) {
-        otpBoxes[i + 1].focus();
-      }
-    }
 
     function checkComplete() {
       const code = otpBoxes.map(b => b.value).join('');
       if (code.length === 6) {
-        setTimeout(() => document.getElementById('verify-otp-btn').click(), 150);
+        setTimeout(() => document.getElementById('verify-otp-btn').click(), 200);
       }
     }
 
     otpBoxes.forEach((box, i) => {
-      // iOS: input event
       box.addEventListener('input', () => {
-        const val = box.value.replace(/[^0-9]/g, '');
-        if (val.length === 0) { box.value = ''; return; }
-        box.value = val[val.length - 1]; // رقم واحد فقط
-        moveToNext(i);
-        checkComplete();
+        // iOS: value يُحدَّث بعد event — نستخدم setTimeout(0)
+        setTimeout(() => {
+          const val = box.value.replace(/[^0-9]/g, '');
+          box.value = val ? val[val.length - 1] : '';
+          if (box.value && i < otpBoxes.length - 1) {
+            otpBoxes[i + 1].focus();
+          }
+          checkComplete();
+        }, 0);
       });
 
-      // Backspace
       box.addEventListener('keydown', (e) => {
         if (e.key === 'Backspace') {
           if (box.value) {
@@ -874,18 +886,17 @@ iframe[src*=“recaptcha”] { display:none !important; }
         }
       });
 
-      // لصق رمز SMS
       box.addEventListener('paste', (e) => {
         e.preventDefault();
         const digits = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
         otpBoxes.forEach((b, j) => { b.value = digits[j] || ''; });
-        const last = Math.min(digits.length - 1, otpBoxes.length - 1);
-        otpBoxes[Math.max(0, last)].focus();
+        const focus = Math.min(digits.length, otpBoxes.length - 1);
+        otpBoxes[focus].focus();
         checkComplete();
       });
 
       box.addEventListener('focus', () => {
-        box.setSelectionRange(0, box.value.length);
+        setTimeout(() => box.setSelectionRange(0, 1), 0);
       });
     });
 
