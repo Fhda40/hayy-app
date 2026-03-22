@@ -235,7 +235,7 @@
 <body>
 <div class="app">
 
-  <!-- ══ SCREEN 1: LOGIN ══ -->
+  <!-- ══ SCREEN 1: إدخال رقم الجوال ══ -->
   <div class="screen active" id="screen-login">
     <div class="top-bar">
       <div class="logo">
@@ -251,11 +251,11 @@
     <div style="padding: 32px 24px 16px; text-align: center;">
       <div style="font-size: 56px; margin-bottom: 16px;">🏪</div>
       <h1 style="font-size: 26px; font-weight: 900; margin-bottom: 8px;">بوابة التجار</h1>
-      <p class="text-muted">سجّل نشاطك التجاري وابدأ في<br>استقبال زبائن من حيّك</p>
+      <p class="text-muted">أدخل رقم جوالك للمتابعة</p>
     </div>
 
     <div class="card">
-      <div class="card-title">📱 رقم جوال النشاط</div>
+      <div class="card-title">📱 رقم الجوال</div>
       <div class="input-group">
         <label>رقم الجوال السعودي</label>
         <div class="phone-input-wrap">
@@ -263,58 +263,84 @@
           <input type="tel" id="merchant-phone" placeholder="5X XXX XXXX" maxlength="9">
         </div>
       </div>
-      <button class="btn btn-primary" id="send-otp-btn">إرسال رمز التحقق ←</button>
-      <div class="mt-8 center text-muted">سيتم إرسال رمز SMS للتحقق</div>
+      <button class="btn btn-primary" id="check-phone-btn">متابعة ←</button>
+      <div id="phone-error" style="display:none; color:var(--red); text-align:center; font-size:13px; margin-top:8px;"></div>
     </div>
-
     <div class="spacer"></div>
-    <div style="padding: 16px; text-align: center;">
-      <div class="text-muted">مميزات بوابة التجار:</div>
-      <div style="display: flex; justify-content: center; gap: 16px; margin-top: 12px; flex-wrap: wrap;">
-        <div style="font-size: 12px; color: var(--text-muted);">📊 إحصائيات</div>
-        <div style="font-size: 12px; color: var(--text-muted);">✅ تحقق من الكود</div>
-        <div style="font-size: 12px; color: var(--text-muted);">✏️ إدارة العروض</div>
-      </div>
-    </div>
   </div>
 
-  <!-- ══ SCREEN 2: OTP ══ -->
-  <div class="screen" id="screen-otp">
+  <!-- ══ SCREEN 2: كلمة مرور - تاجر موجود ══ -->
+  <div class="screen" id="screen-password-login">
     <div class="top-bar">
       <div class="logo">
         <div class="logo-icon">🏪</div>
-        <div><div class="logo-text">حيّ</div><div class="logo-sub">التحقق</div></div>
+        <div><div class="logo-text">حيّ</div><div class="logo-sub">تسجيل الدخول</div></div>
       </div>
-      <span class="nav-link" id="back-to-login">← رجوع</span>
+      <span class="nav-link" id="back-from-password">← رجوع</span>
     </div>
 
     <div style="padding: 32px 24px 16px; text-align: center;">
-      <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
-      <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">أدخل رمز التحقق</h2>
-      <p class="text-muted">تم إرسال رمز SMS إلى<br>
-        <strong style="color: var(--text); direction: ltr; display: inline-block;">+966 <span id="phone-display">5X XXX XXXX</span></strong>
+      <div style="font-size: 48px; margin-bottom: 16px;">👋</div>
+      <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">أهلاً بعودتك!</h2>
+      <p class="text-muted">أدخل كلمة المرور للدخول<br>
+        <strong style="color:var(--gold); direction:ltr; display:inline-block; margin-top:4px;">+966 <span id="returning-phone">5X XXX XXXX</span></strong>
       </p>
     </div>
 
     <div class="card">
-      <div class="otp-wrap">
-        <input type="number" class="otp-input" maxlength="1">
-        <input type="number" class="otp-input" maxlength="1">
-        <input type="number" class="otp-input" maxlength="1">
-        <input type="number" class="otp-input" maxlength="1">
-        <input type="number" class="otp-input" maxlength="1">
-        <input type="number" class="otp-input" maxlength="1">
+      <div class="card-title">🔑 كلمة المرور</div>
+      <div class="input-group">
+        <label>كلمة المرور</label>
+        <input type="password" id="login-password" placeholder="أدخل كلمة مرورك" style="direction:ltr; text-align:center; letter-spacing:3px;">
       </div>
-      <div class="mt-16">
-        <button class="btn btn-primary" id="verify-otp-btn">تحقق من الرمز ←</button>
-      </div>
-      <div class="mt-12 center text-muted">
-        لم يصلك الرمز؟ <span style="color: var(--gold); cursor: pointer;" id="resend-btn">إعادة الإرسال</span>
-      </div>
+      <button class="btn btn-primary" id="login-with-password-btn">دخول ←</button>
+      <div id="password-error" style="display:none; color:var(--red); text-align:center; font-size:13px; margin-top:8px;">❌ كلمة المرور غير صحيحة</div>
     </div>
+    <div class="spacer"></div>
   </div>
 
-  <!-- ══ SCREEN 3: DASHBOARD ══ -->
+  <!-- ══ SCREEN 3: تسجيل جديد - إنشاء كلمة مرور ══ -->
+  <div class="screen" id="screen-register">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-icon">🏪</div>
+        <div><div class="logo-text">حيّ</div><div class="logo-sub">تسجيل جديد</div></div>
+      </div>
+      <span class="nav-link" id="back-from-register">← رجوع</span>
+    </div>
+
+    <div style="padding: 24px 24px 8px; text-align: center;">
+      <div style="font-size: 48px; margin-bottom: 12px;">🎉</div>
+      <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">مرحباً بك في حيّ!</h2>
+      <p class="text-muted">أنشئ كلمة مرور لحسابك</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔐 إنشاء كلمة مرور</div>
+      <div class="input-group">
+        <label>كلمة المرور (6 أحرف أو أكثر)</label>
+        <input type="password" id="new-password" placeholder="أنشئ كلمة مرور قوية" style="direction:ltr; text-align:center; letter-spacing:3px;">
+      </div>
+      <div class="input-group">
+        <label>تأكيد كلمة المرور</label>
+        <input type="password" id="confirm-password" placeholder="أعد كتابة كلمة المرور" style="direction:ltr; text-align:center; letter-spacing:3px;">
+      </div>
+
+      <!-- مؤشر قوة كلمة المرور -->
+      <div id="password-strength" style="display:none; margin-bottom:12px;">
+        <div style="height:4px; border-radius:4px; background:var(--surface2); overflow:hidden;">
+          <div id="strength-bar" style="height:100%; width:0%; transition:all 0.3s; border-radius:4px;"></div>
+        </div>
+        <div id="strength-label" style="font-size:11px; margin-top:4px; text-align:center;"></div>
+      </div>
+
+      <div id="register-error" style="display:none; color:var(--red); text-align:center; font-size:13px; margin-bottom:12px;"></div>
+      <button class="btn btn-primary" id="create-account-btn">إنشاء الحساب ←</button>
+    </div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ══ SCREEN 2: DASHBOARD ══ -->
   <div class="screen" id="screen-dashboard">
     <div class="top-bar">
       <div class="logo">
@@ -339,7 +365,10 @@
 
         <!-- Preview -->
         <div class="preview-card">
-          <div id="preview-icon" style="font-size: 40px; margin-bottom: 8px;">🏪</div>
+          <div id="preview-logo-wrap">
+            <div id="preview-icon" style="font-size: 40px; margin-bottom: 8px;">🏪</div>
+          </div>
+          <img id="preview-logo-img" style="display:none; width:64px; height:64px; border-radius:50%; object-fit:cover; margin:0 auto 8px; border:2px solid rgba(255,255,255,0.5);" />
           <div id="preview-name" style="font-size: 18px; font-weight: 900; margin-bottom: 4px;">اسم النشاط</div>
           <div id="preview-type" style="font-size: 12px; opacity: 0.85; margin-bottom: 8px;">نوع النشاط</div>
           <div id="preview-discount" style="background: rgba(255,255,255,0.25); border-radius: 20px; padding: 4px 16px; font-size: 13px; font-weight: 700; display: inline-block;">خصم 10%</div>
@@ -411,6 +440,48 @@
           <div id="location-status" class="mt-8 center text-muted"></div>
         </div>
 
+        <div class="card" style="margin: 0;">
+          <div class="card-title">📸 صور النشاط</div>
+
+          <!-- شعار النشاط -->
+          <div class="input-group">
+            <label>شعار النشاط (لوجو)</label>
+            <div id="logo-upload-area" style="border: 2px dashed var(--border); border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s;" onclick="document.getElementById('logo-input').click()">
+              <div id="logo-preview-wrap">
+                <div style="font-size: 32px; margin-bottom: 8px;">🖼️</div>
+                <div style="font-size: 13px; color: var(--text-muted);">اضغط لرفع الشعار</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">JPG, PNG — حد أقصى 2MB</div>
+              </div>
+              <img id="logo-preview" style="display:none; width:80px; height:80px; border-radius:50%; object-fit:cover; margin:0 auto;" />
+            </div>
+            <input type="file" id="logo-input" accept="image/*" style="display:none;">
+            <div id="logo-status" class="mt-8 center text-muted"></div>
+          </div>
+
+          <!-- صور إضافية -->
+          <div class="input-group" style="margin-bottom: 0;">
+            <label>صور النشاط (حتى 3 صور)</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+              <div class="photo-slot" data-index="0" onclick="document.getElementById('photo-input-0').click()" style="aspect-ratio:1; border: 2px dashed var(--border); border-radius: 12px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background: var(--surface2);">
+                <span style="font-size:24px;">📷</span>
+                <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
+              </div>
+              <div class="photo-slot" data-index="1" onclick="document.getElementById('photo-input-1').click()" style="aspect-ratio:1; border: 2px dashed var(--border); border-radius: 12px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background: var(--surface2);">
+                <span style="font-size:24px;">📷</span>
+                <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
+              </div>
+              <div class="photo-slot" data-index="2" onclick="document.getElementById('photo-input-2').click()" style="aspect-ratio:1; border: 2px dashed var(--border); border-radius: 12px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background: var(--surface2);">
+                <span style="font-size:24px;">📷</span>
+                <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
+              </div>
+            </div>
+            <input type="file" id="photo-input-0" accept="image/*" style="display:none;">
+            <input type="file" id="photo-input-1" accept="image/*" style="display:none;">
+            <input type="file" id="photo-input-2" accept="image/*" style="display:none;">
+            <div id="photos-status" class="center text-muted" style="font-size:11px;"></div>
+          </div>
+        </div>
+
         <button class="btn btn-primary" id="save-btn">💾 حفظ معلومات النشاط ←</button>
         <div class="success-msg" id="save-success">✅ تم حفظ معلومات النشاط بنجاح!</div>
 
@@ -462,7 +533,6 @@
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
   import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
   import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, limit, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
-
   const firebaseConfig = {
     apiKey: "AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
     authDomain: "fbrg87.firebaseapp.com",
@@ -476,8 +546,170 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  let selectedEmoji = '🏪';
-  let merchantPhone = '';
+  // ══════════════════════════════
+  // Auth — Phone + Password System
+  // ══════════════════════════════
+  let currentPhone = '';
+
+  // Simple hash function for password storage
+  async function hashPassword(password) {
+    const msgBuffer = new TextEncoder().encode(password + 'hayy_salt_2026');
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function checkPhone() {
+    const phone = document.getElementById('merchant-phone').value.trim();
+    const error = document.getElementById('phone-error');
+
+    if (phone.length < 9) {
+      error.textContent = '⚠️ أدخل رقم جوال صحيح';
+      error.style.display = 'block';
+      return;
+    }
+
+    error.style.display = 'none';
+    currentPhone = '+966' + phone;
+    document.getElementById('returning-phone').textContent = phone;
+
+    // تحقق إذا الرقم مسجل في Firestore
+    try {
+      const btn = document.getElementById('check-phone-btn');
+      btn.textContent = '⏳ جاري التحقق...';
+      btn.disabled = true;
+
+      const q = query(collection(db, 'merchants'), where('phone', '==', currentPhone));
+      const snapshot = await getDocs(q);
+
+      btn.textContent = 'متابعة ←';
+      btn.disabled = false;
+
+      if (!snapshot.empty) {
+        // تاجر موجود — اذهب لصفحة كلمة المرور
+        goScreen('screen-password-login');
+      } else {
+        // تاجر جديد — اذهب لصفحة التسجيل
+        goScreen('screen-register');
+      }
+    } catch (e) {
+      console.error(e);
+      document.getElementById('check-phone-btn').textContent = 'متابعة ←';
+      document.getElementById('check-phone-btn').disabled = false;
+      // في حالة خطأ — افتح التسجيل
+      goScreen('screen-register');
+    }
+  }
+
+  async function loginWithPassword() {
+    const password = document.getElementById('login-password').value;
+    const error = document.getElementById('password-error');
+
+    if (!password) { error.style.display = 'block'; return; }
+
+    try {
+      const hashedPassword = await hashPassword(password);
+      const q = query(collection(db, 'merchants'),
+        where('phone', '==', currentPhone),
+        where('password', '==', hashedPassword)
+      );
+      const snapshot = await getDocs(q);
+
+      if (!snapshot.empty) {
+        const merchantData = snapshot.docs[0].data();
+        error.style.display = 'none';
+        localStorage.setItem('merchant_session', 'active');
+        localStorage.setItem('merchant_phone', currentPhone);
+        // تحميل بيانات التاجر
+        loadMerchantData(merchantData);
+        goScreen('screen-dashboard');
+        loadStats();
+      } else {
+        error.style.display = 'block';
+        document.getElementById('login-password').value = '';
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function createAccount() {
+    const password = document.getElementById('new-password').value;
+    const confirm = document.getElementById('confirm-password').value;
+    const error = document.getElementById('register-error');
+
+    if (password.length < 6) {
+      error.textContent = '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+      error.style.display = 'block'; return;
+    }
+    if (password !== confirm) {
+      error.textContent = '⚠️ كلمتا المرور غير متطابقتين';
+      error.style.display = 'block'; return;
+    }
+
+    error.style.display = 'none';
+    const btn = document.getElementById('create-account-btn');
+    btn.textContent = '⏳ جاري الإنشاء...';
+    btn.disabled = true;
+
+    try {
+      const hashedPassword = await hashPassword(password);
+      await addDoc(collection(db, 'merchants'), {
+        phone: currentPhone,
+        password: hashedPassword,
+        created_at: serverTimestamp()
+      });
+
+      localStorage.setItem('merchant_session', 'active');
+      localStorage.setItem('merchant_phone', currentPhone);
+      btn.textContent = 'إنشاء الحساب ←';
+      btn.disabled = false;
+      goScreen('screen-dashboard');
+    } catch (e) {
+      console.error(e);
+      btn.textContent = 'إنشاء الحساب ←';
+      btn.disabled = false;
+    }
+  }
+
+  function loadMerchantData(data) {
+    if (data.store_name) {
+      document.getElementById('store-name').value = data.store_name;
+      document.getElementById('dash-name').textContent = data.store_name;
+      document.getElementById('preview-name').textContent = data.store_name;
+    }
+    if (data.store_type) document.getElementById('store-type').value = data.store_type;
+    if (data.discount) {
+      document.getElementById('discount-slider').value = data.discount;
+      document.getElementById('discount-label').textContent = data.discount + '%';
+      document.getElementById('preview-discount').textContent = 'خصم ' + data.discount + '%';
+    }
+    if (data.icon) {
+      selectedEmoji = data.icon;
+      document.getElementById('preview-icon').textContent = data.icon;
+      document.getElementById('dash-icon').textContent = data.icon;
+    }
+  }
+
+  function checkPasswordStrength(password) {
+    const bar = document.getElementById('strength-bar');
+    const label = document.getElementById('strength-label');
+    document.getElementById('password-strength').style.display = 'block';
+
+    if (password.length < 4) {
+      bar.style.width = '25%'; bar.style.background = 'var(--red)';
+      label.textContent = 'ضعيفة'; label.style.color = 'var(--red)';
+    } else if (password.length < 6) {
+      bar.style.width = '50%'; bar.style.background = 'var(--gold)';
+      label.textContent = 'متوسطة'; label.style.color = 'var(--gold)';
+    } else if (password.length < 10) {
+      bar.style.width = '75%'; bar.style.background = 'var(--green)';
+      label.textContent = 'جيدة'; label.style.color = 'var(--green)';
+    } else {
+      bar.style.width = '100%'; bar.style.background = 'var(--green)';
+      label.textContent = 'قوية جداً ✓'; label.style.color = 'var(--green)';
+    }
+  }
 
   // ── Navigation ──
   function goScreen(id) {
@@ -491,44 +723,8 @@
 
   // ── Session Restore ──
   window.addEventListener('load', () => {
-    if (localStorage.getItem('merchant_session') === 'active') {
-      goScreen('screen-dashboard');
-      loadStats();
-    }
+    currentPhone = localStorage.getItem('merchant_phone') || '';
   });
-
-  // ── OTP ──
-  async function sendOTP() {
-    const phone = document.getElementById('merchant-phone').value.trim();
-    if (phone.length < 9) { alert('أدخل رقم جوال صحيح'); return; }
-    merchantPhone = phone;
-    document.getElementById('phone-display').textContent = phone;
-
-    try {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
-      const result = await signInWithPhoneNumber(auth, '+966' + phone, window.recaptchaVerifier);
-      window.confirmationResult = result;
-      goScreen('screen-otp');
-      setTimeout(() => document.querySelectorAll('.otp-input')[0].focus(), 300);
-    } catch (error) {
-      console.error(error);
-      alert('خطأ في إرسال الرمز — تأكد من الرقم');
-    }
-  }
-
-  async function verifyOTP() {
-    const inputs = document.querySelectorAll('.otp-input');
-    const code = Array.from(inputs).map(i => i.value).join('');
-    try {
-      await window.confirmationResult.confirm(code);
-      goScreen('screen-dashboard');
-      loadStats();
-    } catch (error) {
-      inputs.forEach(i => { i.style.borderColor = 'var(--red)'; i.value = ''; });
-      inputs[0].focus();
-      setTimeout(() => inputs.forEach(i => i.style.borderColor = ''), 1000);
-    }
-  }
 
   // ── Tabs ──
   function switchTab(tabId) {
@@ -562,21 +758,113 @@
 
     if (!name) { alert('أدخل اسم النشاط'); return; }
 
+    const btn = document.getElementById('save-btn');
+    btn.textContent = '⏳ جاري الحفظ...';
+    btn.disabled = true;
+
     try {
       await addDoc(collection(db, 'businesses'), {
         name, type, discount: parseInt(discount),
         icon: selectedEmoji, description: desc, area,
-        phone: merchantPhone, active: true,
+        phone: currentPhone, active: true,
+        logo_url: logoUrl || '',
+        photos: photoUrls.filter(u => u),
         created_at: serverTimestamp()
       });
     } catch (e) { console.error(e); }
+
+    btn.textContent = '💾 حفظ معلومات النشاط ←';
+    btn.disabled = false;
 
     const msg = document.getElementById('save-success');
     msg.style.display = 'block';
     setTimeout(() => msg.style.display = 'none', 3000);
   }
 
-  // ── Location ──
+  // ── Cloudinary Config ──
+  const CLOUDINARY_CLOUD = 'dtwgl17iy';
+  const CLOUDINARY_PRESET = 'hayy_uploads';
+  let logoUrl = '';
+  let photoUrls = ['', '', ''];
+
+  async function uploadToCloudinary(file, statusEl) {
+    statusEl.textContent = '⏳ جاري الرفع...';
+    statusEl.style.color = 'var(--text-muted)';
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_PRESET);
+    formData.append('folder', 'hayy');
+
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      statusEl.textContent = '✅ تم الرفع بنجاح';
+      statusEl.style.color = 'var(--green)';
+      return data.secure_url;
+    } catch (err) {
+      statusEl.textContent = '❌ فشل الرفع — حاول مجدداً';
+      statusEl.style.color = 'var(--red)';
+      return null;
+    }
+  }
+
+  function setupPhotoUploads() {
+    // Logo upload
+    document.getElementById('logo-input').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        // عرض في منطقة الرفع
+        document.getElementById('logo-preview').src = ev.target.result;
+        document.getElementById('logo-preview').style.display = 'block';
+        document.getElementById('logo-preview-wrap').style.display = 'none';
+        // عرض في البطاقة التجريبية
+        document.getElementById('preview-logo-img').src = ev.target.result;
+        document.getElementById('preview-logo-img').style.display = 'block';
+        document.getElementById('preview-logo-wrap').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+      const url = await uploadToCloudinary(file, document.getElementById('logo-status'));
+      if (url) logoUrl = url;
+    });
+
+    // Drag over effect for logo
+    const logoArea = document.getElementById('logo-upload-area');
+    logoArea.addEventListener('dragover', (e) => { e.preventDefault(); logoArea.style.borderColor = 'var(--gold)'; });
+    logoArea.addEventListener('dragleave', () => { logoArea.style.borderColor = ''; });
+    logoArea.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      logoArea.style.borderColor = '';
+      const file = e.dataTransfer.files[0];
+      if (file) document.getElementById('logo-input').files = e.dataTransfer.files;
+    });
+
+    // Photos upload
+    [0, 1, 2].forEach(idx => {
+      document.getElementById(`photo-input-${idx}`).addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const slot = document.querySelectorAll('.photo-slot')[idx];
+        const preview = slot.querySelector('.photo-preview');
+        const icon = slot.querySelector('span');
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          preview.src = ev.target.result;
+          preview.style.display = 'block';
+          if (icon) icon.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+        const statusEl = document.getElementById('photos-status');
+        const url = await uploadToCloudinary(file, statusEl);
+        if (url) photoUrls[idx] = url;
+      });
+    });
+  }
   function getLocation() {
     const status = document.getElementById('location-status');
     status.textContent = '⏳ جاري تحديد موقعك...';
@@ -638,12 +926,27 @@
   }
 
   // ── Event Listeners ──
+  let selectedEmoji = '🏪';
+
   document.addEventListener('DOMContentLoaded', () => {
 
-    document.getElementById('send-otp-btn').addEventListener('click', sendOTP);
-    document.getElementById('verify-otp-btn').addEventListener('click', verifyOTP);
-    document.getElementById('resend-btn').addEventListener('click', sendOTP);
-    document.getElementById('back-to-login').addEventListener('click', () => goScreen('screen-login'));
+    // تحقق من الجلسة
+    if (localStorage.getItem('merchant_session') === 'active') {
+      goScreen('screen-dashboard');
+      loadStats();
+    }
+
+    // أزرار المصادقة
+    document.getElementById('check-phone-btn').addEventListener('click', checkPhone);
+    document.getElementById('merchant-phone').addEventListener('keydown', e => { if (e.key === 'Enter') checkPhone(); });
+
+    document.getElementById('back-from-password').addEventListener('click', () => goScreen('screen-login'));
+    document.getElementById('login-with-password-btn').addEventListener('click', loginWithPassword);
+    document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') loginWithPassword(); });
+
+    document.getElementById('back-from-register').addEventListener('click', () => goScreen('screen-login'));
+    document.getElementById('create-account-btn').addEventListener('click', createAccount);
+    document.getElementById('new-password').addEventListener('input', e => checkPasswordStrength(e.target.value));
     document.getElementById('logout-btn').addEventListener('click', () => {
       localStorage.removeItem('merchant_session');
       goScreen('screen-login');
@@ -656,6 +959,7 @@
     document.getElementById('save-btn').addEventListener('click', saveStore);
     document.getElementById('location-btn').addEventListener('click', getLocation);
     document.getElementById('verify-code-btn').addEventListener('click', verifyCode);
+    setupPhotoUploads();
 
     document.getElementById('store-name').addEventListener('input', updatePreview);
     document.getElementById('store-type').addEventListener('change', updatePreview);
