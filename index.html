@@ -502,45 +502,11 @@
       <p class="text-muted">اختر المحل للحصول على كود الخصم</p>
     </div>
 
-    <div class="stores-list">
-      <div class="store-card" data-store="ooto">
-        <div class="store-icon" style="background:rgba(184,134,11,0.1);">☕</div>
-        <div class="store-info">
-          <div class="store-name">OOTO Coffee</div>
-          <div class="store-type">مقاهي ومشروبات</div>
-          <div class="store-badge">🏷️ خصم 35%</div>
-        </div>
-        <div class="store-arrow">←</div>
-      </div>
-
-      <div class="store-card" data-store="nahdi">
-        <div class="store-icon" style="background:rgba(45,122,79,0.1);">💊</div>
-        <div class="store-info">
-          <div class="store-name">صيدلية النهدي</div>
-          <div class="store-type">صيدليات</div>
-          <div class="store-badge">🏷️ خصم 20%</div>
-        </div>
-        <div class="store-arrow">←</div>
-      </div>
-
-      <div class="store-card" data-store="barber">
-        <div class="store-icon" style="background:rgba(52,100,200,0.08);">✂️</div>
-        <div class="store-info">
-          <div class="store-name">حلاق الطايف</div>
-          <div class="store-type">حلاقة وتجميل</div>
-          <div class="store-badge">🏷️ خصم 15%</div>
-        </div>
-        <div class="store-arrow">←</div>
-      </div>
-
-      <div class="store-card" data-store="kabsati">
-        <div class="store-icon" style="background:rgba(192,57,43,0.08);">🍚</div>
-        <div class="store-info">
-          <div class="store-name">مطعم كبساتي</div>
-          <div class="store-type">مطاعم ومأكولات</div>
-          <div class="store-badge">🏷️ خصم 10%</div>
-        </div>
-        <div class="store-arrow">←</div>
+    <div class="stores-list" id="stores-list">
+      <!-- تُحمَّل من Firestore تلقائياً -->
+      <div style="text-align:center; padding:32px; color:var(--text-muted);">
+        <div style="font-size:32px; margin-bottom:12px;">⏳</div>
+        <div>جاري تحميل المحلات...</div>
       </div>
     </div>
     <div class="bottom-pad" style="padding:16px;"></div>
@@ -824,12 +790,86 @@
     const title = document.getElementById('geo-title');
     const sub = document.getElementById('geo-sub');
     title.textContent = 'جاري تحديد موقعك...';
-    setTimeout(() => {
+    setTimeout(async () => {
       title.textContent = '✓ أنت داخل الحي!';
       sub.textContent = 'تم التحقق — على بعد 0.4 كم من المركز';
       document.querySelector('.radar-center').textContent = '✅';
+      await loadStores();
       setTimeout(() => goScreen('screen-stores'), 1200);
     }, 1500);
+  }
+
+  async function loadStores() {
+    const list = document.getElementById('stores-list');
+    list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-muted);"><div style="font-size:32px;margin-bottom:12px;">⏳</div><div>جاري تحميل المحلات...</div></div>';
+
+    try {
+      const snapshot = await getDocs(collection(db, 'businesses'));
+      const businesses = [];
+      snapshot.forEach(doc => {
+        businesses.push({ id: doc.id, ...doc.data() });
+      });
+
+      // أضف المحلات الافتراضية دائماً
+      const defaultStores = [
+        { id: 'ooto',    icon: '☕', name: 'OOTO Coffee',    type: 'مقاهي ومشروبات',  discount: 35 },
+        { id: 'nahdi',   icon: '💊', name: 'صيدلية النهدي', type: 'صيدليات',          discount: 20 },
+        { id: 'barber',  icon: '✂️', name: 'حلاق الطايف',   type: 'حلاقة وتجميل',    discount: 15 },
+        { id: 'kabsati', icon: '🍚', name: 'مطعم كبساتي',   type: 'مطاعم ومأكولات',  discount: 10 },
+      ];
+
+      const allStores = [...defaultStores, ...businesses];
+
+      if (allStores.length === 0) {
+        list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-muted);">لا توجد محلات حالياً</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      allStores.forEach(store => {
+        // حفظ في storeData للاستخدام لاحقاً
+        storeData[store.id] = {
+          icon: store.icon || '🏪',
+          name: store.name,
+          type: store.type,
+          discount: (store.discount || 0) + '%'
+        };
+
+        const card = document.createElement('div');
+        card.className = 'store-card';
+        card.dataset.store = store.id;
+        card.innerHTML = `
+          <div class="store-icon" style="background:rgba(184,134,11,0.1);">${store.icon || '🏪'}</div>
+          <div class="store-info">
+            <div class="store-name">${store.name}</div>
+            <div class="store-type">${store.type}</div>
+            <div class="store-badge">🏷️ خصم ${store.discount || 0}%</div>
+          </div>
+          <div class="store-arrow">←</div>
+        `;
+        card.addEventListener('click', () => openStore(store.id));
+        list.appendChild(card);
+      });
+
+    } catch (error) {
+      console.error('Error loading stores:', error);
+      // عرض المحلات الافتراضية عند الخطأ
+      list.innerHTML = `
+        <div class="store-card" data-store="ooto">
+          <div class="store-icon" style="background:rgba(184,134,11,0.1);">☕</div>
+          <div class="store-info"><div class="store-name">OOTO Coffee</div><div class="store-type">مقاهي ومشروبات</div><div class="store-badge">🏷️ خصم 35%</div></div>
+          <div class="store-arrow">←</div>
+        </div>
+        <div class="store-card" data-store="nahdi">
+          <div class="store-icon" style="background:rgba(45,122,79,0.1);">💊</div>
+          <div class="store-info"><div class="store-name">صيدلية النهدي</div><div class="store-type">صيدليات</div><div class="store-badge">🏷️ خصم 20%</div></div>
+          <div class="store-arrow">←</div>
+        </div>
+      `;
+      document.querySelectorAll('.store-card').forEach(card => {
+        card.addEventListener('click', () => openStore(card.dataset.store));
+      });
+    }
   }
 
   function openStore(id) {
@@ -1063,7 +1103,7 @@
 
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
   import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, query, where, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
