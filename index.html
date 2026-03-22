@@ -559,30 +559,13 @@ text-align:center; cursor:pointer; transition:all 0.15s;
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // حذف reCAPTCHA badge نهائياً
+  // إخفاء reCAPTCHA badge
   setInterval(() => {
-    document.querySelectorAll('.grecaptcha-badge, iframe[src*="recaptcha"]').forEach(el => {
-      el.style.cssText = 'visibility:hidden!important;opacity:0!important;width:0!important;height:0!important;';
+    document.querySelectorAll('.grecaptcha-badge').forEach(el => {
+      el.style.visibility = 'hidden';
+      el.style.opacity = '0';
     });
-    // حذف الـ div الخارجي الذي يحتوي badge
-    document.querySelectorAll('body > div').forEach(div => {
-      if (!div.classList.contains('screen') && div.id !== 'recaptcha-container') {
-        const badge = div.querySelector('.grecaptcha-badge, iframe');
-        if (badge) div.style.cssText = 'position:fixed;bottom:-9999px;width:0;height:0;overflow:hidden;';
-      }
-    });
-  }, 500);
-
-  // تهيئة reCAPTCHA مسبقاً
-  window.addEventListener('load', () => {
-    try {
-      window.rv = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        size: 'invisible',
-        callback: () => {}
-      });
-      window.rv.render();
-    } catch(e) {}
-  });
+  }, 300);
 
   const CITY = { lat:17.5049999, lng:47.1025904 };
   const RADIUS = 5;
@@ -618,16 +601,14 @@ text-align:center; cursor:pointer; transition:all 0.15s;
     btn.disabled = true;
     document.getElementById('otp-num').textContent = '+966 ' + phone;
     try {
-      if (!window.rv) {
-        window.rv = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
-        await window.rv.render();
-      }
+      // أنشئ verifier جديد في كل مرة
+      if (window.rv) { try { window.rv.clear(); } catch(e){} }
+      window.rv = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
       window.cr = await signInWithPhoneNumber(auth, '+966' + phone, window.rv);
       go('screen-otp');
       setTimeout(() => { const f = document.querySelector('.otp-box'); if(f) f.focus(); }, 400);
     } catch(e) {
       console.error(e);
-      window.rv = null;
       alert('خطأ في الإرسال — حاول مجدداً');
     } finally {
       btn.textContent = 'ابدأ الآن';
