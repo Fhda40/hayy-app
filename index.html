@@ -210,6 +210,11 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 .h8 { height:8px; } .h16 { height:16px; } .h24 { height:24px; } .h32 { height:32px; }
 .center { text-align:center; }
 .px16 { padding:0 16px; }
+
+/* إخفاء reCAPTCHA */
+.grecaptcha-badge { visibility:hidden !important; opacity:0 !important; }
+iframe[src*=“recaptcha”] { display:none !important; }
+#recaptcha-container { display:none !important; }
 </style>
 
 </head>
@@ -219,7 +224,7 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 
 <div class="screen active" id="screen-welcome">
 
-  <!-- Top bar: minimal, logo centered -->
+  <!-- Top bar: تاجر؟ فقط -->
 
   <div style="
     padding: calc(env(safe-area-inset-top,0px) + 20px) 24px 0;
@@ -229,8 +234,7 @@ text-align:center; cursor:pointer; transition:all 0.15s;
     min-height: 56px;
   ">
     <span style="width:48px;"></span>
-    <img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png"
-         style="height:32px; object-fit:contain;">
+    <span style="width:48px;"></span>
     <span id="merchant-link" style="
       font-size:15px; color:var(--text-3);
       cursor:pointer; width:48px; text-align:left;
@@ -238,7 +242,7 @@ text-align:center; cursor:pointer; transition:all 0.15s;
     ">تاجر؟</span>
   </div>
 
-  <!-- Hero: logo large + headline -->
+  <!-- Hero: شعار كبير + نص -->
 
   <div style="
     flex:1;
@@ -250,7 +254,7 @@ text-align:center; cursor:pointer; transition:all 0.15s;
     text-align:center;
   ">
     <img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png"
-         style="width:140px; object-fit:contain; margin-bottom:36px;">
+         style="width:150px; object-fit:contain; margin-bottom:40px;">
 
 ```
 <div style="
@@ -259,7 +263,7 @@ text-align:center; cursor:pointer; transition:all 0.15s;
   letter-spacing:-0.8px;
   line-height:1.2;
   color:var(--text);
-  margin-bottom:16px;
+  margin-bottom:14px;
 ">خصومات مخصصة</div>
 
 <div style="
@@ -272,7 +276,7 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 
   </div>
 
-  <!-- Bottom: phone input + CTA -->
+  <!-- Bottom: رقم الجوال + زر -->
 
   <div style="padding:0 0 8px;">
 
@@ -283,14 +287,8 @@ text-align:center; cursor:pointer; transition:all 0.15s;
   border-radius:14px;
   overflow:hidden;
 ">
-  <div style="
-    display:flex; align-items:center;
-    padding:0 16px; min-height:54px;
-  ">
-    <span style="
-      font-size:16px; color:var(--text-3);
-      margin-left:12px; white-space:nowrap;
-    ">🇸🇦 +966</span>
+  <div style="display:flex; align-items:center; padding:0 16px; min-height:54px;">
+    <span style="font-size:16px; color:var(--text-3); margin-left:12px; white-space:nowrap;">🇸🇦 +966</span>
     <input
       class="field-input"
       type="tel"
@@ -302,7 +300,7 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 </div>
 
 <button class="btn-main" id="send-otp-btn"
-  style="font-size:17px; padding:17px; letter-spacing:0.2px;">
+  style="font-size:17px; padding:17px; background:#1D1D1F !important; color:#fff !important; opacity:1 !important;">
   ابدأ الآن
 </button>
 
