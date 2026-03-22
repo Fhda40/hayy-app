@@ -480,7 +480,7 @@
         <div class="radar-center">📍</div>
       </div>
       <h2 style="font-size:22px;font-weight:900;margin-bottom:8px;" id="geo-title">جاري التحقق من موقعك</h2>
-      <p class="text-muted" id="geo-sub">نتأكد أنك داخل نطاق حيّك<br>(نصف قطر 1 كم)</p>
+      <p class="text-muted" id="geo-sub">نتأكد أنك داخل شرورة<br>(نصف قطر 2 كم من مركز المدينة)</p>
     </div>
     <div class="spacer"></div>
     <div style="padding:16px 16px 32px;">
@@ -792,17 +792,55 @@
     }
   }
 
+  // ══════════════════════════════
+  // Geofencing — شرورة
+  // ══════════════════════════════
+  const CITY_CENTER = { lat: 17.4850, lng: 47.1167 };
+  const MAX_RADIUS_KM = 2;
+
+  function haversineDistance(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLng/2) * Math.sin(dLng/2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
   function checkGeo() {
     const title = document.getElementById('geo-title');
     const sub = document.getElementById('geo-sub');
     title.textContent = 'جاري تحديد موقعك...';
-    setTimeout(async () => {
-      title.textContent = '✓ أنت داخل الحي!';
-      sub.textContent = 'تم التحقق — على بعد 0.4 كم من المركز';
-      document.querySelector('.radar-center').textContent = '✅';
-      await loadStores();
-      setTimeout(() => goScreen('screen-stores'), 1200);
-    }, 1500);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const distance = haversineDistance(latitude, longitude, CITY_CENTER.lat, CITY_CENTER.lng);
+        const distanceStr = distance < 1
+          ? Math.round(distance * 1000) + ' متر'
+          : distance.toFixed(1) + ' كم';
+
+        if (distance <= MAX_RADIUS_KM) {
+          title.textContent = '✓ أنت داخل شرورة!';
+          sub.textContent = `تم التحقق — على بعد ${distanceStr} من مركز المدينة`;
+          document.querySelector('.radar-center').textContent = '✅';
+          await loadStores();
+          setTimeout(() => goScreen('screen-stores'), 1200);
+        } else {
+          title.textContent = '⚠️ أنت خارج النطاق';
+          sub.textContent = `أنت على بعد ${distanceStr} من شرورة\nالعروض متاحة فقط داخل المدينة`;
+          document.querySelector('.radar-center').textContent = '❌';
+        }
+      },
+      (error) => {
+        // في حالة رفض الإذن أو الخطأ — للتجربة نسمح بالدخول
+        title.textContent = '⚠️ تعذر تحديد موقعك';
+        sub.textContent = 'تأكد من تفعيل GPS وإعادة المحاولة';
+        document.querySelector('.radar-center').textContent = '❓';
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   }
 
   async function loadStores() {
