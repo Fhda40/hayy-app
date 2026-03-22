@@ -758,6 +758,9 @@
 <div id="recaptcha-container"></div>
 <script type="module">
   let currentCode = null, timerInterval = null, timerSeconds = 180, codeExpired = false;
+  let currentCouponId = null; // معرف الكوبون في Firestore
+  let currentUserId = null;   // معرف المستخدم
+  let currentStoreId = null;  // معرف المحل الحالي
 
   const storeData = {
     ooto:    {icon:'☕', name:'OOTO Coffee',      type:'مقاهي ومشروبات',  discount:'35%'},
@@ -935,9 +938,10 @@
     }
   }
 
-  function openStore(id) {
+  async function openStore(id) {
     const s = storeData[id];
     if (!s) return;
+    currentStoreId = id;
 
     // الإيموجي أو الشعار
     const logoImg = document.getElementById('coupon-store-logo');
@@ -964,12 +968,8 @@
       photosWrap.style.display = 'block';
       [0,1,2].forEach(i => {
         const img = document.getElementById(`store-photo-${i}`);
-        if (photos[i]) {
-          img.src = photos[i];
-          img.style.display = 'block';
-        } else {
-          img.style.display = 'none';
-        }
+        if (photos[i]) { img.src = photos[i]; img.style.display = 'block'; }
+        else { img.style.display = 'none'; }
       });
     } else {
       photosWrap.style.display = 'none';
@@ -978,27 +978,80 @@
     // إعادة تعيين الكوبون
     document.getElementById('coupon-code').textContent = '----';
     document.getElementById('coupon-card-el').classList.remove('code-expired');
-    document.getElementById('generate-btn').textContent = '⚡ توليد كود الخصم';
-    document.getElementById('generate-btn').disabled = false;
     document.getElementById('timer-wrap').style.opacity = '0.3';
     document.getElementById('timer-display').textContent = '3:00';
     document.getElementById('timer-progress').style.strokeDashoffset = 0;
     document.getElementById('timer-progress').style.stroke = 'var(--gold)';
     document.getElementById('timer-display').style.color = 'var(--gold)';
-    currentCode = null; codeExpired = false;
+    currentCode = null; currentCouponId = null; codeExpired = false;
     if (timerInterval) clearInterval(timerInterval);
+
+    // تحقق إذا استُخدم اليوم
+    const btn = document.getElementById('generate-btn');
+    btn.textContent = '⏳ جاري التحقق...';
+    btn.disabled = true;
+
+    try {
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const uid = auth.currentUser?.uid || localStorage.getItem('hayy_uid');
+      if (uid) {
+        const q = query(
+          collection(db, 'coupons'),
+          where('user_id', '==', uid),
+          where('business_id', '==', id),
+          where('status', '==', 'used')
+        );
+        const snap = await getDocs(q);
+        const usedToday = snap.docs.some(d => {
+          const usedAt = d.data().used_at?.toDate();
+          return usedAt && usedAt >= today;
+        });
+
+        if (usedToday) {
+          btn.textContent = '🚫 استخدمت هذا العرض اليوم';
+          btn.disabled = true;
+          btn.style.background = 'var(--text-muted)';
+          goScreen('screen-coupon');
+          return;
+        }
+      }
+    } catch(e) { console.error(e); }
+
+    btn.textContent = '⚡ توليد كود الخصم';
+    btn.disabled = false;
+    btn.style.background = '';
     goScreen('screen-coupon');
   }
 
-  function generateCode() {
+  async function generateCode() {
     if (currentCode && !codeExpired) return;
+
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     currentCode = code; codeExpired = false;
+
     document.getElementById('coupon-code').textContent = code;
     document.getElementById('coupon-card-el').classList.remove('code-expired');
     document.getElementById('timer-wrap').style.opacity = '1';
     document.getElementById('generate-btn').textContent = '🔄 كود نشط';
     document.getElementById('generate-btn').disabled = true;
+
+    // حفظ الكوبون في Firebase
+    try {
+      const uid = auth.currentUser?.uid || localStorage.getItem('hayy_uid') || 'guest';
+      const expiresAt = new Date(Date.now() + 3 * 60 * 1000);
+      const docRef = await addDoc(collection(db, 'coupons'), {
+        code,
+        user_id: uid,
+        business_id: currentStoreId,
+        business_name: storeData[currentStoreId]?.name || '',
+        created_at: serverTimestamp(),
+        expires_at: expiresAt,
+        status: 'pending'
+      });
+      currentCouponId = docRef.id;
+    } catch(e) { console.error(e); }
+
     startTimer();
   }
 
