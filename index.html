@@ -412,13 +412,13 @@
           <input type="tel" id="phone-input" placeholder="5X XXX XXXX" maxlength="9">
         </div>
       </div>
-      <button class="btn btn-primary" onclick="sendOTP()">إرسال رمز التحقق ←</button>
+      <button class="btn btn-primary" id="send-otp-btn">إرسال رمز التحقق ←</button>
       <div class="mt-12 center text-muted">سيتم إرسال رمز SMS إلى رقمك</div>
     </div>
 
     <div class="spacer"></div>
     <div class="center text-muted bottom-pad" style="padding:16px;">
-      <span onclick="showMerchant()" style="cursor:pointer;">🏪 دخول التجار</span>
+      <span id="merchant-login-btn" style="cursor:pointer;">🏪 دخول التجار</span>
     </div>
   </div>
 
@@ -429,7 +429,7 @@
         <div class="logo-icon">🏡</div>
         <div><div class="logo-text">حيّ</div><div class="logo-sub">التحقق من الهوية</div></div>
       </div>
-      <span class="nav-link" onclick="goScreen('screen-welcome')">← رجوع</span>
+      <span class="nav-link" id="back-to-welcome">← رجوع</span>
     </div>
 
     <div style="padding:32px 24px 16px;text-align:center;">
@@ -442,16 +442,16 @@
 
     <div class="card">
       <div class="otp-wrap" id="otp-inputs">
-        <input type="number" class="otp-input" maxlength="1" oninput="moveOTP(this,0)">
-        <input type="number" class="otp-input" maxlength="1" oninput="moveOTP(this,1)">
-        <input type="number" class="otp-input" maxlength="1" oninput="moveOTP(this,2)">
-        <input type="number" class="otp-input" maxlength="1" oninput="moveOTP(this,3)">
+        <input type="number" class="otp-input" maxlength="1">
+        <input type="number" class="otp-input" maxlength="1">
+        <input type="number" class="otp-input" maxlength="1">
+        <input type="number" class="otp-input" maxlength="1">
       </div>
       <div class="mt-16">
-        <button class="btn btn-primary" onclick="verifyOTP()">تحقق من الرمز ←</button>
+        <button class="btn btn-primary" id="verify-otp-btn">تحقق من الرمز ←</button>
       </div>
       <div class="mt-12 center text-muted">
-        لم يصلك الرمز؟ <span style="color:var(--gold);cursor:pointer;" onclick="sendOTP()">إعادة الإرسال</span>
+        لم يصلك الرمز؟ <span style="color:var(--gold);cursor:pointer;" id="resend-btn">إعادة الإرسال</span>
       </div>
       <div class="mt-8 center" style="font-size:11px;background:var(--gold-dim);border-radius:8px;padding:8px;color:var(--gold);">
         💡 للتجربة: الرمز هو <strong>1234</strong>
@@ -480,7 +480,7 @@
     </div>
     <div class="spacer"></div>
     <div style="padding:16px 16px 32px;">
-      <button class="btn btn-primary" onclick="checkGeo()">السماح بالوصول للموقع ←</button>
+      <button class="btn btn-primary" id="geo-btn">السماح بالوصول للموقع ←</button>
       <div class="mt-8 center text-muted">نحن نحمي خصوصيتك — لا نحفظ موقعك</div>
     </div>
   </div>
@@ -501,7 +501,7 @@
     </div>
 
     <div class="stores-list">
-      <div class="store-card" onclick="openStore('cafe')">
+      <div class="store-card" data-store="cafe">
         <div class="store-icon" style="background:rgba(184,134,11,0.1);">☕</div>
         <div class="store-info">
           <div class="store-name">كافيه النخلة</div>
@@ -511,7 +511,7 @@
         <div class="store-arrow">←</div>
       </div>
 
-      <div class="store-card" onclick="openStore('restaurant')">
+      <div class="store-card" data-store="restaurant">
         <div class="store-icon" style="background:rgba(45,122,79,0.1);">🍽️</div>
         <div class="store-info">
           <div class="store-name">مطعم الديوانية</div>
@@ -521,7 +521,7 @@
         <div class="store-arrow">←</div>
       </div>
 
-      <div class="store-card" onclick="openStore('pharmacy')">
+      <div class="store-card" data-store="pharmacy">
         <div class="store-icon" style="background:rgba(52,100,200,0.08);">💊</div>
         <div class="store-info">
           <div class="store-name">صيدلية الشفاء</div>
@@ -531,7 +531,7 @@
         <div class="store-arrow">←</div>
       </div>
 
-      <div class="store-card" onclick="openStore('grocery')">
+      <div class="store-card" data-store="grocery">
         <div class="store-icon" style="background:rgba(130,60,180,0.08);">🛒</div>
         <div class="store-info">
           <div class="store-name">بقالة الأمين</div>
@@ -541,7 +541,7 @@
         <div class="store-arrow">←</div>
       </div>
 
-      <div class="store-card" onclick="openStore('barber')">
+      <div class="store-card" data-store="barber">
         <div class="store-icon" style="background:rgba(192,57,43,0.08);">✂️</div>
         <div class="store-info">
           <div class="store-name">صالون الأناقة</div>
@@ -561,7 +561,7 @@
         <div class="logo-icon">🏡</div>
         <div><div class="logo-text">حيّ</div></div>
       </div>
-      <span class="nav-link" onclick="goScreen('screen-stores')">← رجوع</span>
+      <span class="nav-link" id="back-to-stores">← رجوع</span>
     </div>
 
     <div class="coupon-wrap">
@@ -593,7 +593,7 @@
         <div class="timer-label">صلاحية الكود<br><span style="font-size:11px">تنتهي خلال 3 دقائق</span></div>
       </div>
 
-      <button class="btn btn-primary" id="generate-btn" onclick="generateCode()">⚡ توليد كود الخصم</button>
+      <button class="btn btn-primary" id="generate-btn">⚡ توليد كود الخصم</button>
       <div class="mt-12 center text-muted">الحد المسموح: مرة واحدة يومياً لكل محل</div>
     </div>
   </div>
@@ -606,13 +606,13 @@
           <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">مرحباً</div>
           <div style="font-size:18px;font-weight:900;">كافيه النخلة ☕</div>
         </div>
-        <span class="nav-link" onclick="goScreen('screen-welcome')">← خروج</span>
+        <span class="nav-link" id="merchant-logout">← خروج</span>
       </div>
     </div>
 
     <div class="tab-bar">
-      <button class="tab active" onclick="switchTab(this,'tab-stats')">📊 الإحصائيات</button>
-      <button class="tab" onclick="switchTab(this,'tab-verify')">✅ التحقق من كود</button>
+      <button class="tab active" id="tab-stats-btn">📊 الإحصائيات</button>
+      <button class="tab" id="tab-verify-btn">✅ التحقق من كود</button>
     </div>
 
     <div id="tab-stats">
@@ -650,7 +650,7 @@
           <label>رقم الكود (4–6 أرقام)</label>
           <input type="number" id="merchant-code-input" placeholder="أدخل الكود هنا" style="font-size:24px;font-weight:800;letter-spacing:8px;">
         </div>
-        <button class="btn btn-primary" onclick="verifyMerchantCode()">تحقق من الكود ←</button>
+        <button class="btn btn-primary" id="verify-merchant-btn">تحقق من الكود ←</button>
         <div class="verify-result" id="verify-result">
           <div class="verify-icon" id="verify-icon">✅</div>
           <div class="verify-title" id="verify-title">كود صالح!</div>
@@ -810,8 +810,41 @@
   }
 
   // ══════════════════════════════
-  // Firebase Integration
+  // Event Listeners
   // ══════════════════════════════
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // أزرار التنقل
+    document.getElementById('send-otp-btn').addEventListener('click', sendRealOTP);
+    document.getElementById('verify-otp-btn').addEventListener('click', verifyRealOTP);
+    document.getElementById('resend-btn').addEventListener('click', sendRealOTP);
+    document.getElementById('back-to-welcome').addEventListener('click', () => goScreen('screen-welcome'));
+    document.getElementById('geo-btn').addEventListener('click', checkGeo);
+    document.getElementById('back-to-stores').addEventListener('click', () => goScreen('screen-stores'));
+    document.getElementById('generate-btn').addEventListener('click', generateCode);
+    document.getElementById('merchant-login-btn').addEventListener('click', () => goScreen('screen-merchant'));
+    document.getElementById('merchant-logout').addEventListener('click', () => goScreen('screen-welcome'));
+    document.getElementById('verify-merchant-btn').addEventListener('click', verifyMerchantCode);
+
+    // أزرار المتاجر
+    document.querySelectorAll('.store-card').forEach(card => {
+      card.addEventListener('click', () => openStore(card.dataset.store));
+    });
+
+    // أزرار التبويب
+    document.getElementById('tab-stats-btn').addEventListener('click', function() {
+      switchTab(this, 'tab-stats');
+    });
+    document.getElementById('tab-verify-btn').addEventListener('click', function() {
+      switchTab(this, 'tab-verify');
+    });
+
+    // OTP inputs
+    document.querySelectorAll('.otp-input').forEach((input, idx) => {
+      input.addEventListener('input', () => moveOTP(input, idx));
+    });
+  });
+
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
   import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
   import { getFirestore, doc, setDoc, getDoc, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
