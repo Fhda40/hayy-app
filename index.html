@@ -607,15 +607,22 @@ body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !impo
     const phone = document.getElementById('phone-input').value.trim();
     if (phone.length < 9) return;
     const btn = document.getElementById('send-otp-btn');
-    btn.textContent = '...'; btn.disabled = true;
+    btn.textContent = '⏳'; btn.disabled = true;
     document.getElementById('otp-num').textContent = '+966 ' + phone;
     try {
-      window.rv = new RecaptchaVerifier(auth,'recaptcha-container',{size:'invisible'});
-      window.cr = await signInWithPhoneNumber(auth,'+966'+phone,window.rv);
+      if (!window.rv) {
+        window.rv = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+        await window.rv.render();
+      }
+      window.cr = await signInWithPhoneNumber(auth, '+966' + phone, window.rv);
       go('screen-otp');
-      setTimeout(() => document.querySelectorAll('.otp-box')[0].focus(), 250);
-    } catch(e) { alert('خطأ — تأكد من الرقم'); console.error(e); }
-    btn.textContent = 'متابعة'; btn.disabled = false;
+      setTimeout(() => document.querySelectorAll('.otp-box')[0].focus(), 300);
+    } catch(e) {
+      console.error(e);
+      window.rv = null;
+      alert('خطأ في الإرسال — حاول مجدداً');
+    }
+    btn.textContent = 'ابدأ الآن'; btn.disabled = false;
   }
 
   async function verifyOTP() {
@@ -818,7 +825,7 @@ body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !impo
   // events
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('send-otp-btn').addEventListener('click', sendOTP);
-    document.getElementById('phone-input').addEventListener('keydown', e => e.key==='Enter'&&sendOTP());
+    document.getElementById('phone-input').addEventListener('keydown', e => e.key==='Enter' && sendOTP());
     document.getElementById('back-welcome').addEventListener('click', () => go('screen-welcome'));
     document.getElementById('verify-otp-btn').addEventListener('click', verifyOTP);
     document.getElementById('resend-btn').addEventListener('click', sendOTP);
@@ -827,113 +834,91 @@ body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !impo
     document.getElementById('gen-btn').addEventListener('click', generateCode);
     document.getElementById('merchant-link').addEventListener('click', () => window.location.href='merchant.html');
 
-    // رفع الشعار
-    document.getElementById('logo-upload').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const img = document.getElementById('app-icon-img');
-        const emoji = document.getElementById('app-icon-emoji');
-        img.src = ev.target.result;
-        img.style.display = 'block';
-        emoji.style.display = 'none';
-        localStorage.setItem('hayy_logo', ev.target.result);
-      };
-      reader.readAsDataURL(file);
-    });
+    // ── OTP انتقال سلس ──
+    function setupOTP() {
+      const boxes = [...document.querySelectorAll('.otp-box')];
+      if (!boxes.length) return;
 
-    // استعادة الشعار
-    const savedLogo = localStorage.getItem('hayy_logo');
-    if (savedLogo) {
-      document.getElementById('app-icon-img').src = savedLogo;
-      document.getElementById('app-icon-img').style.display = 'block';
-      document.getElementById('app-icon-emoji').style.display = 'none';
-    }
-
-    // OTP — انتقال سلس iOS/Android
-    const otpBoxes = [...document.querySelectorAll('.otp-box')];
-
-    function checkComplete() {
-      const code = otpBoxes.map(b => b.value).join('');
-      if (code.length === 6) {
-        setTimeout(() => document.getElementById('verify-otp-btn').click(), 200);
-      }
-    }
-
-    otpBoxes.forEach((box, i) => {
-      box.addEventListener('input', () => {
-        // iOS: value يُحدَّث بعد event — نستخدم setTimeout(0)
-        setTimeout(() => {
-          const val = box.value.replace(/[^0-9]/g, '');
-          box.value = val ? val[val.length - 1] : '';
-          if (box.value && i < otpBoxes.length - 1) {
-            otpBoxes[i + 1].focus();
+      boxes.forEach((box, i) => {
+        box.addEventListener('input', function() {
+          const v = this.value.replace(/\D/g, '');
+          this.value = v ? v[v.length - 1] : '';
+          if (this.value && i < boxes.length - 1) {
+            boxes[i + 1].focus();
           }
-          checkComplete();
-        }, 0);
-      });
-
-      box.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace') {
-          if (box.value) {
-            box.value = '';
-          } else if (i > 0) {
-            otpBoxes[i - 1].value = '';
-            otpBoxes[i - 1].focus();
+          if (boxes.map(b => b.value).join('').length === 6) {
+            setTimeout(() => verifyOTP(), 200);
           }
+        });
+
+        box.addEventListener('keydown', function(e) {
+          if (e.key === 'Backspace') {
+            if (this.value) {
+              this.value = '';
+            } else if (i > 0) {
+              boxes[i - 1].value = '';
+              boxes[i - 1].focus();
+            }
+          }
+        });
+
+        box.addEventListener('paste', function(e) {
           e.preventDefault();
-        }
+          const d = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'');
+          boxes.forEach((b, j) => b.value = d[j] || '');
+          boxes[Math.min(d.length, boxes.length - 1)].focus();
+          if (d.length >= 6) setTimeout(() => verifyOTP(), 200);
+        });
       });
-
-      box.addEventListener('paste', (e) => {
-        e.preventDefault();
-        const digits = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
-        otpBoxes.forEach((b, j) => { b.value = digits[j] || ''; });
-        const focus = Math.min(digits.length, otpBoxes.length - 1);
-        otpBoxes[focus].focus();
-        checkComplete();
-      });
-
-      box.addEventListener('focus', () => {
-        setTimeout(() => box.setSelectionRange(0, 1), 0);
-      });
-    });
+    }
+    setupOTP();
 
     // rating
-    document.getElementById('yes-btn').addEventListener('click', function() { rApplied=true; this.className='choice yes'; document.getElementById('no-btn').className='choice'; });
-    document.getElementById('no-btn').addEventListener('click', function() { rApplied=false; this.className='choice no'; document.getElementById('yes-btn').className='choice'; });
+    document.getElementById('yes-btn').addEventListener('click', function() {
+      rApplied = true;
+      this.className = 'choice yes';
+      document.getElementById('no-btn').className = 'choice';
+    });
+    document.getElementById('no-btn').addEventListener('click', function() {
+      rApplied = false;
+      this.className = 'choice no';
+      document.getElementById('yes-btn').className = 'choice';
+    });
     document.querySelectorAll('.star').forEach(s => {
-      s.addEventListener('click', () => { rStars=parseInt(s.dataset.v); document.querySelectorAll('.star').forEach((x,i) => x.classList.toggle('on',i<rStars)); });
+      s.addEventListener('click', () => {
+        rStars = parseInt(s.dataset.v);
+        document.querySelectorAll('.star').forEach((x, i) => x.classList.toggle('on', i < rStars));
+      });
     });
 
     document.getElementById('submit-r').addEventListener('click', async () => {
-      const btn=document.getElementById('submit-r');
-      btn.textContent='...'; btn.disabled=true;
+      const btn = document.getElementById('submit-r');
+      btn.textContent = '⏳'; btn.disabled = true;
       try {
-        const uid=auth.currentUser?.uid||'guest';
-        await addDoc(collection(db,'ratings'),{
-          user_id:uid,business_id:currentStoreId,
-          business_name:storeData[currentStoreId]?.name||'',
-          coupon_id:currentCouponId||'',
-          discount_applied:rApplied,stars:rStars,
-          comment:document.getElementById('r-comment').value.trim(),
-          created_at:serverTimestamp()
+        const uid = auth.currentUser?.uid || 'guest';
+        await addDoc(collection(db, 'ratings'), {
+          user_id: uid, business_id: currentStoreId,
+          business_name: storeData[currentStoreId]?.name || '',
+          coupon_id: currentCouponId || '',
+          discount_applied: rApplied, stars: rStars,
+          comment: document.getElementById('r-comment').value.trim(),
+          created_at: serverTimestamp()
         });
-        if (rApplied===false) {
-          await addDoc(collection(db,'complaints'),{
-            user_id:uid,business_id:currentStoreId,
-            business_name:storeData[currentStoreId]?.name||'',
-            coupon_id:currentCouponId||'',
-            created_at:serverTimestamp(),status:'open'
+        if (rApplied === false) {
+          await addDoc(collection(db, 'complaints'), {
+            user_id: uid, business_id: currentStoreId,
+            business_name: storeData[currentStoreId]?.name || '',
+            coupon_id: currentCouponId || '',
+            created_at: serverTimestamp(), status: 'open'
           });
         }
-      } catch(e) {}
-      rApplied=null; rStars=0;
-      document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
-      document.querySelectorAll('.choice').forEach(c=>c.className='choice');
+      } catch(e) { console.error(e); }
+      rApplied = null; rStars = 0;
+      document.querySelectorAll('.star').forEach(s => s.classList.remove('on'));
+      document.querySelectorAll('.choice').forEach(c => c.className = 'choice');
       go('screen-stores');
     });
+
     document.getElementById('skip-r').addEventListener('click', () => go('screen-stores'));
   });
 </script>
