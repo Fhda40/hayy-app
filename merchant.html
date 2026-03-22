@@ -565,7 +565,7 @@
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
   import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-  import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, limit, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+  import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, orderBy, limit, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
   const firebaseConfig = {
     apiKey: "AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
     authDomain: "fbrg87.firebaseapp.com",
@@ -583,6 +583,7 @@
   // Auth — Phone + Password System
   // ══════════════════════════════
   let currentPhone = '';
+  let merchantDocId = ''; // معرف وثيقة التاجر في Firestore
 
   // Simple hash function for password storage
   async function hashPassword(password) {
@@ -649,11 +650,13 @@
       const snapshot = await getDocs(q);
 
       if (!snapshot.empty) {
-        const merchantData = snapshot.docs[0].data();
+        const merchantDoc = snapshot.docs[0];
+        const merchantData = merchantDoc.data();
+        merchantDocId = merchantDoc.id;
         error.style.display = 'none';
         localStorage.setItem('merchant_session', 'active');
         localStorage.setItem('merchant_phone', currentPhone);
-        // تحميل بيانات التاجر
+        localStorage.setItem('merchant_doc_id', merchantDocId);
         loadMerchantData(merchantData);
         goScreen('screen-dashboard');
         loadStats();
@@ -687,14 +690,15 @@
 
     try {
       const hashedPassword = await hashPassword(password);
-      await addDoc(collection(db, 'merchants'), {
+      const docRef = await addDoc(collection(db, 'merchants'), {
         phone: currentPhone,
         password: hashedPassword,
         created_at: serverTimestamp()
       });
-
+      merchantDocId = docRef.id;
       localStorage.setItem('merchant_session', 'active');
       localStorage.setItem('merchant_phone', currentPhone);
+      localStorage.setItem('merchant_doc_id', merchantDocId);
       btn.textContent = 'إنشاء الحساب ←';
       btn.disabled = false;
       goScreen('screen-dashboard');
@@ -706,12 +710,16 @@
   }
 
   function loadMerchantData(data) {
+    // تحميل بيانات النشاط من merchants collection
     if (data.store_name) {
       document.getElementById('store-name').value = data.store_name;
       document.getElementById('dash-name').textContent = data.store_name;
       document.getElementById('preview-name').textContent = data.store_name;
     }
-    if (data.store_type) document.getElementById('store-type').value = data.store_type;
+    if (data.store_type) {
+      document.getElementById('store-type').value = data.store_type;
+      document.getElementById('preview-type').textContent = data.store_type;
+    }
     if (data.discount) {
       document.getElementById('discount-slider').value = data.discount;
       document.getElementById('discount-label').textContent = data.discount + '%';
@@ -721,6 +729,30 @@
       selectedEmoji = data.icon;
       document.getElementById('preview-icon').textContent = data.icon;
       document.getElementById('dash-icon').textContent = data.icon;
+    }
+    if (data.description) document.getElementById('store-desc').value = data.description;
+    if (data.area) document.getElementById('store-area').value = data.area;
+    if (data.logo_url) {
+      logoUrl = data.logo_url;
+      document.getElementById('logo-preview').src = data.logo_url;
+      document.getElementById('logo-preview').style.display = 'block';
+      document.getElementById('logo-preview-wrap').style.display = 'none';
+      document.getElementById('preview-logo-img').src = data.logo_url;
+      document.getElementById('preview-logo-img').style.display = 'block';
+      document.getElementById('preview-logo-wrap').style.display = 'none';
+    }
+    if (data.photos) {
+      photoUrls = data.photos;
+      data.photos.forEach((url, i) => {
+        if (url && i < 3) {
+          const slot = document.querySelectorAll('.photo-slot')[i];
+          const preview = slot?.querySelector('.photo-preview');
+          const icon = slot?.querySelector('span');
+          if (preview) { preview.src = url; preview.style.display = 'block'; }
+          if (icon) icon.style.display = 'none';
+          photoUrls[i] = url;
+        }
+      });
     }
   }
 
@@ -757,6 +789,7 @@
   // ── Session Restore ──
   window.addEventListener('load', () => {
     currentPhone = localStorage.getItem('merchant_phone') || '';
+    merchantDocId = localStorage.getItem('merchant_doc_id') || '';
   });
 
   // ── Tabs ──
@@ -956,6 +989,69 @@
     document.getElementById('verify-title').textContent = 'كود صالح!';
     document.getElementById('verify-sub').textContent = 'تم تطبيق الخصم بنجاح';
     result.classList.add('success');
+  }
+
+  // ── Save Store ──
+  async function saveStore() {
+    const name = document.getElementById('store-name').value.trim();
+    const type = document.getElementById('store-type').value;
+    const discount = parseInt(document.getElementById('discount-slider').value);
+    const desc = document.getElementById('store-desc').value.trim();
+    const area = document.getElementById('store-area').value.trim();
+
+    if (!name) { alert('أدخل اسم النشاط'); return; }
+
+    const btn = document.getElementById('save-btn');
+    btn.textContent = '⏳ جاري الحفظ...';
+    btn.disabled = true;
+
+    const storeInfo = {
+      store_name: name,
+      store_type: type,
+      discount, icon: selectedEmoji,
+      description: desc, area,
+      logo_url: logoUrl || '',
+      photos: photoUrls.filter(u => u),
+      active: true,
+      updated_at: serverTimestamp()
+    };
+
+    try {
+      // 1. تحديث بيانات التاجر في merchants
+      if (merchantDocId) {
+        await setDoc(doc(db, 'merchants', merchantDocId), storeInfo, { merge: true });
+      }
+
+      // 2. تحديث أو إنشاء في businesses (للعملاء)
+      const bq = query(collection(db, 'businesses'), where('phone', '==', currentPhone));
+      const bSnap = await getDocs(bq);
+
+      const businessData = {
+        name, type, discount,
+        icon: selectedEmoji, description: desc, area,
+        phone: currentPhone,
+        logo_url: logoUrl || '',
+        photos: photoUrls.filter(u => u),
+        active: true,
+        updated_at: serverTimestamp()
+      };
+
+      if (!bSnap.empty) {
+        // تحديث المحل الموجود
+        await setDoc(doc(db, 'businesses', bSnap.docs[0].id), businessData, { merge: true });
+      } else {
+        // إنشاء محل جديد
+        await addDoc(collection(db, 'businesses'), { ...businessData, created_at: serverTimestamp() });
+      }
+
+    } catch (e) { console.error(e); }
+
+    btn.textContent = '💾 حفظ معلومات النشاط ←';
+    btn.disabled = false;
+
+    const msg = document.getElementById('save-success');
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 3000);
   }
 
   // ── Event Listeners ──
