@@ -814,39 +814,6 @@
     document.getElementById('preview-icon').textContent = selectedEmoji;
   }
 
-  // ── Save Store ──
-  async function saveStore() {
-    const name = document.getElementById('store-name').value.trim();
-    const type = document.getElementById('store-type').value;
-    const discount = document.getElementById('discount-slider').value;
-    const desc = document.getElementById('store-desc').value.trim();
-    const area = document.getElementById('store-area').value.trim();
-
-    if (!name) { alert('أدخل اسم النشاط'); return; }
-
-    const btn = document.getElementById('save-btn');
-    btn.textContent = '⏳ جاري الحفظ...';
-    btn.disabled = true;
-
-    try {
-      await addDoc(collection(db, 'businesses'), {
-        name, type, discount: parseInt(discount),
-        icon: selectedEmoji, description: desc, area,
-        phone: currentPhone, active: true,
-        logo_url: logoUrl || '',
-        photos: photoUrls.filter(u => u),
-        created_at: serverTimestamp()
-      });
-    } catch (e) { console.error(e); }
-
-    btn.textContent = '💾 حفظ معلومات النشاط ←';
-    btn.disabled = false;
-
-    const msg = document.getElementById('save-success');
-    msg.style.display = 'block';
-    setTimeout(() => msg.style.display = 'none', 3000);
-  }
-
   // ── Cloudinary Config ──
   const CLOUDINARY_CLOUD = 'dtwgl17iy';
   const CLOUDINARY_PRESET = 'hayy_uploads';
