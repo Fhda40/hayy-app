@@ -938,9 +938,10 @@
   }
 
   // ── Verify Code ──
-  function verifyCode() {
-    const code = document.getElementById('verify-code-input').value;
+  async function verifyCode() {
+    const code = document.getElementById('verify-code-input').value.trim();
     const result = document.getElementById('verify-result');
+    const btn = document.getElementById('verify-code-btn');
     result.className = 'verify-result';
 
     if (!code || code.length < 4) {
@@ -951,11 +952,71 @@
       return;
     }
 
-    // للتجربة — أي كود 4 أرقام يُقبل
-    document.getElementById('verify-icon').textContent = '✅';
-    document.getElementById('verify-title').textContent = 'كود صالح!';
-    document.getElementById('verify-sub').textContent = 'تم تطبيق الخصم بنجاح';
-    result.classList.add('success');
+    btn.textContent = '⏳ جاري التحقق...';
+    btn.disabled = true;
+
+    try {
+      const now = new Date();
+
+      // البحث عن الكود في Firebase
+      const q = query(
+        collection(db, 'coupons'),
+        where('code', '==', code),
+        where('status', '==', 'pending')
+      );
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        // الكود غير موجود أو مستخدم مسبقاً
+        const usedQ = query(collection(db, 'coupons'), where('code', '==', code), where('status', '==', 'used'));
+        const usedSnap = await getDocs(usedQ);
+
+        document.getElementById('verify-icon').textContent = usedSnap.empty ? '❌' : '⚠️';
+        document.getElementById('verify-title').textContent = usedSnap.empty ? 'كود غير موجود' : 'كود مستخدم مسبقاً';
+        document.getElementById('verify-sub').textContent = usedSnap.empty ? 'تأكد من الأرقام' : 'تم استخدام هذا الكود من قبل';
+        result.classList.add('error');
+
+      } else {
+        const couponDoc = snap.docs[0];
+        const couponData = couponDoc.data();
+        const expiresAt = couponData.expires_at?.toDate ? couponData.expires_at.toDate() : new Date(couponData.expires_at);
+
+        if (expiresAt < now) {
+          // الكود منتهي الصلاحية
+          await setDoc(doc(db, 'coupons', couponDoc.id), { status: 'expired' }, { merge: true });
+          document.getElementById('verify-icon').textContent = '⏱️';
+          document.getElementById('verify-title').textContent = 'الكود منتهي!';
+          document.getElementById('verify-sub').textContent = 'انتهت صلاحية الكود — اطلب من العميل كوداً جديداً';
+          result.classList.add('error');
+
+        } else {
+          // ✅ كود صالح — سجّله كمستخدم
+          await setDoc(doc(db, 'coupons', couponDoc.id), {
+            status: 'used',
+            used_at: serverTimestamp(),
+            merchant_phone: currentPhone
+          }, { merge: true });
+
+          const businessName = couponData.business_name || 'المحل';
+          document.getElementById('verify-icon').textContent = '✅';
+          document.getElementById('verify-title').textContent = 'كود صالح!';
+          document.getElementById('verify-sub').textContent = `تم تطبيق الخصم بنجاح`;
+          result.classList.add('success');
+
+          // مسح خانة الكود
+          document.getElementById('verify-code-input').value = '';
+        }
+      }
+    } catch(e) {
+      console.error(e);
+      document.getElementById('verify-icon').textContent = '❌';
+      document.getElementById('verify-title').textContent = 'خطأ في التحقق';
+      document.getElementById('verify-sub').textContent = 'حاول مجدداً';
+      result.classList.add('error');
+    }
+
+    btn.textContent = '✅ تحقق من الكود ←';
+    btn.disabled = false;
   }
 
   // ── Save Store ──
