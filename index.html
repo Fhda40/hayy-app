@@ -233,26 +233,9 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 .center { text-align:center; }
 .px16 { padding:0 16px; }
 
-/* إخفاء reCAPTCHA نهائياً */
-.grecaptcha-badge,
-[style*=“z-index: 2147483647”],
-iframe[src*=“recaptcha”],
-iframe[src*=“google.com/recaptcha”],
-#recaptcha-container,
-div[style*=“bottom: 14px”] {
-visibility: hidden !important;
-opacity: 0 !important;
-display: none !important;
-pointer-events: none !important;
-position: absolute !important;
-width: 0 !important;
-height: 0 !important;
-overflow: hidden !important;
-}
-
-/* إخفاء أي iframe مضاف للصفحة */
-body > iframe { display: none !important; }
-body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !important; }
+/* إخفاء reCAPTCHA */
+.grecaptcha-badge { visibility:hidden !important; opacity:0 !important; width:0 !important; height:0 !important; }
+#recaptcha-container { position:fixed; bottom:-9999px; left:-9999px; width:0; height:0; overflow:hidden; }
 </style>
 
 </head>
@@ -576,7 +559,21 @@ body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !impo
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // تهيئة reCAPTCHA مسبقاً عند تحميل الصفحة
+  // حذف reCAPTCHA badge نهائياً
+  setInterval(() => {
+    document.querySelectorAll('.grecaptcha-badge, iframe[src*="recaptcha"]').forEach(el => {
+      el.style.cssText = 'visibility:hidden!important;opacity:0!important;width:0!important;height:0!important;';
+    });
+    // حذف الـ div الخارجي الذي يحتوي badge
+    document.querySelectorAll('body > div').forEach(div => {
+      if (!div.classList.contains('screen') && div.id !== 'recaptcha-container') {
+        const badge = div.querySelector('.grecaptcha-badge, iframe');
+        if (badge) div.style.cssText = 'position:fixed;bottom:-9999px;width:0;height:0;overflow:hidden;';
+      }
+    });
+  }, 500);
+
+  // تهيئة reCAPTCHA مسبقاً
   window.addEventListener('load', () => {
     try {
       window.rv = new RecaptchaVerifier(auth, 'recaptcha-container', {
@@ -627,17 +624,15 @@ body > div:not(.screen):not(#recaptcha-container) > iframe { display: none !impo
       }
       window.cr = await signInWithPhoneNumber(auth, '+966' + phone, window.rv);
       go('screen-otp');
-      setTimeout(() => {
-        const first = document.querySelector('.otp-box');
-        if (first) first.focus();
-      }, 400);
+      setTimeout(() => { const f = document.querySelector('.otp-box'); if(f) f.focus(); }, 400);
     } catch(e) {
       console.error(e);
       window.rv = null;
       alert('خطأ في الإرسال — حاول مجدداً');
+    } finally {
+      btn.textContent = 'ابدأ الآن';
+      btn.disabled = false;
     }
-    btn.textContent = 'ابدأ الآن';
-    btn.disabled = false;
   }
 
   async function verifyOTP() {
