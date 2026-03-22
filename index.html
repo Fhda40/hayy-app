@@ -339,12 +339,12 @@ iframe[src*=“recaptcha”] { display:none !important; }
 
 <!-- OTP boxes — 6 خانات صغيرة منضبطة -->
 <div style="display:flex; gap:8px; direction:ltr; justify-content:center; padding:0 24px 20px;">
-  <input type="number" class="otp-box" maxlength="1">
-  <input type="number" class="otp-box" maxlength="1">
-  <input type="number" class="otp-box" maxlength="1">
-  <input type="number" class="otp-box" maxlength="1">
-  <input type="number" class="otp-box" maxlength="1">
-  <input type="number" class="otp-box" maxlength="1">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1" autocomplete="one-time-code">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
+  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
 </div>
 
 <div style="padding:0 16px 12px;">
@@ -584,6 +584,7 @@ iframe[src*=“recaptcha”] { display:none !important; }
   async function verifyOTP() {
     const boxes = document.querySelectorAll('.otp-box');
     const code = [...boxes].map(b => b.value).join('');
+    if (code.length < 6) return;
     const btn = document.getElementById('verify-otp-btn');
     btn.textContent = '...'; btn.disabled = true;
     try {
@@ -591,9 +592,9 @@ iframe[src*=“recaptcha”] { display:none !important; }
       await setDoc(doc(db,'users',r.user.uid),{phone:r.user.phoneNumber,last_login:serverTimestamp()},{merge:true});
       go('screen-geo');
     } catch(e) {
-      boxes.forEach(b => {b.style.borderColor='var(--red)';b.value='';});
+      boxes.forEach(b => {b.style.borderColor='var(--red)'; b.value='';});
       boxes[0].focus();
-      setTimeout(() => boxes.forEach(b => b.style.borderColor=''),1200);
+      setTimeout(() => boxes.forEach(b => b.style.borderColor=''), 1200);
     }
     btn.textContent = 'تحقق'; btn.disabled = false;
   }
@@ -813,10 +814,37 @@ iframe[src*=“recaptcha”] { display:none !important; }
       document.getElementById('app-icon-emoji').style.display = 'none';
     }
 
-    // OTP
-    document.querySelectorAll('.otp-box').forEach((b,i,all) => {
-      b.addEventListener('input', () => { if(b.value.length>1)b.value=b.value[0]; if(b.value&&i<all.length-1)all[i+1].focus(); });
-      b.addEventListener('keydown', e => { if(e.key==='Backspace'&&!b.value&&i>0)all[i-1].focus(); });
+    // OTP — انتقال سلس
+    const otpBoxes = document.querySelectorAll('.otp-box');
+    otpBoxes.forEach((box, i) => {
+      box.addEventListener('input', (e) => {
+        const val = e.target.value.replace(/[^0-9]/g, '');
+        box.value = val.slice(-1);
+        if (box.value && i < otpBoxes.length - 1) {
+          otpBoxes[i + 1].focus();
+          otpBoxes[i + 1].select();
+        }
+      });
+      box.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace') {
+          if (!box.value && i > 0) {
+            otpBoxes[i - 1].focus();
+            otpBoxes[i - 1].value = '';
+          }
+        }
+        if (e.key === 'ArrowRight' && i > 0) otpBoxes[i-1].focus();
+        if (e.key === 'ArrowLeft' && i < otpBoxes.length-1) otpBoxes[i+1].focus();
+      });
+      box.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const paste = e.clipboardData.getData('text').replace(/[^0-9]/g,'');
+        otpBoxes.forEach((b, j) => {
+          b.value = paste[j] || '';
+        });
+        const last = Math.min(paste.length, otpBoxes.length) - 1;
+        otpBoxes[last]?.focus();
+      });
+      box.addEventListener('focus', () => box.select());
     });
 
     // rating
