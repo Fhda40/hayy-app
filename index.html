@@ -568,6 +568,58 @@
     </div>
   </div>
 
+  <!-- ══ SCREEN 5B: RATING ══ -->
+  <div class="screen" id="screen-rating">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-icon">🏡</div>
+        <div><div class="logo-text">حيّ</div></div>
+      </div>
+    </div>
+
+    <div style="padding: 32px 24px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+
+      <div style="font-size: 56px; margin-bottom: 16px;">🧾</div>
+      <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">هل طُبّق الخصم؟</h2>
+      <p class="text-muted" style="margin-bottom: 32px;">نريد التأكد أن <strong id="rating-store-name" style="color:var(--gold);">المحل</strong><br>طبّق الخصم المتفق عليه</p>
+
+      <!-- أزرار التقييم -->
+      <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+        <button id="rating-yes-btn" style="flex:1; padding:20px; border:2px solid rgba(45,122,79,0.3); background:rgba(45,122,79,0.08); border-radius:16px; cursor:pointer; transition:all 0.2s; font-family:'Tajawal',sans-serif;">
+          <div style="font-size: 36px; margin-bottom: 8px;">✅</div>
+          <div style="font-size: 15px; font-weight: 700; color: var(--green);">نعم، طُبّق</div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">الخصم طُبّق بشكل صحيح</div>
+        </button>
+        <button id="rating-no-btn" style="flex:1; padding:20px; border:2px solid rgba(192,57,43,0.3); background:rgba(192,57,43,0.08); border-radius:16px; cursor:pointer; transition:all 0.2s; font-family:'Tajawal',sans-serif;">
+          <div style="font-size: 36px; margin-bottom: 8px;">❌</div>
+          <div style="font-size: 15px; font-weight: 700; color: var(--red);">لا، لم يُطبَّق</div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">الخصم لم يُطبَّق</div>
+        </button>
+      </div>
+
+      <!-- تقييم النجوم -->
+      <div id="stars-section" style="background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 16px;">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 12px; color: var(--text-muted);">قيّم تجربتك في المحل</div>
+        <div id="stars-wrap" style="display: flex; justify-content: center; gap: 8px; font-size: 32px;">
+          <span class="star" data-val="1" style="cursor:pointer; opacity:0.3; transition:all 0.1s;">⭐</span>
+          <span class="star" data-val="2" style="cursor:pointer; opacity:0.3; transition:all 0.1s;">⭐</span>
+          <span class="star" data-val="3" style="cursor:pointer; opacity:0.3; transition:all 0.1s;">⭐</span>
+          <span class="star" data-val="4" style="cursor:pointer; opacity:0.3; transition:all 0.1s;">⭐</span>
+          <span class="star" data-val="5" style="cursor:pointer; opacity:0.3; transition:all 0.1s;">⭐</span>
+        </div>
+        <div id="star-label" style="font-size: 12px; color: var(--text-muted); margin-top: 8px; min-height: 18px;"></div>
+      </div>
+
+      <!-- تعليق اختياري -->
+      <div style="margin-bottom: 16px;">
+        <input type="text" id="rating-comment" placeholder="تعليق اختياري..." style="direction:rtl; text-align:right; font-size:14px;">
+      </div>
+
+      <button class="btn btn-primary" id="submit-rating-btn">إرسال التقييم ←</button>
+      <button class="btn" id="skip-rating-btn" style="background:none; color:var(--text-muted); font-size:13px; margin-top:8px;">تخطي</button>
+    </div>
+  </div>
+
   <!-- ══ SCREEN 6: MERCHANT LOGIN ══ -->
   <div class="screen" id="screen-merchant">
     <div class="top-bar">
@@ -1027,14 +1079,45 @@
   async function generateCode() {
     if (currentCode && !codeExpired) return;
 
+    const btn = document.getElementById('generate-btn');
+
+    // ── تحقق من الاستخدام اليومي ──
+    try {
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const uid = auth.currentUser?.uid || localStorage.getItem('hayy_uid');
+
+      if (uid && currentStoreId) {
+        const q = query(
+          collection(db, 'coupons'),
+          where('user_id', '==', uid),
+          where('business_id', '==', currentStoreId),
+          where('status', '==', 'used')
+        );
+        const snap = await getDocs(q);
+        const usedToday = snap.docs.some(d => {
+          const usedAt = d.data().used_at?.toDate?.();
+          return usedAt && usedAt >= today;
+        });
+
+        if (usedToday) {
+          btn.textContent = '🚫 استخدمت هذا العرض اليوم';
+          btn.disabled = true;
+          btn.style.background = 'var(--text-muted)';
+          return;
+        }
+      }
+    } catch(e) { console.error(e); }
+
+    // ── توليد الكود ──
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     currentCode = code; codeExpired = false;
 
     document.getElementById('coupon-code').textContent = code;
     document.getElementById('coupon-card-el').classList.remove('code-expired');
     document.getElementById('timer-wrap').style.opacity = '1';
-    document.getElementById('generate-btn').textContent = '🔄 كود نشط';
-    document.getElementById('generate-btn').disabled = true;
+    btn.textContent = '🔄 كود نشط';
+    btn.disabled = true;
 
     // حفظ الكوبون في Firebase
     try {
@@ -1059,7 +1142,7 @@
     if (timerInterval) clearInterval(timerInterval);
     timerSeconds = 180;
     const total = 180, circumference = 138;
-    timerInterval = setInterval(() => {
+    timerInterval = setInterval(async () => {
       timerSeconds--;
       const mins = Math.floor(timerSeconds / 60);
       const secs = timerSeconds % 60;
@@ -1072,9 +1155,24 @@
       if (timerSeconds <= 0) {
         clearInterval(timerInterval);
         codeExpired = true;
+
+        // تحقق إذا استُخدم الكود قبل ما يظهر التقييم
+        if (currentCouponId) {
+          try {
+            const couponSnap = await getDoc(doc(db, 'coupons', currentCouponId));
+            if (couponSnap.exists() && couponSnap.data().status === 'used') {
+        // الكود استُخدم — اعرض شاشة التقييم
+              document.getElementById('rating-store-name').textContent = storeData[currentStoreId]?.name || 'المحل';
+              goScreen('screen-rating');
+              return;
+            }
+          } catch(e) { console.error(e); }
+        }
+
         document.getElementById('coupon-card-el').classList.add('code-expired');
-        document.getElementById('generate-btn').textContent = '⚡ توليد كود جديد';
-        document.getElementById('generate-btn').disabled = false;
+        document.getElementById('generate-btn').textContent = '🚫 استخدمت هذا العرض اليوم';
+        document.getElementById('generate-btn').disabled = true;
+        document.getElementById('generate-btn').style.background = 'var(--text-muted)';
         document.getElementById('timer-progress').style.stroke = 'var(--gold)';
         document.getElementById('timer-display').style.color = 'var(--gold)';
       }
@@ -1145,6 +1243,93 @@
     document.getElementById('geo-btn').addEventListener('click', checkGeo);
     document.getElementById('back-to-stores').addEventListener('click', () => goScreen('screen-stores'));
     document.getElementById('generate-btn').addEventListener('click', generateCode);
+
+    // أزرار التقييم
+    let selectedRating = 0;
+    let discountApplied = null;
+
+    document.getElementById('rating-yes-btn').addEventListener('click', function() {
+      discountApplied = true;
+      this.style.borderColor = 'var(--green)';
+      this.style.background = 'rgba(45,122,79,0.15)';
+      document.getElementById('rating-no-btn').style.borderColor = 'rgba(192,57,43,0.3)';
+      document.getElementById('rating-no-btn').style.background = 'rgba(192,57,43,0.08)';
+    });
+
+    document.getElementById('rating-no-btn').addEventListener('click', function() {
+      discountApplied = false;
+      this.style.borderColor = 'var(--red)';
+      this.style.background = 'rgba(192,57,43,0.15)';
+      document.getElementById('rating-yes-btn').style.borderColor = 'rgba(45,122,79,0.3)';
+      document.getElementById('rating-yes-btn').style.background = 'rgba(45,122,79,0.08)';
+    });
+
+    document.querySelectorAll('.star').forEach(star => {
+      star.addEventListener('click', () => {
+        selectedRating = parseInt(star.dataset.val);
+        document.querySelectorAll('.star').forEach((s, i) => {
+          s.style.opacity = i < selectedRating ? '1' : '0.3';
+        });
+        const labels = ['', 'سيء 😞', 'مقبول 😐', 'جيد 🙂', 'ممتاز 😊', 'رائع جداً 🌟'];
+        document.getElementById('star-label').textContent = labels[selectedRating];
+      });
+      star.addEventListener('mouseover', () => {
+        const val = parseInt(star.dataset.val);
+        document.querySelectorAll('.star').forEach((s, i) => {
+          s.style.opacity = i < val ? '1' : '0.3';
+        });
+      });
+      star.addEventListener('mouseout', () => {
+        document.querySelectorAll('.star').forEach((s, i) => {
+          s.style.opacity = i < selectedRating ? '1' : '0.3';
+        });
+      });
+    });
+
+    document.getElementById('submit-rating-btn').addEventListener('click', async () => {
+      if (discountApplied === null && selectedRating === 0) {
+        alert('الرجاء اختيار هل تم تطبيق الخصم على الأقل');
+        return;
+      }
+      const btn = document.getElementById('submit-rating-btn');
+      btn.textContent = '⏳ جاري الإرسال...';
+      btn.disabled = true;
+
+      try {
+        const uid = auth.currentUser?.uid || localStorage.getItem('hayy_uid') || 'guest';
+        await addDoc(collection(db, 'ratings'), {
+          user_id: uid,
+          business_id: currentStoreId,
+          business_name: storeData[currentStoreId]?.name || '',
+          coupon_id: currentCouponId || '',
+          discount_applied: discountApplied,
+          stars: selectedRating,
+          comment: document.getElementById('rating-comment').value.trim(),
+          created_at: serverTimestamp()
+        });
+
+        // إذا لم يُطبَّق الخصم — حفظ شكوى
+        if (discountApplied === false) {
+          await addDoc(collection(db, 'complaints'), {
+            user_id: uid,
+            business_id: currentStoreId,
+            business_name: storeData[currentStoreId]?.name || '',
+            coupon_id: currentCouponId || '',
+            created_at: serverTimestamp(),
+            status: 'open'
+          });
+        }
+      } catch(e) { console.error(e); }
+
+      // العودة لقائمة المحلات
+      goScreen('screen-stores');
+      discountApplied = null;
+      selectedRating = 0;
+    });
+
+    document.getElementById('skip-rating-btn').addEventListener('click', () => {
+      goScreen('screen-stores');
+    });
 
     // أزرار التاجر - شاشة الدخول
     document.getElementById('merchant-logout').addEventListener('click', () => goScreen('screen-welcome'));
