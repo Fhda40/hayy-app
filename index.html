@@ -1498,16 +1498,6 @@ pointer-events:none !important;
       searchInput.addEventListener('input', (e) => renderStores(e.target.value.trim()));
     }
 
-    // Event delegation — يعمل دائماً حتى بعد إعادة بناء القائمة
-    const storesList = document.getElementById('stores-list');
-    if (storesList && !storesList._delegated) {
-      storesList._delegated = true;
-      storesList.addEventListener('click', (e) => {
-        const card = e.target.closest('.store-card');
-        if (card) openStore(card.dataset.id);
-      });
-    }
-
     renderStores();
   }
 
@@ -1737,6 +1727,12 @@ pointer-events:none !important;
     document.getElementById('back-stores').addEventListener('click', () => go('screen-stores'));
     document.getElementById('gen-btn').addEventListener('click', generateCode);
     document.getElementById('merchant-link').addEventListener('click', () => window.location.href='merchant.html');
+
+    // ── Store cards delegation ──
+    document.getElementById('stores-list').addEventListener('click', (e) => {
+      const card = e.target.closest('.store-card');
+      if (card) openStore(card.dataset.id);
+    });
 
     // ── OTP ── طريقة موثوقة على iOS وAndroid
     function setupOTP() {
