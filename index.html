@@ -403,11 +403,16 @@ pointer-events:none !important;
         style="flex:1; border:none; background:none; font-size:17px; font-family:'Tajawal',sans-serif; color:var(--text); outline:none; padding:14px 0; direction:rtl; text-align:right; padding-left:40px;">
       <button id="toggle-new-pass" style="position:absolute; left:14px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-4); padding:4px;">👁️</button>
     </div>
-    <div style="display:flex; align-items:center; padding:0 16px; min-height:54px; position:relative;">
+    <div style="display:flex; align-items:center; padding:0 16px; min-height:54px; position:relative; border-bottom:1px solid var(--separator);">
       <input type="password" id="confirm-pass"
         placeholder="تأكيد كلمة المرور"
         style="flex:1; border:none; background:none; font-size:17px; font-family:'Tajawal',sans-serif; color:var(--text); outline:none; padding:14px 0; direction:rtl; text-align:right; padding-left:40px;">
       <button id="toggle-confirm-pass" style="position:absolute; left:14px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-4); padding:4px;">👁️</button>
+    </div>
+    <div style="display:flex; align-items:center; padding:0 16px; min-height:54px;">
+      <input type="email" id="user-email"
+        placeholder="الإيميل (اختياري)"
+        style="flex:1; border:none; background:none; font-size:17px; font-family:'Tajawal',sans-serif; color:var(--text); outline:none; padding:14px 0; direction:ltr; text-align:left;">
     </div>
   </div>
 
@@ -739,6 +744,7 @@ pointer-events:none !important;
   async function createAccount() {
     const password = document.getElementById('new-pass').value;
     const confirm = document.getElementById('confirm-pass').value;
+    const email = document.getElementById('user-email').value.trim();
     const error = document.getElementById('register-error');
 
     if (password.length < 6) {
@@ -756,15 +762,22 @@ pointer-events:none !important;
 
     try {
       const hashed = await hashPassword(password);
-      const ref = await addDoc(collection(db, 'users'), {
+      const userData = {
         phone: currentPhone,
         password: hashed,
         created_at: serverTimestamp()
-      });
+      };
+      if (email) userData.email = email;
+
+      const ref = await addDoc(collection(db, 'users'), userData);
       localStorage.setItem('h_uid', ref.id);
       localStorage.setItem('h_phone', currentPhone);
       go('screen-geo');
-    } catch(e) { console.error(e); }
+    } catch(e) {
+      console.error(e);
+      error.textContent = '❌ حدث خطأ — حاول مجدداً';
+      error.style.display = 'block';
+    }
 
     btn.textContent = 'إنشاء الحساب';
     btn.disabled = false;
