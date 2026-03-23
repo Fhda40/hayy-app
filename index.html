@@ -1084,9 +1084,12 @@ pointer-events:none !important;
     currentFilter = filter;
     document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
-    // scroll the button into view smoothly
     btn.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
-    renderStores(document.getElementById('search-input')?.value || '');
+    if (window.__allStores) {
+      const list = document.getElementById('stores-list');
+      list.innerHTML = buildStoreCards(sortStores(window.__allStores));
+      addStoreListeners();
+    }
   }
 
   function sortStores(stores) {
@@ -1472,8 +1475,18 @@ pointer-events:none !important;
 
   // إضافة listeners لبطاقات المحلات
   function addStoreListeners() {
-    document.querySelectorAll('.store-card').forEach(card => {
-      card.addEventListener('click', () => openStore(card.dataset.id));
+    const cards = document.querySelectorAll('.store-card');
+    cards.forEach(function(card) {
+      const id = card.getAttribute('data-id');
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openStore(id);
+      });
+      card.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        openStore(id);
+      }, {passive: false});
     });
   }
 
