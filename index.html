@@ -880,52 +880,16 @@ pointer-events:none !important;
 
 <div id="recaptcha-container"></div>
 
-<!-- script عادي يستمع للضغط على المحلات -->
-
-<script>
-  document.addEventListener('click', function(e) {
-    const card = e.target.closest('.store-card');
-    if (!card) return;
-    const id = card.dataset.id;
-    if (id && window.__openStore) {
-      window.__openStore(id);
-    }
-  });
-</script>
+<div id="recaptcha-container"></div>
 
 <script>
 (function() {
-  // CSS قوي
   var s = document.createElement('style');
   s.innerHTML = `
     .grecaptcha-badge { visibility:hidden!important; opacity:0!important; pointer-events:none!important; }
     #recaptcha-container > div { position:fixed!important; left:-99999px!important; top:-99999px!important; }
-    body > div[style*="z-index: 2147483647"],
-    body > div[style*="z-index:2147483647"] {
-      display:none!important;
-      visibility:hidden!important;
-      opacity:0!important;
-    }
   `;
   document.head.appendChild(s);
-
-  // MutationObserver يخفي أي عنصر reCAPTCHA فور ظهوره
-  var obs = new MutationObserver(function(mutations) {
-    mutations.forEach(function(m) {
-      m.addedNodes.forEach(function(node) {
-        if (node.nodeType !== 1) return;
-        var el = node;
-        var zIndex = (el.style && el.style.zIndex) || '';
-        if (zIndex === '2147483647' || zIndex === '2147483646') {
-          el.style.cssText += ';display:none!important;visibility:hidden!important;';
-        }
-        if (el.classList && el.classList.contains('grecaptcha-badge')) {
-          el.style.cssText += ';visibility:hidden!important;opacity:0!important;';
-        }
-      });
-    });
-  });
-  obs.observe(document.body, { childList: true, subtree: false });
 })();
 </script>
 
@@ -1482,11 +1446,11 @@ pointer-events:none !important;
           ? `<span style="font-size:11px; color:var(--text-4);">📍 ${haversine(userLat,userLng,s.lat,s.lng).toFixed(1)} كم</span>`
           : '';
         return `
-          <div class="store-card" data-id="${s.id}" onclick="window._openStore('${s.id}')">
-            <div class="store-logo" style="pointer-events:none;">
+          <div class="store-card" data-id="${s.id}" onclick="window.__hs&&window.__hs('${s.id}')">
+            <div class="store-logo">
               ${s.logo_url ? `<img src="${s.logo_url}">` : s.icon||'🏪'}
             </div>
-            <div style="flex:1; pointer-events:none;">
+            <div style="flex:1;">
               <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px; flex-wrap:wrap;">
                 <div class="store-name">${s.name}</div>
                 ${stars} ${badge}
@@ -1497,7 +1461,7 @@ pointer-events:none !important;
                 ${dist}
               </div>
             </div>
-            <span class="chevron" style="pointer-events:none;">›</span>
+            <span class="chevron">›</span>
           </div>
         `;
       }).join('');
@@ -1517,6 +1481,7 @@ pointer-events:none !important;
     const s = storeData[id];
     if (!s) { console.log('openStore: no data for', id, Object.keys(storeData)); return; }
     currentStoreId = id;
+    window.__hs = openStore; // تحديث المرجع دائماً
 
     const logo = document.getElementById('coupon-logo');
     const icon = document.getElementById('coupon-icon');
@@ -1698,6 +1663,7 @@ pointer-events:none !important;
 
   // events
   document.addEventListener('DOMContentLoaded', () => {
+    window.__hs = openStore; // expose للـ onclick في HTML
     // Filter tabs
     document.querySelectorAll('.filter-tab').forEach(tab => {
       tab.addEventListener('click', function() {
@@ -1741,9 +1707,7 @@ pointer-events:none !important;
     document.getElementById('gen-btn').addEventListener('click', generateCode);
     document.getElementById('merchant-link').addEventListener('click', () => window.location.href='merchant.html');
 
-    // تعريف عالمي لـ openStore حتى يعمل من inline onclick
-  window._openStore = (id) => openStore(id);
-  window.__openStore = (id) => openStore(id);
+    // Store delegation - الحل الصحيح
     document.getElementById('stores-list').addEventListener('click', (e) => {
       const card = e.target.closest('.store-card');
       if (card) openStore(card.dataset.id);
