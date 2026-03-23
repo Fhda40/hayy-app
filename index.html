@@ -1453,19 +1453,20 @@ pointer-events:none !important;
         : realPopular ? `<span class="badge-hot">رائج</span>` : '';
       const dist = (userLat && userLng && s.lat && s.lng)
         ? `<span style="font-size:11px;color:var(--text-4);">📍 ${haversine(userLat,userLng,s.lat,s.lng).toFixed(1)} كم</span>` : '';
-      return `<div class="store-card" data-id="${s.id}">
-        <div class="store-logo">${s.logo_url ? `<img src="${s.logo_url}">` : s.icon||'🏪'}</div>
-        <div style="flex:1;">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap;">
-            <div class="store-name">${s.name}</div>${stars} ${badge}
-          </div>
-          <div class="store-type">${s.type}</div>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
-            <span class="discount-tag">خصم ${s.discount||0}%</span>${dist}
-          </div>
-        </div>
-        <span class="chevron">›</span>
-      </div>`;
+      const logo = s.logo_url ? '<img src="' + s.logo_url + '">' : (s.icon||'🏪');
+      return '<div class="store-card" data-id="' + s.id + '">' +
+        '<div class="store-logo">' + logo + '</div>' +
+        '<div style="flex:1;">' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap;">' +
+            '<div class="store-name">' + s.name + '</div>' + stars + ' ' + badge +
+          '</div>' +
+          '<div class="store-type">' + s.type + '</div>' +
+          '<div style="display:flex;align-items:center;gap:8px;margin-top:4px;">' +
+            '<span class="discount-tag">خصم ' + (s.discount||0) + '%</span>' + dist +
+          '</div>' +
+        '</div>' +
+        '<span class="chevron">›</span>' +
+      '</div>';
     }).join('');
   }
 
