@@ -1489,16 +1489,26 @@ pointer-events:none !important;
           </div>
         `;
       }).join('');
-      document.querySelectorAll('.store-card').forEach(c => c.addEventListener('click', () => openStore(c.dataset.id)));
+      // لا نضيف listeners هنا — نستخدم delegation
     }
-
-    renderStores();
 
     // البحث
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => renderStores(e.target.value.trim()));
     }
+
+    // Event delegation — يعمل دائماً حتى بعد إعادة بناء القائمة
+    const storesList = document.getElementById('stores-list');
+    if (storesList && !storesList._delegated) {
+      storesList._delegated = true;
+      storesList.addEventListener('click', (e) => {
+        const card = e.target.closest('.store-card');
+        if (card) openStore(card.dataset.id);
+      });
+    }
+
+    renderStores();
   }
 
   async function openStore(id) {
