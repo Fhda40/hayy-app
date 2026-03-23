@@ -1363,8 +1363,12 @@ pointer-events:none !important;
       mSnap.forEach(m => {
         const mData = m.data();
         const match = defaults.find(s => s.name === mData.store_name || s.phone === mData.phone);
-        if (match && mData.photos?.length) match.photos = mData.photos;
-        if (match && mData.logo_url) match.logo_url = mData.logo_url;
+        if (match) {
+          if (mData.photos?.length) match.photos = mData.photos;
+          if (mData.logo_url) match.logo_url = mData.logo_url;
+          if (mData.is_founder) match.is_founder = true;
+          if (mData.founder_number) match.founder_number = mData.founder_number;
+        }
       });
     } catch(e) {}
 
@@ -1420,7 +1424,10 @@ pointer-events:none !important;
         const stars = avg ? `<span style="font-size:11px; color:#FF9500; font-weight:600;">★ ${avg}</span>` : '';
         const isTop = idx === 0 && currentFilter === 'popular';
         const realPopular = popularityMap[s.id] >= 5 && !['ooto','nahdi','barber','kabsati'].includes(s.id);
-        const badge = isTop
+        const isFounder = s.is_founder === true;
+        const badge = isFounder
+          ? `<span style="font-size:10px; font-weight:700; background:#0A2540; color:#fff; border-radius:6px; padding:2px 7px;">🎖️ مؤسس</span>`
+          : isTop
           ? `<span class="badge-top">🔥 #1</span>`
           : realPopular
           ? `<span class="badge-hot">رائج</span>`
