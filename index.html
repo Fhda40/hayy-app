@@ -699,8 +699,22 @@ pointer-events:none !important;
 <!-- ══ COUPON ══ -->
 
 <div class="screen" id="screen-coupon">
-  <div class="nav">
-    <button class="nav-back" id="back-stores" style="color:#007AFF;">‹ العروض</button>
+  <div style="
+    padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 0;
+    display:flex; align-items:center;
+  ">
+    <button id="back-stores" style="
+      display:inline-flex; align-items:center; gap:6px;
+      background:var(--bg2); border:none; border-radius:20px;
+      padding:8px 16px 8px 12px;
+      font-size:14px; font-weight:600; font-family:'Tajawal',sans-serif;
+      color:var(--text); cursor:pointer;
+      transition:all 0.2s;
+      -webkit-appearance:none;
+    ">
+      <span style="font-size:16px;">‹</span>
+      العروض
+    </button>
   </div>
 
   <!-- معلومات المحل -->
@@ -715,17 +729,6 @@ pointer-events:none !important;
     <div style="font-size:12px; color:var(--text-4); margin-top:1px;" id="coupon-desc"></div>
 
 ```
-<!-- زر Google Maps -->
-<div id="maps-btn-wrap" style="display:none; margin-top:10px;">
-  <a id="maps-btn" href="#" target="_blank" style="
-    display:inline-flex; align-items:center; gap:6px;
-    background:#F0F4FF; border:1.5px solid #C7D7FF;
-    border-radius:20px; padding:6px 16px;
-    font-size:13px; font-weight:600; color:#0A2540;
-    text-decoration:none;
-  ">📍 الموقع على الخريطة</a>
-</div>
-
 <!-- 👀 مؤشر المستخدمين النشطين -->
 <div id="active-users-badge" style="
   display:inline-flex; align-items:center; gap:6px;
