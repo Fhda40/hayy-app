@@ -54,6 +54,16 @@ from { opacity:0; transform:translateY(10px); }
 to { opacity:1; transform:translateY(0); }
 }
 
+@keyframes pulse-dot {
+0%, 100% { transform: scale(1); }
+50% { transform: scale(1.3); }
+}
+
+@keyframes codeReveal {
+from { opacity:0; transform:scale(0.85); }
+to { opacity:1; transform:scale(1); }
+}
+
 /* NAV */
 .nav {
 padding: calc(env(safe-area-inset-top,0px) + 14px) 20px 0;
@@ -647,20 +657,36 @@ pointer-events:none !important;
 
 <div class="screen" id="screen-coupon">
   <div class="nav">
-    <button class="nav-back" id="back-stores">‹ العروض</button>
+    <button class="nav-back" id="back-stores" style="color:#007AFF;">‹ العروض</button>
   </div>
 
-  <div style="padding:8px 16px 14px; text-align:center;">
-    <div id="store-icon-wrap" style="width:64px; height:64px; margin:0 auto 10px;">
-      <div id="coupon-icon" class="store-logo" style="width:64px; height:64px; font-size:30px; border-radius:16px; margin:0;"></div>
-      <img id="coupon-logo" style="display:none; width:64px; height:64px; border-radius:16px; object-fit:cover;">
+  <!-- معلومات المحل -->
+
+  <div style="padding:8px 20px 12px; text-align:center;">
+    <div id="store-icon-wrap" style="width:72px; height:72px; margin:0 auto 10px;">
+      <div id="coupon-icon" class="store-logo" style="width:72px; height:72px; font-size:32px; border-radius:18px; margin:0;"></div>
+      <img id="coupon-logo" style="display:none; width:72px; height:72px; border-radius:18px; object-fit:cover;">
     </div>
-    <div class="title-3" id="coupon-name"></div>
-    <div class="footnote secondary" id="coupon-type" style="margin-top:3px;"></div>
-    <div class="footnote secondary" id="coupon-desc" style="margin-top:2px;"></div>
+    <div style="font-size:20px; font-weight:700; letter-spacing:-0.3px;" id="coupon-name"></div>
+    <div style="font-size:13px; color:var(--text-3); margin-top:2px;" id="coupon-type"></div>
+    <div style="font-size:12px; color:var(--text-4); margin-top:1px;" id="coupon-desc"></div>
+
+```
+<!-- 👀 مؤشر المستخدمين النشطين -->
+<div id="active-users-badge" style="
+  display:inline-flex; align-items:center; gap:6px;
+  margin-top:10px; padding:6px 14px;
+  background:#FFF3E0; border-radius:20px;
+  font-size:12px; color:#E65100; font-weight:600;
+">
+  <span style="animation:pulse-dot 1.5s infinite;">👀</span>
+  <span id="active-users-text">12 شخص يستخدم هذا العرض الآن</span>
+</div>
+```
+
   </div>
 
-  <!-- store photos -->
+  <!-- صور المحل -->
 
   <div id="photos-wrap" style="display:none; padding:0 16px 12px;">
     <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
@@ -669,6 +695,8 @@ pointer-events:none !important;
       <img id="p2" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; display:none;">
     </div>
   </div>
+
+  <!-- بطاقة الكوبون -->
 
   <div class="coupon-wrap" id="coupon-card">
     <div class="coupon-top">
@@ -679,25 +707,51 @@ pointer-events:none !important;
         <span class="big-discount" id="coupon-pct"> — </span>
         <span class="big-sign">%</span>
       </div>
-      <div class="caption secondary">حصري لأهل شرورة</div>
+      <div class="caption secondary">حصري لأهل شرورة 🏡</div>
     </div>
     <div class="coupon-bottom">
-      <div class="code-display" id="coupon-code">- - - -</div>
-      <div class="caption secondary">أريه للكاشير عند الدفع</div>
-      <div id="timer-wrap" style="opacity:0.3; margin-top:14px;">
-        <div class="t-bar"><div class="t-fill" id="t-fill"></div></div>
-        <div class="caption secondary" id="t-text">3:00</div>
-      </div>
-      <div id="expired-note" style="display:none; margin-top:12px; background:rgba(255,59,48,0.06); border-radius:10px; padding:10px;">
-        <span class="footnote" style="color:var(--red);">انتهت صلاحية الكود</span>
+
+```
+  <!-- حالة: قبل التوليد -->
+  <div id="pre-generate" style="text-align:center; padding:8px 0;">
+    <div style="font-size:32px; margin-bottom:8px;">🎁</div>
+    <div style="font-size:15px; color:var(--text-3);">اضغط لتوليد كودك الحصري</div>
+  </div>
+
+  <!-- حالة: بعد التوليد -->
+  <div id="post-generate" style="display:none; text-align:center;">
+    <div style="font-size:13px; color:var(--text-3); margin-bottom:6px; font-weight:600;">🎉 جاهز خصمك!</div>
+    <div style="font-size:13px; color:var(--text-3); margin-bottom:4px;">كودك:</div>
+    <div class="code-display" id="coupon-code" style="font-size:42px; letter-spacing:12px; margin:4px 0 8px;">- - - -</div>
+    <div style="font-size:13px; color:var(--text-3); margin-bottom:12px; font-weight:500;">📍 توجّه للمحل الآن</div>
+    <div id="timer-wrap" style="margin-top:4px;">
+      <div class="t-bar"><div class="t-fill" id="t-fill"></div></div>
+      <div style="font-size:13px; color:var(--text-3); margin-top:4px;">
+        ⏱ صالح لمدة <strong id="t-text">3:00</strong>
       </div>
     </div>
   </div>
 
-<button class="btn-main" id="gen-btn">توليد كود الخصم</button>
+  <!-- كود منتهي -->
+  <div id="expired-note" style="display:none; margin-top:8px; background:rgba(255,59,48,0.06); border-radius:10px; padding:10px; text-align:center;">
+    <span style="font-size:13px; color:var(--red); font-weight:600;">⏰ انتهت صلاحية الكود</span>
+  </div>
 
-  <div class="h8"></div>
-  <div class="center"><span class="caption tertiary">مرة واحدة يومياً لكل محل</span></div>
+  <!-- نص أريه للكاشير — يظهر فقط بعد التوليد -->
+  <div id="cashier-note" style="display:none; font-size:12px; color:var(--text-4); margin-top:8px; text-align:center;">
+    أريه للكاشير عند الدفع
+  </div>
+</div>
+```
+
+  </div>
+
+<button class="btn-main" id="gen-btn" style="font-size:17px; padding:18px;">🎁 احصل على خصمك</button>
+
+  <div style="height:8px;"></div>
+  <div style="text-align:center;">
+    <span style="font-size:12px; color:var(--text-4);">مرة واحدة يومياً لكل محل</span>
+  </div>
   <div class="spacer"></div>
   <div class="safe-bottom"></div>
 </div>
@@ -1342,14 +1396,21 @@ pointer-events:none !important;
       });
     } else pw.style.display = 'none';
 
-    // reset
+    // reset UI
     document.getElementById('coupon-code').textContent = '- - - -';
-    document.getElementById('expired-note').style.display='none';
-    document.getElementById('timer-wrap').style.opacity='0.3';
-    document.getElementById('t-fill').style.width='100%';
-    document.getElementById('t-fill').style.background='var(--green)';
-    document.getElementById('t-text').textContent='3:00';
-    currentCode=null; currentCouponId=null; expired=false;
+    document.getElementById('expired-note').style.display = 'none';
+    document.getElementById('pre-generate').style.display = 'block';
+    document.getElementById('post-generate').style.display = 'none';
+    document.getElementById('cashier-note').style.display = 'none';
+    document.getElementById('t-fill').style.width = '100%';
+    document.getElementById('t-fill').style.background = 'var(--green)';
+    document.getElementById('t-text').textContent = '3:00';
+
+    // مؤشر المستخدمين النشطين — رقم عشوائي واقعي
+    const activeCount = Math.floor(Math.random() * 20) + 5;
+    document.getElementById('active-users-text').textContent = `${activeCount} شخص يستخدم هذا العرض الآن`;
+
+    currentCode = null; currentCouponId = null; expired = false;
     if (timer) clearInterval(timer);
 
     const btn = document.getElementById('gen-btn');
@@ -1377,7 +1438,7 @@ pointer-events:none !important;
 
   async function generateCode() {
     if (currentCode && !expired) return;
-    // re-check
+    // re-check daily limit
     try {
       const today = new Date(); today.setHours(0,0,0,0);
       const uid = auth.currentUser?.uid || localStorage.getItem('h_uid') || 'guest';
@@ -1386,29 +1447,40 @@ pointer-events:none !important;
         const snap = await getDocs(q);
         if (snap.docs.some(d => { const t=d.data().used_at?.toDate?.(); return t&&t>=today; })) {
           const btn=document.getElementById('gen-btn');
-          btn.textContent='استخدمت هذا العرض اليوم';
+          btn.textContent='✅ استخدمت هذا العرض اليوم';
           btn.classList.add('muted'); btn.disabled=true; return;
         }
       }
     } catch(e) {}
 
+    // توليد الكود
     const code = Math.floor(1000+Math.random()*9000).toString();
-    currentCode=code; expired=false;
+    currentCode = code; expired = false;
+
+    // 🎉 تجربة WOW — إخفاء pre وإظهار post مع animation
+    document.getElementById('pre-generate').style.display = 'none';
+    const post = document.getElementById('post-generate');
+    post.style.display = 'block';
+    post.style.animation = 'codeReveal 0.4s ease';
+
     document.getElementById('coupon-code').textContent = code.split('').join(' ');
-    document.getElementById('timer-wrap').style.opacity='1';
-    const btn=document.getElementById('gen-btn');
-    btn.textContent='الكود نشط'; btn.disabled=true;
+    document.getElementById('cashier-note').style.display = 'block';
+
+    const btn = document.getElementById('gen-btn');
+    btn.textContent = '⏱ الكود نشط — توجّه للمحل';
+    btn.disabled = true;
+    btn.style.background = '#34C759';
 
     try {
       const uid = auth.currentUser?.uid || localStorage.getItem('h_uid') || 'guest';
-      const ref=await addDoc(collection(db,'coupons'),{
-        code,user_id:uid,business_id:currentStoreId,
+      const ref = await addDoc(collection(db,'coupons'),{
+        code, user_id:uid, business_id:currentStoreId,
         business_name:storeData[currentStoreId]?.name||'',
         created_at:serverTimestamp(),
         expires_at:new Date(Date.now()+180000),
         status:'pending'
       });
-      currentCouponId=ref.id;
+      currentCouponId = ref.id;
     } catch(e) {}
     startTimer();
   }
