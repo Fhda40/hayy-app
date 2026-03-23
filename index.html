@@ -386,6 +386,8 @@ pointer-events:none !important;
     <div style="display:flex; align-items:center; padding:0 16px; min-height:54px; position:relative;">
       <input type="password" id="login-pass"
         placeholder="كلمة المرور"
+        autocomplete="current-password"
+        name="password"
         style="flex:1; border:none; background:none; font-size:17px; font-family:'Tajawal',sans-serif; color:var(--text); outline:none; padding:14px 0; direction:rtl; text-align:right; padding-left:40px;">
       <button id="toggle-login-pass" style="position:absolute; left:14px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-4); padding:4px;">👁️</button>
     </div>
@@ -415,15 +417,22 @@ pointer-events:none !important;
 ```
 <div style="padding:0 16px 12px;">
   <div style="background:var(--bg2); border-radius:14px; overflow:hidden; margin-bottom:10px;">
+    <!-- حقل مخفي للرقم حتى يحفظه المتصفح مع كلمة المرور -->
+    <input type="tel" id="register-phone-hidden" name="username" autocomplete="username"
+      style="position:absolute; opacity:0; pointer-events:none; width:1px; height:1px;">
     <div style="display:flex; align-items:center; padding:0 16px; min-height:54px; position:relative; border-bottom:1px solid var(--separator);">
       <input type="password" id="new-pass"
         placeholder="كلمة المرور (6 أحرف أو أكثر)"
+        autocomplete="new-password"
+        name="password"
         style="flex:1; border:none; background:none; font-size:17px; font-family:'Tajawal',sans-serif; color:var(--text); outline:none; padding:14px 0; direction:rtl; text-align:right; padding-left:40px;">
       <button id="toggle-new-pass" style="position:absolute; left:14px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-4); padding:4px;">👁️</button>
     </div>
     <div style="display:flex; align-items:center; padding:0 16px; min-height:54px; position:relative; border-bottom:1px solid var(--separator);">
       <input type="password" id="confirm-pass"
         placeholder="تأكيد كلمة المرور"
+        autocomplete="new-password"
+        name="confirm_password"
         style="flex:1; border:none; background:none; font-size:17px; font-family:'Tajawal',sans-serif; color:var(--text); outline:none; padding:14px 0; direction:rtl; text-align:right; padding-left:40px;">
       <button id="toggle-confirm-pass" style="position:absolute; left:14px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-4); padding:4px;">👁️</button>
     </div>
@@ -917,6 +926,10 @@ pointer-events:none !important;
     error.style.display = 'none';
     const btn = document.getElementById('create-account-btn');
     btn.disabled = true; btn.textContent = '⏳';
+
+    // ملء الحقل المخفي برقم الجوال لحفظ كلمة المرور
+    const hiddenPhone = document.getElementById('register-phone-hidden');
+    if (hiddenPhone) hiddenPhone.value = currentPhone;
 
     try {
       const hashed = await hashPassword(password);
