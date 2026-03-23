@@ -580,7 +580,7 @@
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+  import { getAuth, signInAnonymously, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
   import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, orderBy, limit, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
   const firebaseConfig = {
     apiKey: "AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
@@ -594,6 +594,9 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  // تسجيل دخول مجهول فوراً لضمان الوصول لـ Firestore
+  signInAnonymously(auth).catch(e => console.log('Anon auth:', e));
 
   // ══════════════════════════════
   // Auth — Phone + Password System
