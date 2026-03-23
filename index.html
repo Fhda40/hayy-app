@@ -706,7 +706,8 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // ── Push Notifications ──
+  // تسجيل دخول مجهول فوراً — ضروري لـ Firestore Rules
+  signInAnonymously(auth).catch(e => console.log('Anon auth:', e));
   const VAPID_KEY = 'eWDJZ90Iqm4sFBPCIy3Ayc79O42hgxIj_i3QUfxzPSs';
   let messaging = null;
 
@@ -1077,6 +1078,17 @@
       snap.forEach(d => defaults.push({id:d.id,...d.data()}));
     } catch(e) {}
 
+    // دمج بيانات الصور من merchants
+    try {
+      const mSnap = await getDocs(collection(db,'merchants'));
+      mSnap.forEach(m => {
+        const mData = m.data();
+        const match = defaults.find(s => s.name === mData.store_name || s.phone === mData.phone);
+        if (match && mData.photos?.length) match.photos = mData.photos;
+        if (match && mData.logo_url) match.logo_url = mData.logo_url;
+      });
+    } catch(e) {}
+
     // جلب متوسط التقييمات
     const ratingsMap = {};
     try {
@@ -1154,12 +1166,31 @@
     document.getElementById('coupon-desc').textContent = s.description||'';
     document.getElementById('coupon-pct').textContent = ' '+parseInt(s.discount);
 
-    const photos = s.photos||[];
+    // جلب الصور من merchants لو ما كانت في businesses
+    let photos = s.photos || [];
+    if (!photos.length) {
+      try {
+        const mSnap = await getDocs(query(collection(db,'merchants'), where('phone', '==', s.phone||'')));
+        if (!mSnap.empty) {
+          photos = mSnap.docs[0].data().photos || [];
+        }
+        // لو ما عندنا phone — نبحث باسم المحل
+        if (!photos.length) {
+          const mSnap2 = await getDocs(query(collection(db,'merchants'), where('store_name', '==', s.name||'')));
+          if (!mSnap2.empty) photos = mSnap2.docs[0].data().photos || [];
+        }
+      } catch(e) {}
+    }
+
     const pw = document.getElementById('photos-wrap');
     if (photos.length) {
-      pw.style.display='block';
-      [0,1,2].forEach(i => { const img=document.getElementById('p'+i); if(photos[i]){img.src=photos[i];img.style.display='block';}else img.style.display='none'; });
-    } else pw.style.display='none';
+      pw.style.display = 'block';
+      [0,1,2].forEach(i => {
+        const img = document.getElementById('p'+i);
+        if (photos[i]) { img.src = photos[i]; img.style.display = 'block'; }
+        else img.style.display = 'none';
+      });
+    } else pw.style.display = 'none';
 
     // reset
     document.getElementById('coupon-code').textContent = '- - - -';
