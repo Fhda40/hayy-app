@@ -483,17 +483,18 @@ font-size: 13px; color: var(–green); margin-top: 12px;
     </div>
 
     <!-- Form -->
-    <div class="card" style="margin: 0;">
+    <div class="card" style="margin:0;">
       <div class="card-title">🏪 معلومات النشاط</div>
 
       <div class="input-group">
         <label>اسم النشاط التجاري</label>
-        <input type="text" id="store-name" placeholder="مثال: كافيه الورد" style="text-align: right; direction: rtl;">
+        <input type="text" id="store-name" placeholder="مثال: كافيه الورد"
+          style="text-align:right; direction:rtl; height:54px; font-size:16px; border-radius:12px;">
       </div>
 
       <div class="input-group">
         <label>نوع النشاط</label>
-        <select id="store-type">
+        <select id="store-type" style="height:54px; font-size:15px; border-radius:12px;">
           <option value="مقاهي ومشروبات">☕ مقاهي ومشروبات</option>
           <option value="مطاعم ومأكولات">🍽️ مطاعم ومأكولات</option>
           <option value="صيدليات">💊 صيدليات</option>
@@ -524,73 +525,91 @@ font-size: 13px; color: var(–green); margin-top: 12px;
       </div>
 
       <div class="input-group">
-        <label>نسبة الخصم: <span id="discount-label" style="color: var(--accent); font-weight: 700;">10%</span></label>
+        <label>نسبة الخصم: <span id="discount-label" style="color:var(--accent); font-weight:700;">10%</span></label>
         <input type="range" id="discount-slider" min="5" max="50" value="10" step="5"
-          style="width: 100%; accent-color: var(--accent); margin-top: 8px; cursor: pointer;">
-        <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+          style="width:100%; accent-color:#0A2540; margin-top:8px; cursor:pointer; height:6px;">
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-top:6px;">
           <span>5%</span><span>25%</span><span>50%</span>
         </div>
       </div>
 
-      <div class="input-group">
+      <div class="input-group" style="margin-bottom:0;">
         <label>وصف العرض (اختياري)</label>
-        <input type="text" id="store-desc" placeholder="مثال: خصم على جميع المشروبات" style="text-align: right; direction: rtl;">
+        <input type="text" id="store-desc" placeholder="مثال: خصم على جميع المشروبات"
+          style="text-align:right; direction:rtl; height:54px; font-size:16px; border-radius:12px;">
       </div>
     </div>
 
-    <div class="card" style="margin: 0;">
+    <div class="card" style="margin:0;">
       <div class="card-title">📍 موقع النشاط</div>
       <div class="input-group">
         <label>الحي</label>
-        <input type="text" id="store-area" placeholder="مثال: حي الروضة" style="text-align: right; direction: rtl;">
+        <input type="text" id="store-area" placeholder="مثال: حي الروضة"
+          style="text-align:right; direction:rtl; height:54px; font-size:16px; border-radius:12px;">
       </div>
-      <button class="btn btn-ghost" id="location-btn">📍 تحديد موقعي الحالي</button>
-      <div id="location-status" class="mt-8 center text-muted"></div>
+      <button class="btn" id="location-btn" style="
+        background:linear-gradient(135deg,#0A2540,#2D7DD2);
+        color:#fff; border:none;
+        box-shadow:0 4px 16px rgba(10,37,64,0.25);
+        font-size:15px; padding:16px; border-radius:14px;
+      ">📍 تحديد موقعي الحالي</button>
+      <div id="location-status" style="margin-top:8px; text-align:center; font-size:13px; color:var(--text-muted);"></div>
     </div>
 
-    <div class="card" style="margin: 0;">
+    <div class="card" style="margin:0;">
       <div class="card-title">📸 صور النشاط</div>
 
-      <!-- شعار النشاط -->
       <div class="input-group">
         <label>شعار النشاط (لوجو)</label>
-        <div id="logo-upload-area" style="border: 2px dashed var(--border); border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s;" onclick="document.getElementById('logo-input').click()">
+        <div id="logo-upload-area" style="
+          border:2px dashed var(--border); border-radius:14px;
+          padding:24px; text-align:center; cursor:pointer;
+          transition:all 0.2s; background:var(--surface2);
+        " onclick="document.getElementById('logo-input').click()">
           <div id="logo-preview-wrap">
-            <div style="font-size: 32px; margin-bottom: 8px;">🖼️</div>
-            <div style="font-size: 13px; color: var(--text-muted);">اضغط لرفع الشعار</div>
-            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">JPG, PNG — حد أقصى 2MB</div>
+            <div style="font-size:36px; margin-bottom:8px;">🖼️</div>
+            <div style="font-size:14px; font-weight:600; color:var(--text);">اضغط لرفع الشعار</div>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">JPG, PNG — حد أقصى 2MB</div>
           </div>
-          <img id="logo-preview" style="display:none; width:80px; height:80px; border-radius:50%; object-fit:cover; margin:0 auto;" />
+          <img id="logo-preview" style="display:none; width:90px; height:90px; border-radius:50%; object-fit:cover; margin:0 auto;" />
         </div>
         <input type="file" id="logo-input" accept="image/*" style="display:none;">
-        <div id="logo-status" class="mt-8 center text-muted"></div>
+        <div id="logo-status" style="margin-top:8px; text-align:center; font-size:13px; color:var(--text-muted);"></div>
       </div>
 
-      <!-- صور إضافية -->
-      <div class="input-group" style="margin-bottom: 0;">
+      <div class="input-group" style="margin-bottom:0;">
         <label>صور النشاط (حتى 3 صور)</label>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-          <div class="photo-slot" data-index="0" onclick="document.getElementById('photo-input-0').click()" style="aspect-ratio:1; border: 2px dashed var(--border); border-radius: 12px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background: var(--surface2);">
-            <span style="font-size:24px;">📷</span>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:8px;">
+          <div class="photo-slot" data-index="0" onclick="document.getElementById('photo-input-0').click()"
+            style="aspect-ratio:1; border:2px dashed var(--border); border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background:var(--surface2); gap:4px;">
+            <span style="font-size:28px;">📷</span>
+            <span style="font-size:11px; color:var(--text-muted);">صورة 1</span>
             <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
           </div>
-          <div class="photo-slot" data-index="1" onclick="document.getElementById('photo-input-1').click()" style="aspect-ratio:1; border: 2px dashed var(--border); border-radius: 12px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background: var(--surface2);">
-            <span style="font-size:24px;">📷</span>
+          <div class="photo-slot" data-index="1" onclick="document.getElementById('photo-input-1').click()"
+            style="aspect-ratio:1; border:2px dashed var(--border); border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background:var(--surface2); gap:4px;">
+            <span style="font-size:28px;">📷</span>
+            <span style="font-size:11px; color:var(--text-muted);">صورة 2</span>
             <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
           </div>
-          <div class="photo-slot" data-index="2" onclick="document.getElementById('photo-input-2').click()" style="aspect-ratio:1; border: 2px dashed var(--border); border-radius: 12px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background: var(--surface2);">
-            <span style="font-size:24px;">📷</span>
+          <div class="photo-slot" data-index="2" onclick="document.getElementById('photo-input-2').click()"
+            style="aspect-ratio:1; border:2px dashed var(--border); border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background:var(--surface2); gap:4px;">
+            <span style="font-size:28px;">📷</span>
+            <span style="font-size:11px; color:var(--text-muted);">صورة 3</span>
             <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
           </div>
         </div>
         <input type="file" id="photo-input-0" accept="image/*" style="display:none;">
         <input type="file" id="photo-input-1" accept="image/*" style="display:none;">
         <input type="file" id="photo-input-2" accept="image/*" style="display:none;">
-        <div id="photos-status" class="center text-muted" style="font-size:11px;"></div>
+        <div id="photos-status" style="text-align:center; font-size:12px; color:var(--text-muted);"></div>
       </div>
     </div>
 
-    <button class="btn btn-primary" id="save-btn">💾 حفظ معلومات النشاط ←</button>
+    <button class="btn btn-primary" id="save-btn"
+      style="background:linear-gradient(135deg,#0A2540,#2D7DD2); box-shadow:0 4px 16px rgba(10,37,64,0.3); font-size:16px; padding:18px;">
+      💾 حفظ معلومات النشاط
+    </button>
     <div class="success-msg" id="save-success">✅ تم حفظ معلومات النشاط بنجاح!</div>
 
   </div>
