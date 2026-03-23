@@ -880,6 +880,19 @@ pointer-events:none !important;
 
 <div id="recaptcha-container"></div>
 
+<!-- script عادي يستمع للضغط على المحلات -->
+
+<script>
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.store-card');
+    if (!card) return;
+    const id = card.dataset.id;
+    if (id && window.__openStore) {
+      window.__openStore(id);
+    }
+  });
+</script>
+
 <script>
 (function() {
   // CSS قوي
@@ -901,13 +914,11 @@ pointer-events:none !important;
     mutations.forEach(function(m) {
       m.addedNodes.forEach(function(node) {
         if (node.nodeType !== 1) return;
-        // خفّ الـ widget الظاهر
         var el = node;
         var zIndex = (el.style && el.style.zIndex) || '';
         if (zIndex === '2147483647' || zIndex === '2147483646') {
           el.style.cssText += ';display:none!important;visibility:hidden!important;';
         }
-        // خفّ الـ badge
         if (el.classList && el.classList.contains('grecaptcha-badge')) {
           el.style.cssText += ';visibility:hidden!important;opacity:0!important;';
         }
@@ -1054,6 +1065,7 @@ pointer-events:none !important;
   let storeData = {}, currentStoreId = null, currentCode = null;
   let currentCouponId = null, timer = null, timerSecs = 180, expired = false;
   let rApplied = null, rStars = 0;
+  window.__storeData = storeData; // مشاركة مع global scope
 
   // nav
   function go(id) {
@@ -1502,7 +1514,8 @@ pointer-events:none !important;
   }
 
   async function openStore(id) {
-    const s = storeData[id]; if (!s) return;
+    const s = storeData[id];
+    if (!s) { console.log('openStore: no data for', id, Object.keys(storeData)); return; }
     currentStoreId = id;
 
     const logo = document.getElementById('coupon-logo');
@@ -1730,6 +1743,7 @@ pointer-events:none !important;
 
     // تعريف عالمي لـ openStore حتى يعمل من inline onclick
   window._openStore = (id) => openStore(id);
+  window.__openStore = (id) => openStore(id);
     document.getElementById('stores-list').addEventListener('click', (e) => {
       const card = e.target.closest('.store-card');
       if (card) openStore(card.dataset.id);
