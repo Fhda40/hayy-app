@@ -262,15 +262,29 @@ font-size:13px; font-weight:600; font-family:‘Tajawal’,sans-serif;
 border:1.5px solid var(–separator);
 background:var(–bg); color:var(–text-3);
 cursor:pointer; white-space:nowrap;
-transition:all 0.2s ease;
+transition:all 0.25s ease;
+-webkit-appearance:none;
 }
 .filter-tab.active {
 background:#1D1D1F; color:#fff;
 border-color:#1D1D1F;
-transform:scale(1.02);
+box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
-.filter-tab:active { transform:scale(0.97); }
+.filter-tab:active { transform:scale(0.95); }
 #filter-bar::-webkit-scrollbar { display:none; }
+
+/* Badge رائج */
+.badge-hot {
+font-size:10px; font-weight:700;
+background:#1D1D1F; color:#fff;
+border-radius:6px; padding:2px 7px;
+letter-spacing:0.2px;
+}
+.badge-top {
+font-size:10px; font-weight:700;
+background:var(–text); color:#fff;
+border-radius:6px; padding:2px 7px;
+}
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
@@ -633,29 +647,15 @@ pointer-events:none !important;
   </div>
   <div id="user-greeting" style="padding:0 20px 8px; font-size:14px; color:var(--text-3); font-weight:500;"></div>
 
-  <!-- Filter Bar — tabs متحركة -->
+  <!-- Filter Bar -->
 
-  <div style="
-    overflow-x:auto; white-space:nowrap;
-    padding:0 16px 12px;
-    scrollbar-width:none; -ms-overflow-style:none;
-  " id="filter-bar">
+  <div style="overflow-x:auto; white-space:nowrap; padding:0 16px 12px; scrollbar-width:none; -ms-overflow-style:none;" id="filter-bar">
     <div style="display:inline-flex; gap:8px; padding:2px 0;">
-      <button class="filter-tab active" data-filter="all" onclick="setFilter('all',this)">
-        🏪 الكل
-      </button>
-      <button class="filter-tab" data-filter="popular" onclick="setFilter('popular',this)">
-        🔥 الأكثر طلباً
-      </button>
-      <button class="filter-tab" data-filter="nearest" onclick="setFilter('nearest',this)">
-        📍 الأقرب لك
-      </button>
-      <button class="filter-tab" data-filter="discount" onclick="setFilter('discount',this)">
-        💰 أعلى خصم
-      </button>
-      <button class="filter-tab" data-filter="rated" onclick="setFilter('rated',this)">
-        ⭐ الأعلى تقييماً
-      </button>
+      <button class="filter-tab active" data-filter="all" id="tab-all">🏪 الكل</button>
+      <button class="filter-tab" data-filter="popular" id="tab-popular">🔥 الأكثر طلباً</button>
+      <button class="filter-tab" data-filter="nearest" id="tab-nearest">📍 الأقرب لك</button>
+      <button class="filter-tab" data-filter="discount" id="tab-discount">💰 أعلى خصم</button>
+      <button class="filter-tab" data-filter="rated" id="tab-rated">⭐ الأعلى تقييماً</button>
     </div>
   </div>
 
@@ -1417,10 +1417,12 @@ pointer-events:none !important;
       list.innerHTML = filtered.map((s, idx) => {
         const avg = ratingsMap[s.id];
         const stars = avg ? `<span style="font-size:11px; color:#FF9500; font-weight:600;">★ ${avg}</span>` : '';
-        const isPopular = popularityMap[s.id] >= 3;
         const isTop = idx === 0 && currentFilter === 'popular';
-        const badge = isTop ? `<span style="font-size:10px; background:#FF3B30; color:#fff; border-radius:6px; padding:2px 6px; font-weight:700;">🔥 الأكثر طلباً</span>` :
-                      isPopular ? `<span style="font-size:10px; background:#FF9500; color:#fff; border-radius:6px; padding:2px 6px; font-weight:700;">🔥 رائج</span>` : '';
+        const badge = isTop
+          ? `<span class="badge-top">🔥 #1</span>`
+          : popularityMap[s.id] >= 3
+          ? `<span class="badge-hot">رائج</span>`
+          : '';
         const dist = (userLat && userLng && s.lat && s.lng)
           ? `<span style="font-size:11px; color:var(--text-4);">📍 ${haversine(userLat,userLng,s.lat,s.lng).toFixed(1)} كم</span>`
           : '';
@@ -1615,7 +1617,16 @@ pointer-events:none !important;
 
   // events
   document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('send-otp-btn').addEventListener('click', checkPhone);
+    // Filter tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        currentFilter = this.dataset.filter;
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        this.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+        renderStores(document.getElementById('search-input')?.value || '');
+      });
+    });
     document.getElementById('phone-input').addEventListener('keydown', e => e.key==='Enter' && checkPhone());
 
     // تهيئة الإشعارات وبانر التثبيت
