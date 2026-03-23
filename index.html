@@ -911,6 +911,8 @@ pointer-events:none !important;
         localStorage.setItem('h_uid', snap.docs[0].id);
         localStorage.setItem('h_phone', currentPhone);
         if (userData.name) localStorage.setItem('h_name', userData.name);
+        // احذف الـ session حتى يمر بالموقع دائماً
+        localStorage.removeItem('h_screen');
         go('screen-geo');
       } else {
         error.style.display = 'block';
@@ -960,6 +962,7 @@ pointer-events:none !important;
       localStorage.setItem('h_uid', ref.id);
       localStorage.setItem('h_phone', currentPhone);
       if (name) localStorage.setItem('h_name', name);
+      localStorage.removeItem('h_screen');
       go('screen-geo');
     } catch(e) {
       console.error(e);
