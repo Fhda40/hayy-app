@@ -597,13 +597,67 @@ font-size: 13px; color: var(–green); margin-top: 12px;
 
 <!-- TAB: Verify -->
 <div id="tab-verify" style="display: none;">
-  <div style="padding: 16px;">
-    <div class="card-title">إدخال كود العميل</div>
-    <div class="input-group">
-      <label>رقم الكود</label>
-      <input type="number" id="verify-code-input" placeholder="أدخل الكود" style="font-size: 28px; font-weight: 800; letter-spacing: 10px;">
+  <div style="padding: 24px 16px;">
+
+    <!-- Header -->
+    <div style="text-align:center; margin-bottom:28px;">
+      <div style="font-size:48px; margin-bottom:12px;">🔍</div>
+      <div style="font-size:20px; font-weight:800; color:var(--text); margin-bottom:6px;">تحقق من كود العميل</div>
+      <div style="font-size:13px; color:var(--text-muted);">اطلب من العميل الكود وأدخله هنا</div>
     </div>
-    <button class="btn btn-primary" id="verify-code-btn">✅ تحقق من الكود ←</button>
+
+    <!-- OTP Boxes — 4 خانات -->
+    <div style="display:flex; gap:10px; direction:ltr; justify-content:center; margin-bottom:24px;">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1"
+        class="merchant-otp-box" style="
+          width:64px; height:72px; border-radius:14px;
+          border:2px solid var(--border); background:var(--surface2);
+          font-size:28px; font-weight:800; text-align:center;
+          color:var(--text); font-family:'Tajawal',sans-serif;
+          outline:none; transition:border-color 0.2s;
+          -webkit-appearance:none;
+        ">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1"
+        class="merchant-otp-box" style="
+          width:64px; height:72px; border-radius:14px;
+          border:2px solid var(--border); background:var(--surface2);
+          font-size:28px; font-weight:800; text-align:center;
+          color:var(--text); font-family:'Tajawal',sans-serif;
+          outline:none; transition:border-color 0.2s;
+          -webkit-appearance:none;
+        ">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1"
+        class="merchant-otp-box" style="
+          width:64px; height:72px; border-radius:14px;
+          border:2px solid var(--border); background:var(--surface2);
+          font-size:28px; font-weight:800; text-align:center;
+          color:var(--text); font-family:'Tajawal',sans-serif;
+          outline:none; transition:border-color 0.2s;
+          -webkit-appearance:none;
+        ">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1"
+        class="merchant-otp-box" style="
+          width:64px; height:72px; border-radius:14px;
+          border:2px solid var(--border); background:var(--surface2);
+          font-size:28px; font-weight:800; text-align:center;
+          color:var(--text); font-family:'Tajawal',sans-serif;
+          outline:none; transition:border-color 0.2s;
+          -webkit-appearance:none;
+        ">
+    </div>
+
+    <!-- زر التحقق — أزرق -->
+    <button class="btn" id="verify-code-btn" style="
+      background:linear-gradient(135deg,#0A2540,#2D7DD2);
+      color:#fff; border:none;
+      box-shadow:0 4px 16px rgba(10,37,64,0.3);
+      font-size:16px; padding:18px;
+      border-radius:14px;
+    ">
+      ✅ تحقق من الكود
+    </button>
+
+    <!-- النتيجة -->
     <div class="verify-result" id="verify-result">
       <div class="verify-icon" id="verify-icon">✅</div>
       <div class="verify-title" id="verify-title">كود صالح!</div>
@@ -1039,7 +1093,8 @@ font-size: 13px; color: var(–green); margin-top: 12px;
 
   // ── Verify Code ──
   async function verifyCode() {
-    const code = document.getElementById('verify-code-input').value.trim();
+    const boxes = [...document.querySelectorAll('.merchant-otp-box')];
+    const code = boxes.map(b => b.value).join('').trim();
     const result = document.getElementById('verify-result');
     const btn = document.getElementById('verify-code-btn');
     result.className = 'verify-result';
@@ -1103,8 +1158,8 @@ font-size: 13px; color: var(–green); margin-top: 12px;
           document.getElementById('verify-sub').textContent = `تم تطبيق الخصم بنجاح`;
           result.classList.add('success');
 
-          // مسح خانة الكود
-          document.getElementById('verify-code-input').value = '';
+          // مسح خانات الكود
+          document.querySelectorAll('.merchant-otp-box').forEach(b => b.value = '');
         }
       }
     } catch(e) {
@@ -1115,7 +1170,7 @@ font-size: 13px; color: var(–green); margin-top: 12px;
       result.classList.add('error');
     }
 
-    btn.textContent = '✅ تحقق من الكود ←';
+    btn.textContent = '✅ تحقق من الكود';
     btn.disabled = false;
   }
 
@@ -1231,6 +1286,28 @@ font-size: 13px; color: var(–green); margin-top: 12px;
     document.getElementById('save-btn').addEventListener('click', saveStore);
     document.getElementById('location-btn').addEventListener('click', getLocation);
     document.getElementById('verify-code-btn').addEventListener('click', verifyCode);
+
+    // خانات كود التحقق
+    const merchantOtpBoxes = [...document.querySelectorAll('.merchant-otp-box')];
+    merchantOtpBoxes.forEach((box, i) => {
+      box.addEventListener('input', function() {
+        const v = this.value.replace(/\D/g, '');
+        this.value = v ? v[v.length - 1] : '';
+        if (this.value && i < merchantOtpBoxes.length - 1) {
+          merchantOtpBoxes[i + 1].focus();
+        }
+        if (merchantOtpBoxes.map(b => b.value).join('').length === 4) {
+          setTimeout(() => verifyCode(), 200);
+        }
+      });
+      box.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace') {
+          if (this.value) { this.value = ''; }
+          else if (i > 0) { merchantOtpBoxes[i-1].value = ''; merchantOtpBoxes[i-1].focus(); }
+        }
+      });
+      box.addEventListener('focus', function() { this.select(); });
+    });
     setupPhotoUploads();
 
     document.getElementById('store-name').addEventListener('input', updatePreview);
