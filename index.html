@@ -998,10 +998,28 @@ pointer-events:none !important;
         await loadStores();
         setTimeout(() => go('screen-stores'), 900);
       } else {
-        document.getElementById('geo-icon-wrap').textContent = '🚫';
-        document.getElementById('geo-title').textContent = 'خارج النطاق';
-        document.getElementById('geo-sub').textContent = 'العروض متاحة لسكان شرورة فقط';
-        btn.textContent = 'إعادة المحاولة'; btn.disabled = false;
+        document.getElementById('geo-icon-wrap').textContent = '🗺️';
+        document.getElementById('geo-title').textContent = 'قريباً في حيّك!';
+        document.getElementById('geo-sub').innerHTML = `
+          <div style="text-align:center; max-width:280px; margin:0 auto;">
+            <div style="font-size:15px; color:var(--text-3); line-height:1.8; margin-bottom:16px;">
+              يبدو أنك لست في شرورة الآن —<br>
+              <strong style="color:var(--text);">حيّ</strong> متاح حالياً لسكان شرورة فقط
+            </div>
+            <div style="background:var(--bg2); border-radius:16px; padding:16px; margin-bottom:16px;">
+              <div style="font-size:22px; margin-bottom:6px;">📍</div>
+              <div style="font-size:13px; color:var(--text-3); line-height:1.7;">
+                أنت على بعد <strong style="color:var(--text);">${dist < 1 ? Math.round(dist*1000)+' متر' : dist.toFixed(0)+' كم'}</strong> من شرورة<br>
+                نعمل على التوسع لمدن جديدة قريباً 🚀
+              </div>
+            </div>
+            <div style="font-size:13px; color:var(--text-4);">
+              إذا كنت في شرورة — تأكد من تفعيل GPS
+            </div>
+          </div>
+        `;
+        btn.textContent = '🔄 حاول مجدداً';
+        btn.disabled = false;
       }
     }, () => {
       document.getElementById('geo-icon-wrap').textContent = '🔒';
