@@ -1053,14 +1053,14 @@ pointer-events:none !important;
     return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
   }
 
+  // ══ Auth — Phone + Password ══
+  let currentPhone = '';
+
   // session restore
   window.addEventListener('load', () => {
     currentPhone = localStorage.getItem('h_phone') || '';
     if (localStorage.getItem('h_screen') === 'stores') loadStores().then(() => go('screen-stores'));
   });
-
-  // ══ Auth — Phone + Password ══
-  let currentPhone = '';
 
   async function hashPassword(password) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password + 'hayy_user_2026'));
@@ -1660,9 +1660,9 @@ pointer-events:none !important;
     },1000);
   }
 
-  // events
-  document.addEventListener('DOMContentLoaded', () => {
-    window.__hs = openStore; // expose للـ onclick في HTML
+  // events — نستخدم load لأن module يعمل defer تلقائياً
+  window.addEventListener('load', () => {
+    window.__hs = openStore;
     // Filter tabs
     document.querySelectorAll('.filter-tab').forEach(tab => {
       tab.addEventListener('click', function() {
@@ -1677,6 +1677,7 @@ pointer-events:none !important;
         }
       });
     });
+    document.getElementById('send-otp-btn').addEventListener('click', checkPhone);
     document.getElementById('phone-input').addEventListener('keydown', e => e.key==='Enter' && checkPhone());
 
     // تهيئة الإشعارات وبانر التثبيت
