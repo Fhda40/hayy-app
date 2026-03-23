@@ -715,6 +715,17 @@ pointer-events:none !important;
     <div style="font-size:12px; color:var(--text-4); margin-top:1px;" id="coupon-desc"></div>
 
 ```
+<!-- زر Google Maps -->
+<div id="maps-btn-wrap" style="display:none; margin-top:10px;">
+  <a id="maps-btn" href="#" target="_blank" style="
+    display:inline-flex; align-items:center; gap:6px;
+    background:#F0F4FF; border:1.5px solid #C7D7FF;
+    border-radius:20px; padding:6px 16px;
+    font-size:13px; font-weight:600; color:#0A2540;
+    text-decoration:none;
+  ">📍 الموقع على الخريطة</a>
+</div>
+
 <!-- 👀 مؤشر المستخدمين النشطين -->
 <div id="active-users-badge" style="
   display:inline-flex; align-items:center; gap:6px;
@@ -1368,6 +1379,9 @@ pointer-events:none !important;
           if (mData.logo_url) match.logo_url = mData.logo_url;
           if (mData.is_founder) match.is_founder = true;
           if (mData.founder_number) match.founder_number = mData.founder_number;
+          if (mData.is_verified) match.is_verified = true;
+          if (mData.lat) match.lat = mData.lat;
+          if (mData.lng) match.lng = mData.lng;
         }
       });
     } catch(e) {}
@@ -1425,8 +1439,11 @@ pointer-events:none !important;
         const isTop = idx === 0 && currentFilter === 'popular';
         const realPopular = popularityMap[s.id] >= 5 && !['ooto','nahdi','barber','kabsati'].includes(s.id);
         const isFounder = s.is_founder === true;
+        const isVerified = s.is_verified === true;
         const badge = isFounder
           ? `<span style="font-size:10px; font-weight:700; background:#0A2540; color:#fff; border-radius:6px; padding:2px 7px;">🎖️ مؤسس</span>`
+          : isVerified
+          ? `<span style="font-size:10px; font-weight:700; background:#059669; color:#fff; border-radius:6px; padding:2px 7px;">✓ موثق</span>`
           : isTop
           ? `<span class="badge-top">🔥 #1</span>`
           : realPopular
@@ -1480,6 +1497,16 @@ pointer-events:none !important;
     document.getElementById('coupon-type').textContent = s.type;
     document.getElementById('coupon-desc').textContent = s.description||'';
     document.getElementById('coupon-pct').textContent = ' '+parseInt(s.discount);
+
+    // زر Google Maps
+    const mapsWrap = document.getElementById('maps-btn-wrap');
+    const mapsBtn = document.getElementById('maps-btn');
+    if (s.lat && s.lng) {
+      mapsBtn.href = `https://maps.google.com/?q=${s.lat},${s.lng}`;
+      mapsWrap.style.display = 'block';
+    } else {
+      mapsWrap.style.display = 'none';
+    }
 
     // جلب الصور من merchants لو ما كانت في businesses
     let photos = s.photos || [];
