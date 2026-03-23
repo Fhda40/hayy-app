@@ -254,7 +254,23 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 .center { text-align:center; }
 .px16 { padding:0 16px; }
 
-/* إصلاح autofill */
+/* Filter Tabs */
+.filter-tab {
+display:inline-flex; align-items:center; gap:5px;
+padding:8px 16px; border-radius:20px;
+font-size:13px; font-weight:600; font-family:‘Tajawal’,sans-serif;
+border:1.5px solid var(–separator);
+background:var(–bg); color:var(–text-3);
+cursor:pointer; white-space:nowrap;
+transition:all 0.2s ease;
+}
+.filter-tab.active {
+background:#1D1D1F; color:#fff;
+border-color:#1D1D1F;
+transform:scale(1.02);
+}
+.filter-tab:active { transform:scale(0.97); }
+#filter-bar::-webkit-scrollbar { display:none; }
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
@@ -616,6 +632,32 @@ pointer-events:none !important;
     <span style="font-size:13px; color:var(--text-4);" id="stores-count"></span>
   </div>
   <div id="user-greeting" style="padding:0 20px 8px; font-size:14px; color:var(--text-3); font-weight:500;"></div>
+
+  <!-- Filter Bar — tabs متحركة -->
+
+  <div style="
+    overflow-x:auto; white-space:nowrap;
+    padding:0 16px 12px;
+    scrollbar-width:none; -ms-overflow-style:none;
+  " id="filter-bar">
+    <div style="display:inline-flex; gap:8px; padding:2px 0;">
+      <button class="filter-tab active" data-filter="all" onclick="setFilter('all',this)">
+        🏪 الكل
+      </button>
+      <button class="filter-tab" data-filter="popular" onclick="setFilter('popular',this)">
+        🔥 الأكثر طلباً
+      </button>
+      <button class="filter-tab" data-filter="nearest" onclick="setFilter('nearest',this)">
+        📍 الأقرب لك
+      </button>
+      <button class="filter-tab" data-filter="discount" onclick="setFilter('discount',this)">
+        💰 أعلى خصم
+      </button>
+      <button class="filter-tab" data-filter="rated" onclick="setFilter('rated',this)">
+        ⭐ الأعلى تقييماً
+      </button>
+    </div>
+  </div>
 
   <!-- بحث -->
 
@@ -1029,7 +1071,39 @@ pointer-events:none !important;
     } catch(e) { console.log('Anonymous auth failed:', e); }
   }
 
-  let resetUserId = '';
+  let currentFilter = 'all';
+  let userLat = null, userLng = null;
+  let popularityMap = {};
+
+  function setFilter(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    // scroll the button into view smoothly
+    btn.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+    renderStores(document.getElementById('search-input')?.value || '');
+  }
+
+  function sortStores(stores) {
+    const arr = [...stores];
+    if (currentFilter === 'popular') {
+      return arr.sort((a,b) => (popularityMap[b.id]||0) - (popularityMap[a.id]||0));
+    }
+    if (currentFilter === 'nearest' && userLat && userLng) {
+      return arr.sort((a,b) => {
+        const dA = a.lat && a.lng ? haversine(userLat,userLng,a.lat,a.lng) : 999;
+        const dB = b.lat && b.lng ? haversine(userLat,userLng,b.lat,b.lng) : 999;
+        return dA - dB;
+      });
+    }
+    if (currentFilter === 'discount') {
+      return arr.sort((a,b) => (parseInt(b.discount)||0) - (parseInt(a.discount)||0));
+    }
+    if (currentFilter === 'rated') {
+      return arr.sort((a,b) => (parseFloat(ratingsMap[b.id])||0) - (parseFloat(ratingsMap[a.id])||0));
+    }
+    return arr;
+  }
 
   async function verifyResetEmail() {
     const email = document.getElementById('reset-email').value.trim();
@@ -1293,7 +1367,21 @@ pointer-events:none !important;
       });
     } catch(e) {}
 
-    // جلب متوسط التقييمات
+    // حفظ موقع المستخدم للفلتر "الأقرب"
+    try {
+      const pos = await new Promise((res,rej) => navigator.geolocation.getCurrentPosition(res,rej,{timeout:3000,maximumAge:60000}));
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+    } catch(e) {}
+
+    // جلب شعبية المحلات من الكوبونات
+    try {
+      const cSnap = await getDocs(collection(db,'coupons'));
+      cSnap.forEach(d => {
+        const bid = d.data().business_id;
+        if (bid) popularityMap[bid] = (popularityMap[bid]||0) + 1;
+      });
+    } catch(e) {}
     const ratingsMap = {};
     try {
       const rSnap = await getDocs(collection(db,'ratings'));
@@ -1312,9 +1400,11 @@ pointer-events:none !important;
     defaults.forEach(s => { storeData[s.id] = {...s, discount: (s.discount||0)+'%'}; });
 
     function renderStores(filter = '') {
-      const filtered = filter
+      let filtered = filter
         ? defaults.filter(s => s.name.includes(filter) || (s.type||'').includes(filter))
         : defaults;
+
+      filtered = sortStores(filtered);
 
       if (!filtered.length) {
         list.innerHTML = `<div style="text-align:center; padding:48px 24px; color:var(--text-4);">
@@ -1324,21 +1414,31 @@ pointer-events:none !important;
         return;
       }
 
-      list.innerHTML = filtered.map(s => {
+      list.innerHTML = filtered.map((s, idx) => {
         const avg = ratingsMap[s.id];
         const stars = avg ? `<span style="font-size:11px; color:#FF9500; font-weight:600;">★ ${avg}</span>` : '';
+        const isPopular = popularityMap[s.id] >= 3;
+        const isTop = idx === 0 && currentFilter === 'popular';
+        const badge = isTop ? `<span style="font-size:10px; background:#FF3B30; color:#fff; border-radius:6px; padding:2px 6px; font-weight:700;">🔥 الأكثر طلباً</span>` :
+                      isPopular ? `<span style="font-size:10px; background:#FF9500; color:#fff; border-radius:6px; padding:2px 6px; font-weight:700;">🔥 رائج</span>` : '';
+        const dist = (userLat && userLng && s.lat && s.lng)
+          ? `<span style="font-size:11px; color:var(--text-4);">📍 ${haversine(userLat,userLng,s.lat,s.lng).toFixed(1)} كم</span>`
+          : '';
         return `
           <div class="store-card" data-id="${s.id}">
             <div class="store-logo">
               ${s.logo_url ? `<img src="${s.logo_url}">` : s.icon||'🏪'}
             </div>
             <div style="flex:1;">
-              <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+              <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px; flex-wrap:wrap;">
                 <div class="store-name">${s.name}</div>
-                ${stars}
+                ${stars} ${badge}
               </div>
               <div class="store-type">${s.type}</div>
-              <span class="discount-tag">خصم ${s.discount||0}%</span>
+              <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+                <span class="discount-tag">خصم ${s.discount||0}%</span>
+                ${dist}
+              </div>
             </div>
             <span class="chevron">›</span>
           </div>
