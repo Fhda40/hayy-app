@@ -803,6 +803,20 @@ pointer-events:none !important;
 <button class="btn-main" id="gen-btn" style="font-size:17px; padding:18px;">🎁 احصل على خصمك</button>
 
   <div style="height:8px;"></div>
+
+  <!-- زر الذهاب للموقع — يظهر بعد توليد الكود -->
+
+  <div id="go-location-wrap" style="display:none; padding:0 0 4px;">
+    <a id="go-location-btn" href="#" target="_blank" style="
+      display:block; margin:0 16px;
+      padding:17px; border-radius:14px;
+      background:#F0F4FF; border:2px solid #0A2540;
+      font-size:17px; font-weight:700; font-family:'Tajawal',sans-serif;
+      color:#0A2540; text-align:center; text-decoration:none;
+      transition:all 0.2s;
+    ">📍 الذهاب إلى الموقع الآن</a>
+  </div>
+
   <div style="text-align:center;">
     <span style="font-size:12px; color:var(--text-4);">مرة واحدة يومياً لكل محل</span>
   </div>
@@ -1551,6 +1565,12 @@ pointer-events:none !important;
     currentCode = null; currentCouponId = null; expired = false;
     if (timer) clearInterval(timer);
 
+    // إخفاء زر الموقع
+    const locWrap = document.getElementById('go-location-wrap');
+    if (locWrap) locWrap.style.display = 'none';
+    const genBtn = document.getElementById('gen-btn');
+    if (genBtn) { genBtn.style.background = ''; }
+
     const btn = document.getElementById('gen-btn');
     btn.className = 'btn-main';
     btn.textContent = '⏳ جاري التحقق...';
@@ -1608,6 +1628,15 @@ pointer-events:none !important;
     btn.textContent = '⏱ الكود نشط — توجّه للمحل';
     btn.disabled = true;
     btn.style.background = '#34C759';
+
+    // إظهار زر الموقع لو عنده إحداثيات
+    const s = storeData[currentStoreId];
+    const locWrap = document.getElementById('go-location-wrap');
+    const locBtn = document.getElementById('go-location-btn');
+    if (s?.lat && s?.lng && locWrap && locBtn) {
+      locBtn.href = `https://maps.google.com/?q=${s.lat},${s.lng}`;
+      locWrap.style.display = 'block';
+    }
 
     try {
       const uid = auth.currentUser?.uid || localStorage.getItem('h_uid') || 'guest';
