@@ -436,6 +436,12 @@ pointer-events:none !important;
         style="flex:1; border:none; background:none; font-size:17px; font-family:'Tajawal',sans-serif; color:var(--text); outline:none; padding:14px 0; direction:rtl; text-align:right; padding-left:40px;">
       <button id="toggle-confirm-pass" style="position:absolute; left:14px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-4); padding:4px;">👁️</button>
     </div>
+    <div style="display:flex; align-items:center; padding:0 16px; min-height:54px; border-bottom:1px solid var(--separator);">
+      <input type="text" id="user-name"
+        placeholder="اسمك (اختياري)"
+        autocomplete="name"
+        style="flex:1; border:none; background:none; font-size:17px; font-family:'Tajawal',sans-serif; color:var(--text); outline:none; padding:14px 0; direction:rtl; text-align:right;">
+    </div>
     <div style="display:flex; align-items:center; padding:0 16px; min-height:54px;">
       <input type="email" id="user-email"
         placeholder="الإيميل (اختياري)"
@@ -527,6 +533,7 @@ pointer-events:none !important;
     <span style="font-size:28px; font-weight:700; letter-spacing:-0.3px;">العروض</span>
     <span style="font-size:13px; color:var(--text-4);" id="stores-count"></span>
   </div>
+  <div id="user-greeting" style="padding:0 20px 8px; font-size:14px; color:var(--text-3); font-weight:500;"></div>
 
   <div id="stores-list" style="flex:1; overflow-y:auto; padding-bottom:32px;">
     <div class="center" style="padding:56px; color:var(--text-4);">
@@ -829,6 +836,10 @@ pointer-events:none !important;
     window.scrollTo(0,0);
     if (id === 'screen-stores') {
       localStorage.setItem('h_screen','stores');
+      // مناداة بالاسم
+      const name = localStorage.getItem('h_name');
+      const greet = document.getElementById('user-greeting');
+      if (greet) greet.textContent = name ? `أهلاً ${name} 👋` : '';
       // طلب إذن الإشعارات بعد ثانيتين
       setTimeout(() => requestPushPermission(), 2000);
     }
@@ -896,8 +907,10 @@ pointer-events:none !important;
 
       if (!snap.empty) {
         error.style.display = 'none';
+        const userData = snap.docs[0].data();
         localStorage.setItem('h_uid', snap.docs[0].id);
         localStorage.setItem('h_phone', currentPhone);
+        if (userData.name) localStorage.setItem('h_name', userData.name);
         go('screen-geo');
       } else {
         error.style.display = 'block';
@@ -911,7 +924,6 @@ pointer-events:none !important;
   async function createAccount() {
     const password = document.getElementById('new-pass').value;
     const confirm = document.getElementById('confirm-pass').value;
-    const email = document.getElementById('user-email').value.trim();
     const error = document.getElementById('register-error');
 
     if (password.length < 6) {
@@ -931,6 +943,9 @@ pointer-events:none !important;
     const hiddenPhone = document.getElementById('register-phone-hidden');
     if (hiddenPhone) hiddenPhone.value = currentPhone;
 
+    const email = document.getElementById('user-email')?.value.trim() || '';
+    const name = document.getElementById('user-name')?.value.trim() || '';
+
     try {
       const hashed = await hashPassword(password);
       const userData = {
@@ -939,10 +954,12 @@ pointer-events:none !important;
         created_at: serverTimestamp()
       };
       if (email) userData.email = email;
+      if (name) userData.name = name;
 
       const ref = await addDoc(collection(db, 'users'), userData);
       localStorage.setItem('h_uid', ref.id);
       localStorage.setItem('h_phone', currentPhone);
+      if (name) localStorage.setItem('h_name', name);
       go('screen-geo');
     } catch(e) {
       console.error(e);
@@ -988,13 +1005,18 @@ pointer-events:none !important;
   function checkGeo() {
     const btn = document.getElementById('geo-btn');
     btn.disabled = true;
+    btn.textContent = '⏳';
     document.getElementById('geo-title').textContent = 'جاري التحديد...';
+    document.getElementById('geo-sub').textContent = 'نتحقق من موقعك...';
+
     navigator.geolocation.getCurrentPosition(async pos => {
-      const d = haversine(pos.coords.latitude,pos.coords.longitude,CITY.lat,CITY.lng);
+      const d = haversine(pos.coords.latitude, pos.coords.longitude, CITY.lat, CITY.lng);
+      const distText = d < 1 ? Math.round(d*1000)+' متر' : d.toFixed(0)+' كم';
+
       if (d <= RADIUS) {
         document.getElementById('geo-icon-wrap').textContent = '✅';
         document.getElementById('geo-title').textContent = 'أنت في شرورة!';
-        document.getElementById('geo-sub').textContent = `على بعد ${d<1?Math.round(d*1000)+' متر':d.toFixed(1)+' كم'} من المركز`;
+        document.getElementById('geo-sub').textContent = `على بعد ${distText} من المركز`;
         await loadStores();
         setTimeout(() => go('screen-stores'), 900);
       } else {
@@ -1009,7 +1031,7 @@ pointer-events:none !important;
             <div style="background:var(--bg2); border-radius:16px; padding:16px; margin-bottom:16px;">
               <div style="font-size:22px; margin-bottom:6px;">📍</div>
               <div style="font-size:13px; color:var(--text-3); line-height:1.7;">
-                أنت على بعد <strong style="color:var(--text);">${dist < 1 ? Math.round(dist*1000)+' متر' : dist.toFixed(0)+' كم'}</strong> من شرورة<br>
+                أنت على بعد <strong style="color:var(--text);">${distText}</strong> من شرورة<br>
                 نعمل على التوسع لمدن جديدة قريباً 🚀
               </div>
             </div>
@@ -1021,12 +1043,14 @@ pointer-events:none !important;
         btn.textContent = '🔄 حاول مجدداً';
         btn.disabled = false;
       }
-    }, () => {
+    }, (err) => {
+      console.error('Geo error:', err);
       document.getElementById('geo-icon-wrap').textContent = '🔒';
       document.getElementById('geo-title').textContent = 'تعذّر الوصول';
-      document.getElementById('geo-sub').textContent = 'يجب السماح بالوصول للموقع';
-      btn.textContent = 'إعادة المحاولة'; btn.disabled = false;
-    }, {enableHighAccuracy:true, timeout:10000});
+      document.getElementById('geo-sub').textContent = 'يجب السماح بالوصول للموقع من الإعدادات';
+      btn.textContent = '🔄 إعادة المحاولة';
+      btn.disabled = false;
+    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
   }
 
   // stores
