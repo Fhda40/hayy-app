@@ -538,6 +538,17 @@ font-size: 13px; color: var(–green); margin-top: 12px;
         <input type="text" id="store-desc" placeholder="مثال: خصم على جميع المشروبات"
           style="text-align:right; direction:rtl; height:54px; font-size:16px; border-radius:12px;">
       </div>
+
+      <div class="input-group" style="margin-bottom:0; margin-top:16px;">
+        <label>رقم السجل التجاري (اختياري)
+          <span style="font-size:11px; background:#0A2540; color:#fff; border-radius:6px; padding:2px 8px; margin-right:6px; font-weight:700;">✓ موثق</span>
+        </label>
+        <input type="text" id="store-cr" placeholder="1234567890" inputmode="numeric"
+          style="direction:ltr; text-align:left; height:54px; font-size:16px; border-radius:12px; letter-spacing:2px;">
+        <div style="font-size:12px; color:var(--text-muted); margin-top:6px; padding:8px 12px; background:var(--surface2); border-radius:8px;">
+          💡 إضافة السجل التجاري يمنح نشاطك badge <strong>✓ موثق</strong> ويزيد ثقة العملاء
+        </div>
+      </div>
     </div>
 
     <div class="card" style="margin:0;">
@@ -1010,6 +1021,7 @@ font-size: 13px; color: var(–green); margin-top: 12px;
   const CLOUDINARY_PRESET = 'hayy_uploads';
   let logoUrl = '';
   let photoUrls = ['', '', ''];
+  let merchantLat = null, merchantLng = null;
 
   async function uploadToCloudinary(file, statusEl) {
     statusEl.textContent = '⏳ جاري الرفع...';
@@ -1091,16 +1103,30 @@ font-size: 13px; color: var(–green); margin-top: 12px;
   }
   function getLocation() {
     const status = document.getElementById('location-status');
+    const btn = document.getElementById('location-btn');
     status.textContent = '⏳ جاري تحديد موقعك...';
+    btn.disabled = true;
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        status.textContent = `✅ تم — ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+        merchantLat = pos.coords.latitude;
+        merchantLng = pos.coords.longitude;
+        status.innerHTML = `
+          ✅ تم تحديد الموقع!<br>
+          <a href="https://maps.google.com/?q=${merchantLat},${merchantLng}" target="_blank"
+            style="color:#0A2540; font-weight:700; font-size:13px; text-decoration:none;">
+            📍 عرض على Google Maps
+          </a>
+        `;
         status.style.color = 'var(--green)';
+        btn.disabled = false;
+        btn.textContent = '✅ تم تحديد الموقع';
       },
       () => {
-        status.textContent = '❌ تعذر تحديد الموقع';
+        status.textContent = '❌ تعذر تحديد الموقع — اسمح بالوصول للموقع';
         status.style.color = 'var(--red)';
-      }
+        btn.disabled = false;
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
     );
   }
 
@@ -1218,6 +1244,8 @@ font-size: 13px; color: var(–green); margin-top: 12px;
     const discount = parseInt(document.getElementById('discount-slider').value);
     const desc = document.getElementById('store-desc').value.trim();
     const area = document.getElementById('store-area').value.trim();
+    const cr = document.getElementById('store-cr')?.value.trim() || '';
+    const isVerified = cr.length >= 7;
 
     if (!name) { alert('أدخل اسم النشاط'); return; }
 
@@ -1226,23 +1254,24 @@ font-size: 13px; color: var(–green); margin-top: 12px;
     btn.disabled = true;
 
     const storeInfo = {
-      store_name: name,
-      store_type: type,
+      store_name: name, store_type: type,
       discount, icon: selectedEmoji,
       description: desc, area,
       logo_url: logoUrl || '',
       photos: photoUrls.filter(u => u),
       active: true,
-      updated_at: serverTimestamp()
+      updated_at: serverTimestamp(),
+      cr_number: cr || null,
+      is_verified: isVerified,
+      lat: merchantLat || null,
+      lng: merchantLng || null
     };
 
     try {
-      // 1. تحديث بيانات التاجر في merchants
       if (merchantDocId) {
         await setDoc(doc(db, 'merchants', merchantDocId), storeInfo, { merge: true });
       }
 
-      // 2. تحديث أو إنشاء في businesses (للعملاء)
       const bq = query(collection(db, 'businesses'), where('phone', '==', currentPhone));
       const bSnap = await getDocs(bq);
 
@@ -1253,14 +1282,15 @@ font-size: 13px; color: var(–green); margin-top: 12px;
         logo_url: logoUrl || '',
         photos: photoUrls.filter(u => u),
         active: true,
-        updated_at: serverTimestamp()
+        updated_at: serverTimestamp(),
+        is_verified: isVerified,
+        lat: merchantLat || null,
+        lng: merchantLng || null
       };
 
       if (!bSnap.empty) {
-        // تحديث المحل الموجود
         await setDoc(doc(db, 'businesses', bSnap.docs[0].id), businessData, { merge: true });
       } else {
-        // إنشاء محل جديد
         await addDoc(collection(db, 'businesses'), { ...businessData, created_at: serverTimestamp() });
       }
 
