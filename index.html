@@ -1470,11 +1470,11 @@ pointer-events:none !important;
           ? `<span style="font-size:11px; color:var(--text-4);">📍 ${haversine(userLat,userLng,s.lat,s.lng).toFixed(1)} كم</span>`
           : '';
         return `
-          <div class="store-card" data-id="${s.id}">
-            <div class="store-logo">
+          <div class="store-card" data-id="${s.id}" onclick="window._openStore('${s.id}')">
+            <div class="store-logo" style="pointer-events:none;">
               ${s.logo_url ? `<img src="${s.logo_url}">` : s.icon||'🏪'}
             </div>
-            <div style="flex:1;">
+            <div style="flex:1; pointer-events:none;">
               <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px; flex-wrap:wrap;">
                 <div class="store-name">${s.name}</div>
                 ${stars} ${badge}
@@ -1485,7 +1485,7 @@ pointer-events:none !important;
                 ${dist}
               </div>
             </div>
-            <span class="chevron">›</span>
+            <span class="chevron" style="pointer-events:none;">›</span>
           </div>
         `;
       }).join('');
@@ -1728,7 +1728,8 @@ pointer-events:none !important;
     document.getElementById('gen-btn').addEventListener('click', generateCode);
     document.getElementById('merchant-link').addEventListener('click', () => window.location.href='merchant.html');
 
-    // ── Store cards delegation ──
+    // تعريف عالمي لـ openStore حتى يعمل من inline onclick
+  window._openStore = (id) => openStore(id);
     document.getElementById('stores-list').addEventListener('click', (e) => {
       const card = e.target.closest('.store-card');
       if (card) openStore(card.dataset.id);
