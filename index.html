@@ -511,6 +511,25 @@
   </div>
   <div id="user-greeting" style="padding:0 20px 8px; font-size:14px; color:var(--text-3); font-weight:500;"></div>
 
+  <!-- بحث -->
+  <div style="padding:0 16px 12px;">
+    <div style="
+      background:var(--bg2); border-radius:12px;
+      display:flex; align-items:center; padding:0 14px; gap:8px;
+    ">
+      <span style="font-size:16px; color:var(--text-4);">🔍</span>
+      <input
+        id="search-input"
+        type="text"
+        placeholder="ابحث عن محل..."
+        style="
+          flex:1; border:none; background:none; padding:12px 0;
+          font-size:15px; font-family:'Tajawal',sans-serif;
+          color:var(--text); outline:none; direction:rtl;
+        ">
+    </div>
+  </div>
+
   <div id="stores-list" style="flex:1; overflow-y:auto; padding-bottom:56px;">
     <div class="center" style="padding:56px; color:var(--text-4);">
       <div style="font-size:28px; margin-bottom:10px;">⏳</div>
@@ -1057,22 +1076,68 @@
       const snap = await getDocs(collection(db,'businesses'));
       snap.forEach(d => defaults.push({id:d.id,...d.data()}));
     } catch(e) {}
+
+    // جلب متوسط التقييمات
+    const ratingsMap = {};
+    try {
+      const rSnap = await getDocs(collection(db,'ratings'));
+      const rData = {};
+      rSnap.forEach(d => {
+        const r = d.data();
+        if (!rData[r.business_id]) rData[r.business_id] = { total:0, count:0 };
+        if (r.stars) { rData[r.business_id].total += r.stars; rData[r.business_id].count++; }
+      });
+      Object.keys(rData).forEach(id => {
+        ratingsMap[id] = (rData[id].total / rData[id].count).toFixed(1);
+      });
+    } catch(e) {}
+
     document.getElementById('stores-count').textContent = defaults.length + ' محل';
     defaults.forEach(s => { storeData[s.id] = {...s, discount: (s.discount||0)+'%'}; });
-    list.innerHTML = defaults.map(s => `
-      <div class="store-card" data-id="${s.id}">
-        <div class="store-logo">
-          ${s.logo_url ? `<img src="${s.logo_url}">` : s.icon||'🏪'}
-        </div>
-        <div style="flex:1;">
-          <div class="store-name">${s.name}</div>
-          <div class="store-type">${s.type}</div>
-          <span class="discount-tag">خصم ${s.discount||0}%</span>
-        </div>
-        <span class="chevron">›</span>
-      </div>
-    `).join('');
-    document.querySelectorAll('.store-card').forEach(c => c.addEventListener('click', () => openStore(c.dataset.id)));
+
+    function renderStores(filter = '') {
+      const filtered = filter
+        ? defaults.filter(s => s.name.includes(filter) || (s.type||'').includes(filter))
+        : defaults;
+
+      if (!filtered.length) {
+        list.innerHTML = `<div style="text-align:center; padding:48px 24px; color:var(--text-4);">
+          <div style="font-size:32px; margin-bottom:10px;">🔍</div>
+          <div style="font-size:15px;">ما في نتائج لـ "${filter}"</div>
+        </div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(s => {
+        const avg = ratingsMap[s.id];
+        const stars = avg ? `<span style="font-size:11px; color:#FF9500; font-weight:600;">★ ${avg}</span>` : '';
+        return `
+          <div class="store-card" data-id="${s.id}">
+            <div class="store-logo">
+              ${s.logo_url ? `<img src="${s.logo_url}">` : s.icon||'🏪'}
+            </div>
+            <div style="flex:1;">
+              <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+                <div class="store-name">${s.name}</div>
+                ${stars}
+              </div>
+              <div class="store-type">${s.type}</div>
+              <span class="discount-tag">خصم ${s.discount||0}%</span>
+            </div>
+            <span class="chevron">›</span>
+          </div>
+        `;
+      }).join('');
+      document.querySelectorAll('.store-card').forEach(c => c.addEventListener('click', () => openStore(c.dataset.id)));
+    }
+
+    renderStores();
+
+    // البحث
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => renderStores(e.target.value.trim()));
+    }
   }
 
   async function openStore(id) {
