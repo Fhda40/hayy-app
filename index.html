@@ -198,6 +198,8 @@ background:var(–surface); border-radius:16px;
 border:1px solid var(–separator);
 box-shadow:var(–shadow-sm);
 cursor:pointer; transition:all 0.12s;
+-webkit-tap-highlight-color:rgba(0,0,0,0.05);
+user-select:none; -webkit-user-select:none;
 }
 .store-card:active { background:var(–bg2); transform:scale(0.988); }
 .store-logo {
@@ -680,7 +682,7 @@ pointer-events:none !important;
     </div>
   </div>
 
-  <div id="stores-list" style="flex:1; overflow-y:auto; padding-bottom:56px;">
+  <div id="stores-list" style="flex:1; overflow-y:scroll; -webkit-overflow-scrolling:touch; padding-bottom:56px;">
     <div class="center" style="padding:56px; color:var(--text-4);">
       <div style="font-size:28px; margin-bottom:10px;">⏳</div>
       <div class="subhead">جاري التحميل...</div>
