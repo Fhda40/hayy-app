@@ -275,13 +275,30 @@ font-size: 13px; color: var(–green); margin-top: 12px;
 
 <div class="card">
   <div class="input-group">
-    <div class="phone-input-wrap" style="direction:ltr;">
-      <div class="country-code">🇸🇦 +966</div>
-      <input type="tel" id="merchant-phone" placeholder="5X XXX XXXX" maxlength="9" style="text-align:left;">
+    <div style="
+      display:flex; align-items:center; direction:ltr;
+      background:var(--surface2); border:2px solid var(--border);
+      border-radius:14px; overflow:hidden; height:62px;
+      transition:border-color 0.2s;
+    " id="phone-wrap">
+      <div style="
+        padding:0 16px; font-size:16px; font-weight:600;
+        color:var(--text); white-space:nowrap;
+        border-left:1px solid var(--border);
+        height:100%; display:flex; align-items:center;
+      ">🇸🇦 +966</div>
+      <input type="tel" id="merchant-phone" placeholder="5X XXX XXXX" maxlength="9"
+        style="
+          flex:1; border:none; background:none; outline:none;
+          font-size:20px; font-weight:700; letter-spacing:1px;
+          padding:0 16px; height:100%; text-align:left;
+          font-family:'Tajawal',sans-serif; color:var(--text);
+          direction:ltr;
+        ">
     </div>
   </div>
   <button class="btn btn-primary" id="check-phone-btn"
-    style="background:linear-gradient(135deg,#0A2540,#2D7DD2); box-shadow:0 4px 16px rgba(10,37,64,0.3);">
+    style="background:linear-gradient(135deg,#0A2540,#2D7DD2); box-shadow:0 4px 16px rgba(10,37,64,0.3); font-size:17px; padding:18px;">
     متابعة ←
   </button>
   <div id="phone-error" style="display:none; color:var(--red); text-align:center; font-size:13px; margin-top:8px;"></div>
@@ -330,7 +347,8 @@ font-size: 13px; color: var(–green); margin-top: 12px;
     ❌ كلمة المرور غير صحيحة — حاول مجدداً
   </div>
 
-  <button class="btn btn-primary" id="login-with-password-btn" style="font-size:16px; padding:18px; margin-top:4px;">
+  <button class="btn btn-primary" id="login-with-password-btn"
+    style="background:linear-gradient(135deg,#0A2540,#2D7DD2); box-shadow:0 4px 16px rgba(10,37,64,0.3); font-size:16px; padding:18px; margin-top:4px;">
     دخول ←
   </button>
 </div>
