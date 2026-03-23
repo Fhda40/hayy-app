@@ -260,15 +260,20 @@ display:inline-flex; align-items:center; gap:5px;
 padding:8px 16px; border-radius:20px;
 font-size:13px; font-weight:600; font-family:‘Tajawal’,sans-serif;
 border:1.5px solid var(–separator);
-background:var(–bg); color:var(–text-3);
+background:#fff; color:#1D1D1F;
 cursor:pointer; white-space:nowrap;
-transition:all 0.25s ease;
+transition:all 0.2s ease;
 -webkit-appearance:none;
+outline:none;
+}
+.filter-tab:hover {
+background:#1D1D1F; color:#fff;
+border-color:#1D1D1F;
 }
 .filter-tab.active {
 background:#1D1D1F; color:#fff;
 border-color:#1D1D1F;
-box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+box-shadow:0 2px 8px rgba(0,0,0,0.15);
 }
 .filter-tab:active { transform:scale(0.95); }
 #filter-bar::-webkit-scrollbar { display:none; }
@@ -649,8 +654,8 @@ pointer-events:none !important;
 
   <!-- Filter Bar -->
 
-  <div style="overflow-x:auto; white-space:nowrap; padding:0 16px 12px; scrollbar-width:none; -ms-overflow-style:none;" id="filter-bar">
-    <div style="display:inline-flex; gap:8px; padding:2px 0;">
+  <div style="overflow-x:auto; white-space:nowrap; padding:0 16px 12px; scrollbar-width:none; -ms-overflow-style:none; direction:ltr;" id="filter-bar">
+    <div style="display:inline-flex; gap:8px; padding:2px 0; direction:rtl;">
       <button class="filter-tab active" data-filter="all" id="tab-all">🏪 الكل</button>
       <button class="filter-tab" data-filter="popular" id="tab-popular">🔥 الأكثر طلباً</button>
       <button class="filter-tab" data-filter="nearest" id="tab-nearest">📍 الأقرب لك</button>
@@ -1418,9 +1423,10 @@ pointer-events:none !important;
         const avg = ratingsMap[s.id];
         const stars = avg ? `<span style="font-size:11px; color:#FF9500; font-weight:600;">★ ${avg}</span>` : '';
         const isTop = idx === 0 && currentFilter === 'popular';
+        const realPopular = popularityMap[s.id] >= 5 && !['ooto','nahdi','barber','kabsati'].includes(s.id);
         const badge = isTop
           ? `<span class="badge-top">🔥 #1</span>`
-          : popularityMap[s.id] >= 3
+          : realPopular
           ? `<span class="badge-hot">رائج</span>`
           : '';
         const dist = (userLat && userLng && s.lat && s.lng)
