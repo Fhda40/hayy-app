@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -24,227 +25,229 @@
     --border: rgba(10,37,64,0.1);
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+- { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
-    font-family: 'Tajawal', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+body {
+font-family: ‘Tajawal’, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+}
 
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background: radial-gradient(ellipse 70% 50% at 50% -5%, rgba(10,37,64,0.04) 0%, transparent 70%);
-    pointer-events: none; z-index: 0;
-  }
+body::before {
+content: ‘’;
+position: fixed; inset: 0;
+background: radial-gradient(ellipse 70% 50% at 50% -5%, rgba(10,37,64,0.04) 0%, transparent 70%);
+pointer-events: none; z-index: 0;
+}
 
-  .app {
-    width: 100%; max-width: 420px;
-    min-height: 100vh;
-    position: relative; z-index: 1;
-    display: flex; flex-direction: column;
-  }
+.app {
+width: 100%; max-width: 420px;
+min-height: 100vh;
+position: relative; z-index: 1;
+display: flex; flex-direction: column;
+}
 
-  .screen { display: none; flex-direction: column; min-height: 100vh; animation: fadeUp 0.4s ease; }
-  .screen.active { display: flex; }
+.screen { display: none; flex-direction: column; min-height: 100vh; animation: fadeUp 0.4s ease; }
+.screen.active { display: flex; }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(16px); }
+to { opacity: 1; transform: translateY(0); }
+}
 
-  /* TOP BAR */
-  .top-bar {
-    padding: 20px 24px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(8px);
-  }
+/* TOP BAR */
+.top-bar {
+padding: 20px 24px 16px;
+display: flex; align-items: center; justify-content: space-between;
+border-bottom: 1px solid var(–border);
+background: rgba(255,255,255,0.95);
+backdrop-filter: blur(8px);
+}
 
-  .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-icon {
-    width: 38px; height: 38px;
-    background: linear-gradient(135deg, var(--blue), var(--blue-light));
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    box-shadow: 0 2px 8px rgba(45,125,210,0.3);
-  }
-  .logo-text { font-size: 18px; font-weight: 900; color: var(--accent); }
-  .logo-sub { font-size: 10px; color: var(--text-muted); }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+width: 38px; height: 38px;
+background: linear-gradient(135deg, var(–blue), var(–blue-light));
+border-radius: 12px;
+display: flex; align-items: center; justify-content: center;
+font-size: 20px;
+box-shadow: 0 2px 8px rgba(45,125,210,0.3);
+}
+.logo-text { font-size: 18px; font-weight: 900; color: var(–accent); }
+.logo-sub { font-size: 10px; color: var(–text-muted); }
 
-  .nav-link {
-    font-size: 12px; color: var(--text-muted);
-    cursor: pointer; font-weight: 600;
-    display: flex; align-items: center; gap: 4px;
-    padding: 6px 12px;
-    background: var(--surface2);
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    text-decoration: none;
-  }
-  .nav-link:hover { color: var(--accent); border-color: var(--accent); }
+.nav-link {
+font-size: 12px; color: var(–text-muted);
+cursor: pointer; font-weight: 600;
+display: flex; align-items: center; gap: 4px;
+padding: 6px 12px;
+background: var(–surface2);
+border-radius: 20px;
+border: 1px solid var(–border);
+text-decoration: none;
+}
+.nav-link:hover { color: var(–accent); border-color: var(–accent); }
 
-  /* CARD */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 24px;
-    margin: 0 16px 16px;
-    box-shadow: 0 2px 16px rgba(10,37,64,0.04);
-  }
+/* CARD */
+.card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 20px;
+padding: 24px;
+margin: 0 16px 16px;
+box-shadow: 0 2px 16px rgba(10,37,64,0.04);
+}
 
-  .card-title {
-    font-size: 13px; font-weight: 700;
-    color: var(--accent); margin-bottom: 16px;
-    display: flex; align-items: center; gap: 8px;
-  }
+.card-title {
+font-size: 13px; font-weight: 700;
+color: var(–accent); margin-bottom: 16px;
+display: flex; align-items: center; gap: 8px;
+}
 
-  /* INPUTS */
-  .input-group { margin-bottom: 16px; }
+/* INPUTS */
+.input-group { margin-bottom: 16px; }
 
-  label {
-    display: block; font-size: 12px;
-    color: var(--text-muted); margin-bottom: 8px; font-weight: 600;
-  }
+label {
+display: block; font-size: 12px;
+color: var(–text-muted); margin-bottom: 8px; font-weight: 600;
+}
 
-  .phone-input-wrap { display: flex; gap: 8px; }
+.phone-input-wrap { display: flex; gap: 8px; }
 
-  .country-code {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 12px; padding: 0 14px; font-size: 14px;
-    color: var(--text); font-family: 'Tajawal', sans-serif;
-    display: flex; align-items: center; white-space: nowrap;
-  }
+.country-code {
+background: var(–surface2); border: 1px solid var(–border);
+border-radius: 12px; padding: 0 14px; font-size: 14px;
+color: var(–text); font-family: ‘Tajawal’, sans-serif;
+display: flex; align-items: center; white-space: nowrap;
+}
 
-  input[type="tel"], input[type="text"], input[type="number"] {
-    width: 100%;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 12px; padding: 14px 16px;
-    font-size: 16px; color: var(--text);
-    font-family: 'Tajawal', sans-serif;
-    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-    direction: ltr; text-align: center;
-  }
-  input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--blue-dim); }
+input[type=“tel”], input[type=“text”], input[type=“number”] {
+width: 100%;
+background: var(–surface2); border: 1px solid var(–border);
+border-radius: 12px; padding: 14px 16px;
+font-size: 16px; color: var(–text);
+font-family: ‘Tajawal’, sans-serif;
+outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+direction: ltr; text-align: center;
+}
+input:focus { border-color: var(–accent); box-shadow: 0 0 0 3px var(–blue-dim); }
 
-  select {
-    width: 100%; background: var(--surface2);
-    border: 1px solid var(--border); border-radius: 12px;
-    padding: 14px 16px; font-size: 14px; color: var(--text);
-    font-family: 'Tajawal', sans-serif; outline: none;
-  }
+select {
+width: 100%; background: var(–surface2);
+border: 1px solid var(–border); border-radius: 12px;
+padding: 14px 16px; font-size: 14px; color: var(–text);
+font-family: ‘Tajawal’, sans-serif; outline: none;
+}
 
-  /* OTP */
-  .otp-wrap { display: flex; gap: 6px; justify-content: center; direction: ltr; }
-  .otp-input {
-    width: 40px !important; height: 50px;
-    font-size: 20px !important; font-weight: 700;
-    border-radius: 10px !important; padding: 0 !important;
-    text-align: center;
-  }
+/* OTP */
+.otp-wrap { display: flex; gap: 6px; justify-content: center; direction: ltr; }
+.otp-input {
+width: 40px !important; height: 50px;
+font-size: 20px !important; font-weight: 700;
+border-radius: 10px !important; padding: 0 !important;
+text-align: center;
+}
 
-  /* BUTTONS */
-  .btn {
-    width: 100%; padding: 16px; border: none; border-radius: 14px;
-    font-size: 15px; font-weight: 700; font-family: 'Tajawal', sans-serif;
-    cursor: pointer; transition: all 0.2s;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--blue), var(--blue-light));
-    color: #fff; box-shadow: 0 4px 16px rgba(45,125,210,0.3);
-  }
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0 1000px #EEF2F7 inset !important;
-    -webkit-text-fill-color: #0A2540 !important;
-  }
+/* BUTTONS */
+.btn {
+width: 100%; padding: 16px; border: none; border-radius: 14px;
+font-size: 15px; font-weight: 700; font-family: ‘Tajawal’, sans-serif;
+cursor: pointer; transition: all 0.2s;
+display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-primary {
+background: linear-gradient(135deg, var(–blue), var(–blue-light));
+color: #fff; box-shadow: 0 4px 16px rgba(45,125,210,0.3);
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+-webkit-box-shadow: 0 0 0 1000px #EEF2F7 inset !important;
+-webkit-text-fill-color: #0A2540 !important;
+}
 
-  .btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none !important; }
-  .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); font-size: 13px; }
+.btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none !important; }
+.btn-ghost { background: var(–surface2); color: var(–text); border: 1px solid var(–border); font-size: 13px; }
 
-  /* TABS */
-  .tab-bar {
-    display: flex; margin: 0 16px 16px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; padding: 4px;
-  }
-  .tab {
-    flex: 1; padding: 10px; text-align: center;
-    font-size: 12px; font-weight: 600;
-    font-family: 'Tajawal', sans-serif; border: none;
-    background: none; color: var(--text-muted);
-    border-radius: 10px; cursor: pointer; transition: all 0.2s;
-  }
-  .tab.active { background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: white; }
+/* TABS */
+.tab-bar {
+display: flex; margin: 0 16px 16px;
+background: var(–surface); border: 1px solid var(–border);
+border-radius: 14px; padding: 4px;
+}
+.tab {
+flex: 1; padding: 10px; text-align: center;
+font-size: 12px; font-weight: 600;
+font-family: ‘Tajawal’, sans-serif; border: none;
+background: none; color: var(–text-muted);
+border-radius: 10px; cursor: pointer; transition: all 0.2s;
+}
+.tab.active { background: linear-gradient(135deg, var(–blue), var(–blue-light)); color: white; }
 
-  /* STATS */
-  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
-  .stat-box {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 16px; padding: 16px; text-align: center;
-    box-shadow: 0 1px 8px rgba(10,37,64,0.04);
-  }
-  .stat-num { font-size: 28px; font-weight: 900; color: var(--accent); display: block; }
-  .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
+.stat-box {
+background: var(–surface); border: 1px solid var(–border);
+border-radius: 16px; padding: 16px; text-align: center;
+box-shadow: 0 1px 8px rgba(10,37,64,0.04);
+}
+.stat-num { font-size: 28px; font-weight: 900; color: var(–accent); display: block; }
+.stat-label { font-size: 11px; color: var(–text-muted); margin-top: 4px; }
 
-  /* VERIFY */
-  .verify-result { border-radius: 16px; padding: 20px; text-align: center; margin-top: 12px; display: none; }
-  .verify-result.success { background: rgba(45,122,79,0.08); border: 1px solid rgba(45,122,79,0.3); display: block; }
-  .verify-result.error { background: rgba(192,57,43,0.08); border: 1px solid rgba(192,57,43,0.3); display: block; }
-  .verify-icon { font-size: 32px; margin-bottom: 8px; }
-  .verify-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-  .verify-sub { font-size: 12px; color: var(--text-muted); }
+/* VERIFY */
+.verify-result { border-radius: 16px; padding: 20px; text-align: center; margin-top: 12px; display: none; }
+.verify-result.success { background: rgba(45,122,79,0.08); border: 1px solid rgba(45,122,79,0.3); display: block; }
+.verify-result.error { background: rgba(192,57,43,0.08); border: 1px solid rgba(192,57,43,0.3); display: block; }
+.verify-icon { font-size: 32px; margin-bottom: 8px; }
+.verify-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.verify-sub { font-size: 12px; color: var(–text-muted); }
 
-  /* PREVIEW CARD */
-  .preview-card {
-    background: linear-gradient(135deg, var(--blue), var(--blue-light));
-    border-radius: 20px; padding: 20px; text-align: center;
-    color: white; margin-bottom: 12px;
-  }
+/* PREVIEW CARD */
+.preview-card {
+background: linear-gradient(135deg, var(–blue), var(–blue-light));
+border-radius: 20px; padding: 20px; text-align: center;
+color: white; margin-bottom: 12px;
+}
 
-  /* HELPERS */
-  .mt-8 { margin-top: 8px; }
-  .mt-12 { margin-top: 12px; }
-  .mt-16 { margin-top: 16px; }
-  .center { text-align: center; }
-  .text-muted { color: var(--text-muted); font-size: 12px; }
-  .spacer { flex: 1; }
-  .separator { height: 1px; background: var(--border); margin: 0 16px 16px; }
-  .bottom-pad { padding-bottom: 32px; }
+/* HELPERS */
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.center { text-align: center; }
+.text-muted { color: var(–text-muted); font-size: 12px; }
+.spacer { flex: 1; }
+.separator { height: 1px; background: var(–border); margin: 0 16px 16px; }
+.bottom-pad { padding-bottom: 32px; }
 
-  /* EMOJI PICKER */
-  .emoji-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
-  .emoji-btn {
-    font-size: 24px; padding: 6px; border-radius: 8px;
-    border: 1px solid var(--border); cursor: pointer;
-    background: var(--surface2); transition: all 0.2s;
-  }
-  .emoji-btn:hover { border-color: var(--accent); transform: scale(1.1); }
-  .emoji-btn.selected { border-color: var(--accent); background: var(--blue-dim); }
+/* EMOJI PICKER */
+.emoji-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.emoji-btn {
+font-size: 24px; padding: 6px; border-radius: 8px;
+border: 1px solid var(–border); cursor: pointer;
+background: var(–surface2); transition: all 0.2s;
+}
+.emoji-btn:hover { border-color: var(–accent); transform: scale(1.1); }
+.emoji-btn.selected { border-color: var(–accent); background: var(–blue-dim); }
 
-  /* SUCCESS MSG */
-  .success-msg {
-    display: none;
-    background: rgba(45,122,79,0.1); border: 1px solid rgba(45,122,79,0.3);
-    border-radius: 12px; padding: 12px; text-align: center;
-    font-size: 13px; color: var(--green); margin-top: 12px;
-  }
+/* SUCCESS MSG */
+.success-msg {
+display: none;
+background: rgba(45,122,79,0.1); border: 1px solid rgba(45,122,79,0.3);
+border-radius: 12px; padding: 12px; text-align: center;
+font-size: 13px; color: var(–green); margin-top: 12px;
+}
 </style>
+
 </head>
 <body>
 <div class="app">
 
   <!-- ══ SCREEN 1: إدخال رقم الجوال ══ -->
+
   <div class="screen active" id="screen-login">
     <div class="top-bar">
       <div class="logo">
@@ -257,35 +260,39 @@
       <a href="index.html" class="nav-link">🏠 للعملاء</a>
     </div>
 
-    <div style="padding: 40px 24px 16px; text-align: center;">
-      <div style="
-        width:80px; height:80px; border-radius:24px; margin:0 auto 20px;
-        background:linear-gradient(135deg,#0A2540,#2D7DD2);
-        display:flex; align-items:center; justify-content:center;
-        font-size:36px;
-        box-shadow: 0 8px 32px rgba(45,125,210,0.3);
-      ">🏪</div>
-      <h1 style="font-size:28px; font-weight:900; margin-bottom:8px; color:#0A2540;">بوابة التجار</h1>
-      <p style="color:var(--text-muted); font-size:15px;">أدخل رقم جوالك للمتابعة</p>
-    </div>
+```
+<div style="padding: 40px 24px 16px; text-align: center;">
+  <div style="
+    width:80px; height:80px; border-radius:24px; margin:0 auto 20px;
+    background:linear-gradient(135deg,#0A2540,#2D7DD2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:36px;
+    box-shadow: 0 8px 32px rgba(45,125,210,0.3);
+  ">🏪</div>
+  <h1 style="font-size:28px; font-weight:900; margin-bottom:8px; color:#0A2540;">بوابة التجار</h1>
+  <p style="color:var(--text-muted); font-size:15px;">أدخل رقم جوالك للمتابعة</p>
+</div>
 
-    <div class="card">
-      <div class="input-group">
-        <div class="phone-input-wrap" style="direction:ltr;">
-          <div class="country-code">🇸🇦 +966</div>
-          <input type="tel" id="merchant-phone" placeholder="5X XXX XXXX" maxlength="9" style="text-align:left;">
-        </div>
-      </div>
-      <button class="btn btn-primary" id="check-phone-btn"
-        style="background:linear-gradient(135deg,#0A2540,#2D7DD2); box-shadow:0 4px 16px rgba(10,37,64,0.3);">
-        متابعة ←
-      </button>
-      <div id="phone-error" style="display:none; color:var(--red); text-align:center; font-size:13px; margin-top:8px;"></div>
+<div class="card">
+  <div class="input-group">
+    <div class="phone-input-wrap" style="direction:ltr;">
+      <div class="country-code">🇸🇦 +966</div>
+      <input type="tel" id="merchant-phone" placeholder="5X XXX XXXX" maxlength="9" style="text-align:left;">
     </div>
-    <div class="spacer"></div>
+  </div>
+  <button class="btn btn-primary" id="check-phone-btn"
+    style="background:linear-gradient(135deg,#0A2540,#2D7DD2); box-shadow:0 4px 16px rgba(10,37,64,0.3);">
+    متابعة ←
+  </button>
+  <div id="phone-error" style="display:none; color:var(--red); text-align:center; font-size:13px; margin-top:8px;"></div>
+</div>
+<div class="spacer"></div>
+```
+
   </div>
 
   <!-- ══ SCREEN 2: كلمة مرور - تاجر موجود ══ -->
+
   <div class="screen" id="screen-password-login">
     <div class="top-bar">
       <div class="logo">
@@ -295,41 +302,45 @@
       <span class="nav-link" id="back-from-password">← رجوع</span>
     </div>
 
-    <div style="padding: 32px 24px 8px; text-align: center;">
-      <div style="font-size: 48px; margin-bottom: 12px;">👋</div>
-      <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 12px;">أهلاً بعودتك!</h2>
-      <div style="display:inline-flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:8px 20px;">
-        <span style="font-size:14px;">🇸🇦 +966</span>
-        <span id="returning-phone" style="font-size:15px; font-weight:700; direction:ltr;">5X XXX XXXX</span>
-      </div>
-    </div>
+```
+<div style="padding: 32px 24px 8px; text-align: center;">
+  <div style="font-size: 48px; margin-bottom: 12px;">👋</div>
+  <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 12px;">أهلاً بعودتك!</h2>
+  <div style="display:inline-flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:8px 20px;">
+    <span style="font-size:14px;">🇸🇦 +966</span>
+    <span id="returning-phone" style="font-size:15px; font-weight:700; direction:ltr;">5X XXX XXXX</span>
+  </div>
+</div>
 
-    <div class="card" style="margin-top:20px;">
-      <div class="input-group" style="margin-bottom:8px;">
-        <label style="font-size:13px;">كلمة المرور</label>
-        <div style="position:relative;">
-          <input type="password" id="login-password"
-            placeholder="أدخل كلمة مرورك"
-            style="direction:rtl; text-align:right; padding-left:50px; font-size:16px; height:52px;">
-          <button id="toggle-login-pass"
-            style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:22px; padding:4px; line-height:1;">
-            👁️
-          </button>
-        </div>
-      </div>
-
-      <div id="password-error" style="display:none; background:rgba(192,57,43,0.08); border:1px solid rgba(192,57,43,0.25); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--red); margin-bottom:12px; text-align:center;">
-        ❌ كلمة المرور غير صحيحة — حاول مجدداً
-      </div>
-
-      <button class="btn btn-primary" id="login-with-password-btn" style="font-size:16px; padding:18px; margin-top:4px;">
-        دخول ←
+<div class="card" style="margin-top:20px;">
+  <div class="input-group" style="margin-bottom:8px;">
+    <label style="font-size:13px;">كلمة المرور</label>
+    <div style="position:relative;">
+      <input type="password" id="login-password"
+        placeholder="أدخل كلمة مرورك"
+        style="direction:rtl; text-align:right; padding-left:50px; font-size:16px; height:52px;">
+      <button id="toggle-login-pass"
+        style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:22px; padding:4px; line-height:1;">
+        👁️
       </button>
     </div>
-    <div class="spacer"></div>
+  </div>
+
+  <div id="password-error" style="display:none; background:rgba(192,57,43,0.08); border:1px solid rgba(192,57,43,0.25); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--red); margin-bottom:12px; text-align:center;">
+    ❌ كلمة المرور غير صحيحة — حاول مجدداً
+  </div>
+
+  <button class="btn btn-primary" id="login-with-password-btn" style="font-size:16px; padding:18px; margin-top:4px;">
+    دخول ←
+  </button>
+</div>
+<div class="spacer"></div>
+```
+
   </div>
 
   <!-- ══ SCREEN 3: تسجيل جديد - إنشاء كلمة مرور ══ -->
+
   <div class="screen" id="screen-register">
     <div class="top-bar">
       <div class="logo">
@@ -339,57 +350,61 @@
       <span class="nav-link" id="back-from-register">← رجوع</span>
     </div>
 
-    <div style="padding: 24px 24px 8px; text-align: center;">
-      <div style="font-size: 48px; margin-bottom: 12px;">🎉</div>
-      <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">مرحباً بك في حيّ!</h2>
-      <p class="text-muted">أنشئ كلمة مرور لحسابك</p>
-    </div>
+```
+<div style="padding: 24px 24px 8px; text-align: center;">
+  <div style="font-size: 48px; margin-bottom: 12px;">🎉</div>
+  <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">مرحباً بك في حيّ!</h2>
+  <p class="text-muted">أنشئ كلمة مرور لحسابك</p>
+</div>
 
-    <div class="card">
-      <div class="input-group">
-        <label>كلمة المرور (6 أحرف أو أكثر)</label>
-        <div style="position:relative;">
-          <input type="password" id="new-password"
-            placeholder="أنشئ كلمة مرور"
-            style="direction:rtl; text-align:right; padding-left:50px; font-size:16px; height:52px;">
-          <button id="toggle-new-pass"
-            style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:22px; padding:4px; line-height:1;">
-            👁️
-          </button>
-        </div>
-      </div>
-
-      <!-- مؤشر قوة -->
-      <div id="password-strength" style="display:none; margin: -8px 0 16px;">
-        <div style="height:5px; border-radius:4px; background:var(--surface2); overflow:hidden;">
-          <div id="strength-bar" style="height:100%; width:0%; transition:all 0.3s; border-radius:4px;"></div>
-        </div>
-        <div id="strength-label" style="font-size:12px; margin-top:6px; text-align:center; font-weight:600;"></div>
-      </div>
-
-      <div class="input-group">
-        <label>تأكيد كلمة المرور</label>
-        <div style="position:relative;">
-          <input type="password" id="confirm-password"
-            placeholder="أعد كتابة كلمة المرور"
-            style="direction:rtl; text-align:right; padding-left:50px; font-size:16px; height:52px;">
-          <button id="toggle-confirm-pass"
-            style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:22px; padding:4px; line-height:1;">
-            👁️
-          </button>
-        </div>
-      </div>
-
-      <div id="register-error" style="display:none; background:rgba(192,57,43,0.08); border:1px solid rgba(192,57,43,0.25); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--red); margin-bottom:12px; text-align:center;"></div>
-
-      <button class="btn btn-primary" id="create-account-btn" style="font-size:16px; padding:18px;">
-        إنشاء الحساب ←
+<div class="card">
+  <div class="input-group">
+    <label>كلمة المرور (6 أحرف أو أكثر)</label>
+    <div style="position:relative;">
+      <input type="password" id="new-password"
+        placeholder="أنشئ كلمة مرور"
+        style="direction:rtl; text-align:right; padding-left:50px; font-size:16px; height:52px;">
+      <button id="toggle-new-pass"
+        style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:22px; padding:4px; line-height:1;">
+        👁️
       </button>
     </div>
-    <div class="spacer"></div>
+  </div>
+
+  <!-- مؤشر قوة -->
+  <div id="password-strength" style="display:none; margin: -8px 0 16px;">
+    <div style="height:5px; border-radius:4px; background:var(--surface2); overflow:hidden;">
+      <div id="strength-bar" style="height:100%; width:0%; transition:all 0.3s; border-radius:4px;"></div>
+    </div>
+    <div id="strength-label" style="font-size:12px; margin-top:6px; text-align:center; font-weight:600;"></div>
+  </div>
+
+  <div class="input-group">
+    <label>تأكيد كلمة المرور</label>
+    <div style="position:relative;">
+      <input type="password" id="confirm-password"
+        placeholder="أعد كتابة كلمة المرور"
+        style="direction:rtl; text-align:right; padding-left:50px; font-size:16px; height:52px;">
+      <button id="toggle-confirm-pass"
+        style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:22px; padding:4px; line-height:1;">
+        👁️
+      </button>
+    </div>
+  </div>
+
+  <div id="register-error" style="display:none; background:rgba(192,57,43,0.08); border:1px solid rgba(192,57,43,0.25); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--red); margin-bottom:12px; text-align:center;"></div>
+
+  <button class="btn btn-primary" id="create-account-btn" style="font-size:16px; padding:18px;">
+    إنشاء الحساب ←
+  </button>
+</div>
+<div class="spacer"></div>
+```
+
   </div>
 
   <!-- ══ SCREEN 2: DASHBOARD ══ -->
+
   <div class="screen" id="screen-dashboard">
     <div class="top-bar">
       <div class="logo">
@@ -402,176 +417,204 @@
       <span class="nav-link" id="logout-btn">← خروج</span>
     </div>
 
-    <div class="tab-bar">
-      <button class="tab active" id="tab-profile-btn">✏️ النشاط</button>
-      <button class="tab" id="tab-stats-btn">📊 إحصائيات</button>
-      <button class="tab" id="tab-verify-btn">✅ كود</button>
+```
+<!-- بانر المؤسس -->
+<div id="founder-banner" style="display:none; margin:12px 16px 0; border-radius:16px; overflow:hidden;">
+  <div style="
+    background:linear-gradient(135deg,#0A2540,#1A4A7A);
+    padding:16px 20px; color:#fff;
+    display:flex; align-items:center; gap:14px;
+  ">
+    <div style="font-size:36px; flex-shrink:0;">🎖️</div>
+    <div style="flex:1;">
+      <div style="font-size:15px; font-weight:800; margin-bottom:3px;">عضو مؤسس في حيّ</div>
+      <div id="founder-number-text" style="font-size:12px; opacity:0.8; margin-bottom:6px;"></div>
+      <div style="background:rgba(255,255,255,0.15); border-radius:8px; padding:6px 12px; display:inline-flex; align-items:center; gap:6px;">
+        <span style="font-size:12px;">⏳</span>
+        <span id="founder-days-text" style="font-size:12px; font-weight:700;"></span>
+      </div>
+    </div>
+  </div>
+  <!-- شريط تقدم الأيام -->
+  <div style="background:#0A2540; padding:8px 20px 12px;">
+    <div style="height:4px; background:rgba(255,255,255,0.15); border-radius:4px; overflow:hidden;">
+      <div id="founder-progress" style="height:100%; background:#2D7DD2; border-radius:4px; transition:width 0.5s;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-bar" style="margin-top:12px;">
+  <button class="tab active" id="tab-profile-btn">✏️ النشاط</button>
+  <button class="tab" id="tab-stats-btn">📊 إحصائيات</button>
+  <button class="tab" id="tab-verify-btn">✅ كود</button>
+</div>
+
+<!-- TAB: Profile -->
+<div id="tab-profile">
+  <div style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px;">
+
+    <!-- Preview -->
+    <div class="preview-card">
+      <div id="preview-logo-wrap">
+        <div id="preview-icon" style="font-size: 40px; margin-bottom: 8px;">🏪</div>
+      </div>
+      <img id="preview-logo-img" style="display:none; width:64px; height:64px; border-radius:50%; object-fit:cover; margin:0 auto 8px; border:2px solid rgba(255,255,255,0.5);" />
+      <div id="preview-name" style="font-size: 18px; font-weight: 900; margin-bottom: 4px;">اسم النشاط</div>
+      <div id="preview-type" style="font-size: 12px; opacity: 0.85; margin-bottom: 8px;">نوع النشاط</div>
+      <div id="preview-discount" style="background: rgba(255,255,255,0.25); border-radius: 20px; padding: 4px 16px; font-size: 13px; font-weight: 700; display: inline-block;">خصم 10%</div>
     </div>
 
-    <!-- TAB: Profile -->
-    <div id="tab-profile">
-      <div style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px;">
+    <!-- Form -->
+    <div class="card" style="margin: 0;">
+      <div class="card-title">🏪 معلومات النشاط</div>
 
-        <!-- Preview -->
-        <div class="preview-card">
-          <div id="preview-logo-wrap">
-            <div id="preview-icon" style="font-size: 40px; margin-bottom: 8px;">🏪</div>
-          </div>
-          <img id="preview-logo-img" style="display:none; width:64px; height:64px; border-radius:50%; object-fit:cover; margin:0 auto 8px; border:2px solid rgba(255,255,255,0.5);" />
-          <div id="preview-name" style="font-size: 18px; font-weight: 900; margin-bottom: 4px;">اسم النشاط</div>
-          <div id="preview-type" style="font-size: 12px; opacity: 0.85; margin-bottom: 8px;">نوع النشاط</div>
-          <div id="preview-discount" style="background: rgba(255,255,255,0.25); border-radius: 20px; padding: 4px 16px; font-size: 13px; font-weight: 700; display: inline-block;">خصم 10%</div>
+      <div class="input-group">
+        <label>اسم النشاط التجاري</label>
+        <input type="text" id="store-name" placeholder="مثال: كافيه الورد" style="text-align: right; direction: rtl;">
+      </div>
+
+      <div class="input-group">
+        <label>نوع النشاط</label>
+        <select id="store-type">
+          <option value="مقاهي ومشروبات">☕ مقاهي ومشروبات</option>
+          <option value="مطاعم ومأكولات">🍽️ مطاعم ومأكولات</option>
+          <option value="صيدليات">💊 صيدليات</option>
+          <option value="بقالات">🛒 بقالات</option>
+          <option value="حلاقة وتجميل">✂️ حلاقة وتجميل</option>
+          <option value="ملابس وأزياء">👗 ملابس وأزياء</option>
+          <option value="إلكترونيات">📱 إلكترونيات</option>
+          <option value="أخرى">🏪 أخرى</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>شعار النشاط</label>
+        <div class="emoji-grid" id="emoji-grid">
+          <span class="emoji-btn" data-emoji="☕">☕</span>
+          <span class="emoji-btn" data-emoji="🍽️">🍽️</span>
+          <span class="emoji-btn" data-emoji="💊">💊</span>
+          <span class="emoji-btn" data-emoji="🛒">🛒</span>
+          <span class="emoji-btn" data-emoji="✂️">✂️</span>
+          <span class="emoji-btn" data-emoji="🍕">🍕</span>
+          <span class="emoji-btn" data-emoji="🧴">🧴</span>
+          <span class="emoji-btn" data-emoji="📱">📱</span>
+          <span class="emoji-btn" data-emoji="🏪">🏪</span>
+          <span class="emoji-btn" data-emoji="🌿">🌿</span>
+          <span class="emoji-btn" data-emoji="🍰">🍰</span>
+          <span class="emoji-btn" data-emoji="💈">💈</span>
         </div>
+      </div>
 
-        <!-- Form -->
-        <div class="card" style="margin: 0;">
-          <div class="card-title">🏪 معلومات النشاط</div>
-
-          <div class="input-group">
-            <label>اسم النشاط التجاري</label>
-            <input type="text" id="store-name" placeholder="مثال: كافيه الورد" style="text-align: right; direction: rtl;">
-          </div>
-
-          <div class="input-group">
-            <label>نوع النشاط</label>
-            <select id="store-type">
-              <option value="مقاهي ومشروبات">☕ مقاهي ومشروبات</option>
-              <option value="مطاعم ومأكولات">🍽️ مطاعم ومأكولات</option>
-              <option value="صيدليات">💊 صيدليات</option>
-              <option value="بقالات">🛒 بقالات</option>
-              <option value="حلاقة وتجميل">✂️ حلاقة وتجميل</option>
-              <option value="ملابس وأزياء">👗 ملابس وأزياء</option>
-              <option value="إلكترونيات">📱 إلكترونيات</option>
-              <option value="أخرى">🏪 أخرى</option>
-            </select>
-          </div>
-
-          <div class="input-group">
-            <label>شعار النشاط</label>
-            <div class="emoji-grid" id="emoji-grid">
-              <span class="emoji-btn" data-emoji="☕">☕</span>
-              <span class="emoji-btn" data-emoji="🍽️">🍽️</span>
-              <span class="emoji-btn" data-emoji="💊">💊</span>
-              <span class="emoji-btn" data-emoji="🛒">🛒</span>
-              <span class="emoji-btn" data-emoji="✂️">✂️</span>
-              <span class="emoji-btn" data-emoji="🍕">🍕</span>
-              <span class="emoji-btn" data-emoji="🧴">🧴</span>
-              <span class="emoji-btn" data-emoji="📱">📱</span>
-              <span class="emoji-btn" data-emoji="🏪">🏪</span>
-              <span class="emoji-btn" data-emoji="🌿">🌿</span>
-              <span class="emoji-btn" data-emoji="🍰">🍰</span>
-              <span class="emoji-btn" data-emoji="💈">💈</span>
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label>نسبة الخصم: <span id="discount-label" style="color: var(--accent); font-weight: 700;">10%</span></label>
-            <input type="range" id="discount-slider" min="5" max="50" value="10" step="5"
-              style="width: 100%; accent-color: var(--accent); margin-top: 8px; cursor: pointer;">
-            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-              <span>5%</span><span>25%</span><span>50%</span>
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label>وصف العرض (اختياري)</label>
-            <input type="text" id="store-desc" placeholder="مثال: خصم على جميع المشروبات" style="text-align: right; direction: rtl;">
-          </div>
+      <div class="input-group">
+        <label>نسبة الخصم: <span id="discount-label" style="color: var(--accent); font-weight: 700;">10%</span></label>
+        <input type="range" id="discount-slider" min="5" max="50" value="10" step="5"
+          style="width: 100%; accent-color: var(--accent); margin-top: 8px; cursor: pointer;">
+        <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+          <span>5%</span><span>25%</span><span>50%</span>
         </div>
+      </div>
 
-        <div class="card" style="margin: 0;">
-          <div class="card-title">📍 موقع النشاط</div>
-          <div class="input-group">
-            <label>الحي</label>
-            <input type="text" id="store-area" placeholder="مثال: حي الروضة" style="text-align: right; direction: rtl;">
-          </div>
-          <button class="btn btn-ghost" id="location-btn">📍 تحديد موقعي الحالي</button>
-          <div id="location-status" class="mt-8 center text-muted"></div>
-        </div>
-
-        <div class="card" style="margin: 0;">
-          <div class="card-title">📸 صور النشاط</div>
-
-          <!-- شعار النشاط -->
-          <div class="input-group">
-            <label>شعار النشاط (لوجو)</label>
-            <div id="logo-upload-area" style="border: 2px dashed var(--border); border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s;" onclick="document.getElementById('logo-input').click()">
-              <div id="logo-preview-wrap">
-                <div style="font-size: 32px; margin-bottom: 8px;">🖼️</div>
-                <div style="font-size: 13px; color: var(--text-muted);">اضغط لرفع الشعار</div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">JPG, PNG — حد أقصى 2MB</div>
-              </div>
-              <img id="logo-preview" style="display:none; width:80px; height:80px; border-radius:50%; object-fit:cover; margin:0 auto;" />
-            </div>
-            <input type="file" id="logo-input" accept="image/*" style="display:none;">
-            <div id="logo-status" class="mt-8 center text-muted"></div>
-          </div>
-
-          <!-- صور إضافية -->
-          <div class="input-group" style="margin-bottom: 0;">
-            <label>صور النشاط (حتى 3 صور)</label>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-              <div class="photo-slot" data-index="0" onclick="document.getElementById('photo-input-0').click()" style="aspect-ratio:1; border: 2px dashed var(--border); border-radius: 12px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background: var(--surface2);">
-                <span style="font-size:24px;">📷</span>
-                <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
-              </div>
-              <div class="photo-slot" data-index="1" onclick="document.getElementById('photo-input-1').click()" style="aspect-ratio:1; border: 2px dashed var(--border); border-radius: 12px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background: var(--surface2);">
-                <span style="font-size:24px;">📷</span>
-                <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
-              </div>
-              <div class="photo-slot" data-index="2" onclick="document.getElementById('photo-input-2').click()" style="aspect-ratio:1; border: 2px dashed var(--border); border-radius: 12px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background: var(--surface2);">
-                <span style="font-size:24px;">📷</span>
-                <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
-              </div>
-            </div>
-            <input type="file" id="photo-input-0" accept="image/*" style="display:none;">
-            <input type="file" id="photo-input-1" accept="image/*" style="display:none;">
-            <input type="file" id="photo-input-2" accept="image/*" style="display:none;">
-            <div id="photos-status" class="center text-muted" style="font-size:11px;"></div>
-          </div>
-        </div>
-
-        <button class="btn btn-primary" id="save-btn">💾 حفظ معلومات النشاط ←</button>
-        <div class="success-msg" id="save-success">✅ تم حفظ معلومات النشاط بنجاح!</div>
-
+      <div class="input-group">
+        <label>وصف العرض (اختياري)</label>
+        <input type="text" id="store-desc" placeholder="مثال: خصم على جميع المشروبات" style="text-align: right; direction: rtl;">
       </div>
     </div>
 
-    <!-- TAB: Stats -->
-    <div id="tab-stats" style="display: none;">
-      <div class="stats-grid">
-        <div class="stat-box"><span class="stat-num" id="stat-today">0</span><div class="stat-label">استخدامات اليوم</div></div>
-        <div class="stat-box"><span class="stat-num" id="stat-week">0</span><div class="stat-label">استخدامات الأسبوع</div></div>
-        <div class="stat-box"><span class="stat-num" id="stat-total" style="font-size: 22px;">0</span><div class="stat-label">إجمالي الاستخدام</div></div>
-        <div class="stat-box"><span class="stat-num" id="stat-return" style="color: var(--green);">—</span><div class="stat-label">معدل العودة</div></div>
+    <div class="card" style="margin: 0;">
+      <div class="card-title">📍 موقع النشاط</div>
+      <div class="input-group">
+        <label>الحي</label>
+        <input type="text" id="store-area" placeholder="مثال: حي الروضة" style="text-align: right; direction: rtl;">
       </div>
-      <div class="separator"></div>
-      <div style="padding: 0 16px 32px;">
-        <div class="card-title" style="padding: 0 0 12px;">📈 آخر الاستخدامات</div>
-        <div id="recent-logs">
-          <div class="center text-muted" style="padding: 24px;">لا توجد استخدامات بعد</div>
+      <button class="btn btn-ghost" id="location-btn">📍 تحديد موقعي الحالي</button>
+      <div id="location-status" class="mt-8 center text-muted"></div>
+    </div>
+
+    <div class="card" style="margin: 0;">
+      <div class="card-title">📸 صور النشاط</div>
+
+      <!-- شعار النشاط -->
+      <div class="input-group">
+        <label>شعار النشاط (لوجو)</label>
+        <div id="logo-upload-area" style="border: 2px dashed var(--border); border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s;" onclick="document.getElementById('logo-input').click()">
+          <div id="logo-preview-wrap">
+            <div style="font-size: 32px; margin-bottom: 8px;">🖼️</div>
+            <div style="font-size: 13px; color: var(--text-muted);">اضغط لرفع الشعار</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">JPG, PNG — حد أقصى 2MB</div>
+          </div>
+          <img id="logo-preview" style="display:none; width:80px; height:80px; border-radius:50%; object-fit:cover; margin:0 auto;" />
         </div>
+        <input type="file" id="logo-input" accept="image/*" style="display:none;">
+        <div id="logo-status" class="mt-8 center text-muted"></div>
+      </div>
+
+      <!-- صور إضافية -->
+      <div class="input-group" style="margin-bottom: 0;">
+        <label>صور النشاط (حتى 3 صور)</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+          <div class="photo-slot" data-index="0" onclick="document.getElementById('photo-input-0').click()" style="aspect-ratio:1; border: 2px dashed var(--border); border-radius: 12px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background: var(--surface2);">
+            <span style="font-size:24px;">📷</span>
+            <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
+          </div>
+          <div class="photo-slot" data-index="1" onclick="document.getElementById('photo-input-1').click()" style="aspect-ratio:1; border: 2px dashed var(--border); border-radius: 12px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background: var(--surface2);">
+            <span style="font-size:24px;">📷</span>
+            <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
+          </div>
+          <div class="photo-slot" data-index="2" onclick="document.getElementById('photo-input-2').click()" style="aspect-ratio:1; border: 2px dashed var(--border); border-radius: 12px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background: var(--surface2);">
+            <span style="font-size:24px;">📷</span>
+            <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
+          </div>
+        </div>
+        <input type="file" id="photo-input-0" accept="image/*" style="display:none;">
+        <input type="file" id="photo-input-1" accept="image/*" style="display:none;">
+        <input type="file" id="photo-input-2" accept="image/*" style="display:none;">
+        <div id="photos-status" class="center text-muted" style="font-size:11px;"></div>
       </div>
     </div>
 
-    <!-- TAB: Verify -->
-    <div id="tab-verify" style="display: none;">
-      <div style="padding: 16px;">
-        <div class="card-title">إدخال كود العميل</div>
-        <div class="input-group">
-          <label>رقم الكود</label>
-          <input type="number" id="verify-code-input" placeholder="أدخل الكود" style="font-size: 28px; font-weight: 800; letter-spacing: 10px;">
-        </div>
-        <button class="btn btn-primary" id="verify-code-btn">✅ تحقق من الكود ←</button>
-        <div class="verify-result" id="verify-result">
-          <div class="verify-icon" id="verify-icon">✅</div>
-          <div class="verify-title" id="verify-title">كود صالح!</div>
-          <div class="verify-sub" id="verify-sub">تم تطبيق الخصم بنجاح</div>
-        </div>
-      </div>
-    </div>
+    <button class="btn btn-primary" id="save-btn">💾 حفظ معلومات النشاط ←</button>
+    <div class="success-msg" id="save-success">✅ تم حفظ معلومات النشاط بنجاح!</div>
 
-    <div class="bottom-pad"></div>
+  </div>
+</div>
+
+<!-- TAB: Stats -->
+<div id="tab-stats" style="display: none;">
+  <div class="stats-grid">
+    <div class="stat-box"><span class="stat-num" id="stat-today">0</span><div class="stat-label">استخدامات اليوم</div></div>
+    <div class="stat-box"><span class="stat-num" id="stat-week">0</span><div class="stat-label">استخدامات الأسبوع</div></div>
+    <div class="stat-box"><span class="stat-num" id="stat-total" style="font-size: 22px;">0</span><div class="stat-label">إجمالي الاستخدام</div></div>
+    <div class="stat-box"><span class="stat-num" id="stat-return" style="color: var(--green);">—</span><div class="stat-label">معدل العودة</div></div>
+  </div>
+  <div class="separator"></div>
+  <div style="padding: 0 16px 32px;">
+    <div class="card-title" style="padding: 0 0 12px;">📈 آخر الاستخدامات</div>
+    <div id="recent-logs">
+      <div class="center text-muted" style="padding: 24px;">لا توجد استخدامات بعد</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: Verify -->
+<div id="tab-verify" style="display: none;">
+  <div style="padding: 16px;">
+    <div class="card-title">إدخال كود العميل</div>
+    <div class="input-group">
+      <label>رقم الكود</label>
+      <input type="number" id="verify-code-input" placeholder="أدخل الكود" style="font-size: 28px; font-weight: 800; letter-spacing: 10px;">
+    </div>
+    <button class="btn btn-primary" id="verify-code-btn">✅ تحقق من الكود ←</button>
+    <div class="verify-result" id="verify-result">
+      <div class="verify-icon" id="verify-icon">✅</div>
+      <div class="verify-title" id="verify-title">كود صالح!</div>
+      <div class="verify-sub" id="verify-sub">تم تطبيق الخصم بنجاح</div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-pad"></div>
+```
+
   </div>
 
 </div>
@@ -709,15 +752,28 @@
 
     try {
       const hashedPassword = await hashPassword(password);
+
+      // تحقق هل لا يزال هناك مقاعد للمؤسسين
+      const allMerchants = await getDocs(collection(db, 'merchants'));
+      const totalMerchants = allMerchants.size;
+      const isFounder = totalMerchants < 30;
+      const founderNumber = isFounder ? totalMerchants + 1 : null;
+
       const docRef = await addDoc(collection(db, 'merchants'), {
         phone: currentPhone,
         password: hashedPassword,
-        created_at: serverTimestamp()
+        created_at: serverTimestamp(),
+        is_founder: isFounder,
+        founder_number: founderNumber,
+        founder_since: isFounder ? new Date().toISOString() : null,
+        free_trial_ends: isFounder ? new Date(Date.now() + 90*24*60*60*1000).toISOString() : null
       });
       merchantDocId = docRef.id;
       localStorage.setItem('merchant_session', 'active');
       localStorage.setItem('merchant_phone', currentPhone);
       localStorage.setItem('merchant_doc_id', merchantDocId);
+      localStorage.setItem('merchant_is_founder', isFounder ? 'true' : 'false');
+      localStorage.setItem('merchant_founder_number', founderNumber || '');
       btn.textContent = 'إنشاء الحساب ←';
       btn.disabled = false;
       goScreen('screen-dashboard');
@@ -728,8 +784,33 @@
     }
   }
 
+  function showFounderBanner(data) {
+    const isFounder = data?.is_founder || localStorage.getItem('merchant_is_founder') === 'true';
+    if (!isFounder) return;
+
+    const banner = document.getElementById('founder-banner');
+    if (!banner) return;
+    banner.style.display = 'block';
+
+    const num = data?.founder_number || localStorage.getItem('merchant_founder_number');
+    if (num) {
+      document.getElementById('founder-number-text').textContent = `مؤسس رقم ${num} من أصل 30 مؤسساً`;
+    }
+
+    const trialEnds = data?.free_trial_ends ? new Date(data.free_trial_ends) : null;
+    if (trialEnds) {
+      const daysLeft = Math.max(0, Math.ceil((trialEnds - Date.now()) / (24*60*60*1000)));
+      const daysUsed = 90 - daysLeft;
+      document.getElementById('founder-days-text').textContent =
+        daysLeft > 0 ? `${daysLeft} يوم متبقي من التجربة المجانية` : 'انتهت التجربة المجانية';
+      const progress = Math.min(100, (daysUsed / 90) * 100);
+      document.getElementById('founder-progress').style.width = progress + '%';
+    }
+  }
+
   function loadMerchantData(data) {
-    // تحميل بيانات النشاط من merchants collection
+    // عرض بانر المؤسس
+    showFounderBanner(data);
     if (data.store_name) {
       document.getElementById('store-name').value = data.store_name;
       document.getElementById('dash-name').textContent = data.store_name;
@@ -1185,5 +1266,6 @@
 
   });
 </script>
+
 </body>
 </html>
