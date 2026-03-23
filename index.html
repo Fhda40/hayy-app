@@ -259,23 +259,19 @@ text-align:center; cursor:pointer; transition:all 0.15s;
 display:inline-flex; align-items:center; gap:5px;
 padding:8px 16px; border-radius:20px;
 font-size:13px; font-weight:600; font-family:‘Tajawal’,sans-serif;
-border:1.5px solid var(–separator);
-background:#fff; color:#1D1D1F;
+border:1.5px solid #E5E5EA;
+background:#F5F5F7; color:#1D1D1F;
 cursor:pointer; white-space:nowrap;
-transition:all 0.2s ease;
+transition:background 0.2s, color 0.2s, border-color 0.2s;
 -webkit-appearance:none;
 outline:none;
-}
-.filter-tab:not(.active):hover {
-background:#1D1D1F; color:#fff;
-border-color:#1D1D1F;
+-webkit-tap-highlight-color:transparent;
 }
 .filter-tab.active {
-background:#1D1D1F; color:#fff;
-border-color:#1D1D1F;
+background:#1D1D1F !important; color:#fff !important;
+border-color:#1D1D1F !important;
 box-shadow:0 2px 8px rgba(0,0,0,0.15);
 }
-.filter-tab:active { transform:scale(0.95); }
 #filter-bar::-webkit-scrollbar { display:none; }
 
 /* Badge رائج */
