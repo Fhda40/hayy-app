@@ -348,47 +348,79 @@ pointer-events:none !important;
   <div class="safe-bottom"></div>
 </div>
 
-<!-- ══ OTP ══ -->
+<!-- ══ PASSWORD LOGIN — عميل موجود ══ -->
 
-<div class="screen" id="screen-otp">
+<div class="screen" id="screen-password-login">
   <div class="nav">
-    <button class="nav-back" id="back-welcome" style="color:#007AFF;">‹ رجوع</button>
+    <button class="nav-back" id="back-from-pass" style="color:#007AFF;">‹ رجوع</button>
   </div>
 
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding-bottom:48px;">
+    <div style="padding:0 28px 32px; text-align:center;">
+      <div style="font-size:48px; margin-bottom:16px;">👋</div>
+      <div style="font-size:26px; font-weight:700; margin-bottom:10px; letter-spacing:-0.3px;">أهلاً بعودتك!</div>
+      <div id="returning-phone-display" style="display:inline-flex; align-items:center; gap:8px; background:var(--bg2); border:1px solid var(--separator); border-radius:20px; padding:6px 16px; font-size:14px; font-weight:600; direction:ltr;"></div>
+    </div>
 
 ```
-<div style="padding:0 28px 28px; text-align:center;">
-  <div style="font-size:44px; margin-bottom:16px; line-height:1;">💬</div>
-  <div style="font-size:26px; font-weight:700; margin-bottom:10px; letter-spacing:-0.3px;">أدخل الرمز</div>
-  <div style="font-size:15px; color:var(--text-3); line-height:1.6;">
-    أُرسل رمز مكون من 6 أرقام إلى
-    <div id="otp-num" style="color:var(--text); font-weight:600; direction:ltr; margin-top:4px; font-size:16px;"></div>
+<div style="padding:0 16px 12px;">
+  <div style="background:var(--bg2); border-radius:14px; overflow:hidden; margin-bottom:10px;">
+    <div style="display:flex; align-items:center; padding:0 16px; min-height:54px; position:relative;">
+      <input type="password" id="login-pass"
+        placeholder="كلمة المرور"
+        style="flex:1; border:none; background:none; font-size:17px; font-family:'Tajawal',sans-serif; color:var(--text); outline:none; padding:14px 0; direction:rtl; text-align:right; padding-left:40px;">
+      <button id="toggle-login-pass" style="position:absolute; left:14px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-4); padding:4px;">👁️</button>
+    </div>
+  </div>
+  <div id="login-error" style="display:none; color:var(--red); font-size:13px; text-align:center; margin-bottom:10px; padding:10px; background:rgba(255,59,48,0.06); border-radius:10px;">❌ كلمة المرور غير صحيحة</div>
+  <button class="btn-main" id="login-with-pass-btn" style="font-size:17px; padding:17px;">دخول</button>
+</div>
+```
+
   </div>
 </div>
 
-<!-- OTP boxes — 6 خانات منضبطة -->
-<div class="otp-wrap">
-  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1" autocomplete="one-time-code">
-  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
-  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
-  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
-  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
-  <input type="text" inputmode="numeric" pattern="[0-9]*" class="otp-box" maxlength="1">
-</div>
+<!-- ══ REGISTER — عميل جديد ══ -->
 
+<div class="screen" id="screen-register">
+  <div class="nav">
+    <button class="nav-back" id="back-from-register" style="color:#007AFF;">‹ رجوع</button>
+  </div>
+
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding-bottom:48px;">
+    <div style="padding:0 28px 32px; text-align:center;">
+      <div style="font-size:48px; margin-bottom:16px;">🎉</div>
+      <div style="font-size:26px; font-weight:700; margin-bottom:8px; letter-spacing:-0.3px;">مرحباً بك!</div>
+      <div style="font-size:15px; color:var(--text-3);">أنشئ كلمة مرور لحسابك</div>
+    </div>
+
+```
 <div style="padding:0 16px 12px;">
-  <button class="btn-main" id="verify-otp-btn"
-    >
-    تحقق
-  </button>
-</div>
+  <div style="background:var(--bg2); border-radius:14px; overflow:hidden; margin-bottom:10px;">
+    <div style="display:flex; align-items:center; padding:0 16px; min-height:54px; position:relative; border-bottom:1px solid var(--separator);">
+      <input type="password" id="new-pass"
+        placeholder="كلمة المرور (6 أحرف أو أكثر)"
+        style="flex:1; border:none; background:none; font-size:17px; font-family:'Tajawal',sans-serif; color:var(--text); outline:none; padding:14px 0; direction:rtl; text-align:right; padding-left:40px;">
+      <button id="toggle-new-pass" style="position:absolute; left:14px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-4); padding:4px;">👁️</button>
+    </div>
+    <div style="display:flex; align-items:center; padding:0 16px; min-height:54px; position:relative;">
+      <input type="password" id="confirm-pass"
+        placeholder="تأكيد كلمة المرور"
+        style="flex:1; border:none; background:none; font-size:17px; font-family:'Tajawal',sans-serif; color:var(--text); outline:none; padding:14px 0; direction:rtl; text-align:right; padding-left:40px;">
+      <button id="toggle-confirm-pass" style="position:absolute; left:14px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-4); padding:4px;">👁️</button>
+    </div>
+  </div>
 
-<div style="text-align:center;">
-  <button class="btn-ghost" id="resend-btn"
-    style="color:#007AFF; font-size:15px;">
-    لم يصلك الرمز؟ إعادة الإرسال
-  </button>
+  <!-- مؤشر قوة كلمة المرور -->
+  <div id="pass-strength" style="display:none; margin-bottom:12px;">
+    <div style="height:4px; border-radius:4px; background:var(--bg2); overflow:hidden;">
+      <div id="strength-bar" style="height:100%; width:0%; border-radius:4px; transition:all 0.3s;"></div>
+    </div>
+    <div id="strength-label" style="font-size:12px; text-align:center; margin-top:5px; font-weight:500;"></div>
+  </div>
+
+  <div id="register-error" style="display:none; color:var(--red); font-size:13px; text-align:center; margin-bottom:10px; padding:10px; background:rgba(255,59,48,0.06); border-radius:10px;"></div>
+  <button class="btn-main" id="create-account-btn" style="font-size:17px; padding:17px;">إنشاء الحساب</button>
 </div>
 ```
 
@@ -638,64 +670,134 @@ pointer-events:none !important;
 
   // session restore
   window.addEventListener('load', () => {
+    currentPhone = localStorage.getItem('h_phone') || '';
     if (localStorage.getItem('h_screen') === 'stores') loadStores().then(() => go('screen-stores'));
   });
 
-  // OTP
-  async function sendOTP() {
+  // ══ Auth — Phone + Password ══
+  let currentPhone = '';
+
+  async function hashPassword(password) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password + 'hayy_user_2026'));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  async function checkPhone() {
     const phone = document.getElementById('phone-input').value.trim();
     if (phone.length < 9) return;
+    currentPhone = '+966' + phone;
+    document.getElementById('returning-phone-display').textContent = '+966 ' + phone;
+
     const btn = document.getElementById('send-otp-btn');
     btn.disabled = true;
-    document.getElementById('otp-num').textContent = '+966 ' + phone;
+    btn.textContent = '⏳';
+
     try {
-      // احذف الـ verifier القديم من الـ DOM
-      if (window.rv) {
-        try { window.rv.clear(); } catch(e){}
-        window.rv = null;
-        // أعد إنشاء الـ container
-        const old = document.getElementById('recaptcha-container');
-        if (old) old.remove();
-        const newContainer = document.createElement('div');
-        newContainer.id = 'recaptcha-container';
-        document.body.appendChild(newContainer);
+      const q = query(collection(db, 'users'), where('phone', '==', currentPhone));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        go('screen-password-login');
+      } else {
+        go('screen-register');
       }
-
-      window.rv = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        size: 'invisible',
-        callback: () => {},
-        'expired-callback': () => { window.rv = null; }
-      });
-
-      await window.rv.render();
-      window.cr = await signInWithPhoneNumber(auth, '+966' + phone, window.rv);
-      go('screen-otp');
-      setTimeout(() => { const f = document.querySelector('.otp-box'); if(f) f.focus(); }, 400);
     } catch(e) {
       console.error(e);
-      alert('خطأ في الإرسال — حاول مجدداً');
+      go('screen-register');
     } finally {
       btn.textContent = 'ابدأ الآن';
       btn.disabled = false;
     }
   }
 
-  async function verifyOTP() {
-    const boxes = document.querySelectorAll('.otp-box');
-    const code = [...boxes].map(b => b.value).join('');
-    if (code.length < 6) return;
-    const btn = document.getElementById('verify-otp-btn');
+  async function loginWithPassword() {
+    const password = document.getElementById('login-pass').value;
+    const error = document.getElementById('login-error');
+    if (!password) return;
+
+    const btn = document.getElementById('login-with-pass-btn');
     btn.disabled = true;
+
     try {
-      const r = await window.cr.confirm(code);
-      await setDoc(doc(db,'users',r.user.uid),{phone:r.user.phoneNumber,last_login:serverTimestamp()},{merge:true});
-      go('screen-geo');
-    } catch(e) {
-      boxes.forEach(b => {b.style.borderColor='var(--red)'; b.value='';});
-      boxes[0].focus();
-      setTimeout(() => boxes.forEach(b => b.style.borderColor=''), 1200);
+      const hashed = await hashPassword(password);
+      const q = query(collection(db, 'users'), where('phone', '==', currentPhone), where('password', '==', hashed));
+      const snap = await getDocs(q);
+
+      if (!snap.empty) {
+        error.style.display = 'none';
+        localStorage.setItem('h_uid', snap.docs[0].id);
+        localStorage.setItem('h_phone', currentPhone);
+        go('screen-geo');
+      } else {
+        error.style.display = 'block';
+        document.getElementById('login-pass').value = '';
+      }
+    } catch(e) { console.error(e); }
+
+    btn.disabled = false;
+  }
+
+  async function createAccount() {
+    const password = document.getElementById('new-pass').value;
+    const confirm = document.getElementById('confirm-pass').value;
+    const error = document.getElementById('register-error');
+
+    if (password.length < 6) {
+      error.textContent = '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+      error.style.display = 'block'; return;
     }
-    btn.textContent = 'تحقق'; btn.disabled = false;
+    if (password !== confirm) {
+      error.textContent = '⚠️ كلمتا المرور غير متطابقتين';
+      error.style.display = 'block'; return;
+    }
+
+    error.style.display = 'none';
+    const btn = document.getElementById('create-account-btn');
+    btn.disabled = true; btn.textContent = '⏳';
+
+    try {
+      const hashed = await hashPassword(password);
+      const ref = await addDoc(collection(db, 'users'), {
+        phone: currentPhone,
+        password: hashed,
+        created_at: serverTimestamp()
+      });
+      localStorage.setItem('h_uid', ref.id);
+      localStorage.setItem('h_phone', currentPhone);
+      go('screen-geo');
+    } catch(e) { console.error(e); }
+
+    btn.textContent = 'إنشاء الحساب';
+    btn.disabled = false;
+  }
+
+  function checkPasswordStrength(password) {
+    const bar = document.getElementById('strength-bar');
+    const label = document.getElementById('strength-label');
+    document.getElementById('pass-strength').style.display = 'block';
+    if (password.length < 4) {
+      bar.style.width='25%'; bar.style.background='var(--red)';
+      label.textContent='ضعيفة'; label.style.color='var(--red)';
+    } else if (password.length < 6) {
+      bar.style.width='50%'; bar.style.background='var(--orange,#FF9500)';
+      label.textContent='متوسطة'; label.style.color='#FF9500';
+    } else if (password.length < 10) {
+      bar.style.width='75%'; bar.style.background='#34C759';
+      label.textContent='جيدة ✓'; label.style.color='#34C759';
+    } else {
+      bar.style.width='100%'; bar.style.background='#34C759';
+      label.textContent='قوية جداً ✓'; label.style.color='#34C759';
+    }
+  }
+
+  function togglePass(inputId, btnId) {
+    const input = document.getElementById(inputId);
+    const btn = document.getElementById(btnId);
+    if (!btn || !input) return;
+    btn.addEventListener('click', () => {
+      const isPass = input.type === 'password';
+      input.type = isPass ? 'text' : 'password';
+      btn.textContent = isPass ? '🙈' : '👁️';
+    });
   }
 
   // geo
@@ -797,7 +899,7 @@ pointer-events:none !important;
     // check daily
     try {
       const today = new Date(); today.setHours(0,0,0,0);
-      const uid = auth.currentUser?.uid;
+      const uid = auth.currentUser?.uid || localStorage.getItem('h_uid') || 'guest';
       if (uid) {
         const q = query(collection(db,'coupons'),where('user_id','==',uid),where('business_id','==',id),where('status','==','used'));
         const snap = await getDocs(q);
@@ -816,7 +918,7 @@ pointer-events:none !important;
     // re-check
     try {
       const today = new Date(); today.setHours(0,0,0,0);
-      const uid = auth.currentUser?.uid;
+      const uid = auth.currentUser?.uid || localStorage.getItem('h_uid') || 'guest';
       if (uid) {
         const q = query(collection(db,'coupons'),where('user_id','==',uid),where('business_id','==',currentStoreId),where('status','==','used'));
         const snap = await getDocs(q);
@@ -836,7 +938,7 @@ pointer-events:none !important;
     btn.textContent='الكود نشط'; btn.disabled=true;
 
     try {
-      const uid=auth.currentUser?.uid||'guest';
+      const uid = auth.currentUser?.uid || localStorage.getItem('h_uid') || 'guest';
       const ref=await addDoc(collection(db,'coupons'),{
         code,user_id:uid,business_id:currentStoreId,
         business_name:storeData[currentStoreId]?.name||'',
@@ -879,11 +981,20 @@ pointer-events:none !important;
 
   // events
   document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('send-otp-btn').addEventListener('click', sendOTP);
-    document.getElementById('phone-input').addEventListener('keydown', e => e.key==='Enter' && sendOTP());
-    document.getElementById('back-welcome').addEventListener('click', () => go('screen-welcome'));
-    document.getElementById('verify-otp-btn').addEventListener('click', verifyOTP);
-    document.getElementById('resend-btn').addEventListener('click', sendOTP);
+    document.getElementById('send-otp-btn').addEventListener('click', checkPhone);
+    document.getElementById('phone-input').addEventListener('keydown', e => e.key==='Enter' && checkPhone());
+
+    document.getElementById('back-from-pass').addEventListener('click', () => go('screen-welcome'));
+    document.getElementById('login-with-pass-btn').addEventListener('click', loginWithPassword);
+    document.getElementById('login-pass').addEventListener('keydown', e => e.key==='Enter' && loginWithPassword());
+
+    document.getElementById('back-from-register').addEventListener('click', () => go('screen-welcome'));
+    document.getElementById('create-account-btn').addEventListener('click', createAccount);
+    document.getElementById('new-pass').addEventListener('input', e => checkPasswordStrength(e.target.value));
+
+    togglePass('login-pass', 'toggle-login-pass');
+    togglePass('new-pass', 'toggle-new-pass');
+    togglePass('confirm-pass', 'toggle-confirm-pass');
     document.getElementById('geo-btn').addEventListener('click', checkGeo);
     document.getElementById('back-stores').addEventListener('click', () => go('screen-stores'));
     document.getElementById('gen-btn').addEventListener('click', generateCode);
@@ -966,7 +1077,7 @@ pointer-events:none !important;
       const btn = document.getElementById('submit-r');
       btn.textContent = '⏳'; btn.disabled = true;
       try {
-        const uid = auth.currentUser?.uid || 'guest';
+        const uid = auth.currentUser?.uid || localStorage.getItem('h_uid') || 'guest';
         await addDoc(collection(db, 'ratings'), {
           user_id: uid, business_id: currentStoreId,
           business_name: storeData[currentStoreId]?.name || '',
