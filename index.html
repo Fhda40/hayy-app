@@ -200,8 +200,10 @@ border:1px solid var(–separator);
 box-shadow:var(–shadow-sm);
 cursor:pointer; transition:all 0.12s;
 font-family:‘Tajawal’,sans-serif;
+color:var(–text);
 text-align:right; gap:14px;
 -webkit-appearance:none;
+outline:none;
 }
 .store-card:active { background:var(–bg2); transform:scale(0.988); }
 .store-logo {
@@ -1507,7 +1509,6 @@ pointer-events:none !important;
     const s = storeData[id];
     if (!s) { console.log('openStore: no data for', id, Object.keys(storeData)); return; }
     currentStoreId = id;
-    window.__hs = openStore; // تحديث المرجع دائماً
 
     const logo = document.getElementById('coupon-logo');
     const icon = document.getElementById('coupon-icon');
@@ -1600,6 +1601,7 @@ pointer-events:none !important;
     btn.textContent = 'توليد كود الخصم';
     btn.classList.remove('muted'); btn.disabled = false;
   }
+  window.__hs = openStore;
 
   async function generateCode() {
     if (currentCode && !expired) return;
