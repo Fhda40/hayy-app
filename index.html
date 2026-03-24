@@ -884,12 +884,14 @@ pointer-events:none !important;
 
 <script>
   document.addEventListener('click', function(e) {
-    const card = e.target.closest('.store-card');
-    if (card && window.__hs) window.__hs(card.dataset.id);
-  });
-  function openS(id) {
-    if (window.__hs) window.__hs(id);
-  }
+    var card = e.target.closest && e.target.closest('.store-card');
+    if (!card) return;
+    var id = card.getAttribute('data-id');
+    if (!id) return;
+    if (typeof window.__hs === 'function') {
+      window.__hs(id);
+    }
+  }, true); // useCapture=true يضمن استقبال الحدث أولاً
 </script>
 
 <script type="module">
@@ -1403,12 +1405,6 @@ pointer-events:none !important;
         '<span class="chevron">›</span>' +
       '</div>';
     }).join('');
-
-    // إضافة listeners
-    document.querySelectorAll('.store-card').forEach(function(card) {
-      var id = card.getAttribute('data-id');
-      card.addEventListener('click', function() { openStore(id); });
-    });
   }
 
   async function openStore(id) {
