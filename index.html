@@ -20,8 +20,8 @@
   --shadow:0 1px 3px rgba(0,0,0,0.07);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Tajawal',sans-serif}
-body{background:var(--bg);color:var(--text);min-height:100vh}
-.screen{display:none;flex-direction:column;min-height:100vh}
+body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;position:fixed;width:100%;height:100%}
+.screen{display:none;flex-direction:column;min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .screen.active{display:flex}
 .btn-main{
   display:block;width:calc(100% - 32px);margin:0 16px;
