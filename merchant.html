@@ -377,10 +377,17 @@ document.getElementById('btn-save').addEventListener('click',async()=>{
 document.getElementById('btn-check-phone').addEventListener('click',async()=>{
   const val=document.getElementById('m-phone').value.trim();
   const err=document.getElementById('phone-err');
+  const btn=document.getElementById('btn-check-phone');
   if(val.length<9){err.textContent='أدخل رقماً صحيحاً';err.style.display='block';return;}
   phone='+966'+val; err.style.display='none';
   document.getElementById('login-phone-txt').textContent=phone;
-  try{const s=await getDocs(query(collection(db,'merchants'),where('phone','==',phone)));if(!s.empty){mid=s.docs[0].id;goS('s-login');}else goS('s-register');}catch(e){goS('s-register');}
+  btn.textContent='⏳ جاري التحقق...'; btn.disabled=true;
+  try{
+    const s=await getDocs(query(collection(db,'merchants'),where('phone','==',phone)));
+    if(!s.empty){mid=s.docs[0].id;goS('s-login');}
+    else goS('s-register');
+  }catch(e){ goS('s-register'); }
+  btn.textContent='متابعة ←'; btn.disabled=false;
 });
 
 document.getElementById('btn-login').addEventListener('click',async()=>{
