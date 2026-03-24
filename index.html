@@ -1489,7 +1489,10 @@ pointer-events:none !important;
     for (var i = 0; i < cards.length; i++) {
       (function(card) {
         var id = card.getAttribute('data-id');
-        card.onclick = function() { openStore(id); };
+        card.onclick = function() {
+          alert('ضغطت على: ' + id);
+          openStore(id);
+        };
       })(cards[i]);
     }
   }
