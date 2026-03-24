@@ -193,13 +193,15 @@ animation:ripple 2.5s ease-out infinite;
 /* STORE CARD */
 .store-card {
 display:flex; align-items:center;
+width:calc(100% - 32px);
 margin:0 16px 10px; padding:14px 14px;
 background:var(–surface); border-radius:16px;
 border:1px solid var(–separator);
 box-shadow:var(–shadow-sm);
 cursor:pointer; transition:all 0.12s;
--webkit-tap-highlight-color:rgba(0,0,0,0.05);
-user-select:none; -webkit-user-select:none;
+font-family:‘Tajawal’,sans-serif;
+text-align:right; gap:14px;
+-webkit-appearance:none;
 }
 .store-card:active { background:var(–bg2); transform:scale(0.988); }
 .store-logo {
@@ -895,6 +897,16 @@ pointer-events:none !important;
 })();
 </script>
 
+<script>
+  document.addEventListener('click', function(e) {
+    const card = e.target.closest('.store-card');
+    if (card && window.__hs) window.__hs(card.dataset.id);
+  });
+  function openS(id) {
+    if (window.__hs) window.__hs(id);
+  }
+</script>
+
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
   import { getAuth, signInAnonymously, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
@@ -1040,12 +1052,11 @@ pointer-events:none !important;
     window.scrollTo(0,0);
     if (id === 'screen-stores') {
       localStorage.setItem('h_screen','stores');
-      // مناداة بالاسم
       const name = localStorage.getItem('h_name');
       const greet = document.getElementById('user-greeting');
       if (greet) greet.textContent = name ? `أهلاً ${name} 👋` : '';
-      // طلب إذن الإشعارات بعد ثانيتين
       setTimeout(() => requestPushPermission(), 2000);
+      setTimeout(() => addStoreListeners(), 200);
     }
   }
 
@@ -1458,10 +1469,10 @@ pointer-events:none !important;
         : realPopular ? `<span class="badge-hot">رائج</span>` : '';
       const dist = (userLat && userLng && s.lat && s.lng)
         ? `<span style="font-size:11px;color:var(--text-4);">📍 ${haversine(userLat,userLng,s.lat,s.lng).toFixed(1)} كم</span>` : '';
-      const logo = s.logo_url ? '<img src="' + s.logo_url + '">' : (s.icon||'🏪');
-      return '<div class="store-card" data-id="' + s.id + '">' +
+      const logo = s.logo_url ? '<img src="' + s.logo_url + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">' : (s.icon||'🏪');
+      return '<button class="store-card" data-id="' + s.id + '" onclick="openS(\'' + s.id + '\')">' +
         '<div class="store-logo">' + logo + '</div>' +
-        '<div style="flex:1;">' +
+        '<div style="flex:1;text-align:right;">' +
           '<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap;">' +
             '<div class="store-name">' + s.name + '</div>' + stars + ' ' + badge +
           '</div>' +
@@ -1471,7 +1482,7 @@ pointer-events:none !important;
           '</div>' +
         '</div>' +
         '<span class="chevron">›</span>' +
-      '</div>';
+      '</button>';
     }).join('');
   }
 
