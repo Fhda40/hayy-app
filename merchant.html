@@ -255,7 +255,7 @@ input[type=range]{width:100%;accent-color:#1D1D1F;margin-top:8px}
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
 import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
 const app = initializeApp({
@@ -268,6 +268,16 @@ const app = initializeApp({
 const auth = getAuth(app);
 const db = getFirestore(app);
 signInAnonymously(auth).catch(()=>{});
+
+function waitAuth() {
+  return new Promise(resolve => {
+    if (auth.currentUser) { resolve(); return; }
+    const unsub = onAuthStateChanged(auth, user => {
+      if (user) { unsub(); resolve(); }
+    });
+    setTimeout(resolve, 3000);
+  });
+}
 
 const CL = 'https://api.cloudinary.com/v1_1/dtwgl17iy/image/upload';
 const UP = 'hayy_uploads';
@@ -382,8 +392,13 @@ document.getElementById('btn-check-phone').addEventListener('click',async()=>{
   phone='+966'+val; err.style.display='none';
   document.getElementById('login-phone-txt').textContent=phone;
   btn.textContent='⏳ جاري التحقق...'; btn.disabled=true;
+  await waitAuth();
+  const timeout = new Promise((_,rej) => setTimeout(()=>rej('timeout'), 4000));
   try{
-    const s=await getDocs(query(collection(db,'merchants'),where('phone','==',phone)));
+    const s = await Promise.race([
+      getDocs(query(collection(db,'merchants'),where('phone','==',phone))),
+      timeout
+    ]);
     if(!s.empty){mid=s.docs[0].id;goS('s-login');}
     else goS('s-register');
   }catch(e){ goS('s-register'); }
