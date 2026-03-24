@@ -20,23 +20,21 @@ body{background:var(--bg);color:var(--text);overflow-x:hidden}
 .nav-btn{background:var(--bg2);border:none;border-radius:20px;padding:8px 14px;font-size:14px;font-weight:600;font-family:'Tajawal',sans-serif;color:var(--text);cursor:pointer}
 .tab{flex:1;padding:10px;border:none;background:var(--bg2);border-radius:12px;font-size:13px;font-weight:600;font-family:'Tajawal',sans-serif;color:var(--text3);cursor:pointer}
 .tab.active{background:#1D1D1F;color:#fff}
-.tab-pane{display:none;padding:0 16px}
+.tab-pane{display:none;padding:0 16px;padding-bottom:32px}
 .tab-pane.active{display:block}
 .otp-box{width:64px;height:72px;border-radius:14px;border:2px solid var(--sep);background:var(--bg2);font-size:28px;font-weight:800;text-align:center;color:var(--text);font-family:'Tajawal',sans-serif;outline:none}
 .otp-box:focus{border-color:#0A2540}
 .stat{background:var(--bg2);border-radius:14px;padding:16px;text-align:center;flex:1}
-.verify-result{border-radius:14px;padding:18px;text-align:center;display:none;margin-top:14px}
-.verify-result.ok{background:rgba(52,199,89,0.08);border:1px solid rgba(52,199,89,0.3);display:block}
-.verify-result.err{background:rgba(255,59,48,0.06);border:1px solid rgba(255,59,48,0.2);display:block}
+.vr{border-radius:14px;padding:18px;text-align:center;display:none;margin-top:14px}
+.vr.ok{background:rgba(52,199,89,0.08);border:1px solid rgba(52,199,89,0.3);display:block}
+.vr.err{background:rgba(255,59,48,0.06);border:1px solid rgba(255,59,48,0.2);display:block}
 .emoji-btn{font-size:24px;padding:8px;border-radius:10px;background:var(--bg2);border:2px solid transparent;cursor:pointer;text-align:center}
 .emoji-btn.on{border-color:#1D1D1F}
-.photo-slot{aspect-ratio:1;border:2px dashed var(--sep);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;background:var(--bg2);position:relative}
-.photo-slot img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;display:none}
-.label{font-size:13px;font-weight:600;color:var(--text3);margin-bottom:8px;display:block}
+.photo-slot{aspect-ratio:1;border:2px dashed var(--sep);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;background:var(--bg2)}
+.lbl{font-size:13px;font-weight:600;color:var(--text3);margin-bottom:8px;display:block}
 .err-box{display:none;color:var(--red);font-size:13px;text-align:center;margin-bottom:10px;padding:10px;background:rgba(255,59,48,0.06);border-radius:10px}
 select{background:var(--bg2);border:none;border-radius:12px;padding:15px 16px;font-size:16px;font-family:'Tajawal',sans-serif;color:var(--text);width:100%;outline:none;direction:rtl}
 input[type=range]{width:100%;accent-color:#1D1D1F;margin-top:8px}
-.founder-box{background:linear-gradient(135deg,#0A2540,#1A4A7A);border-radius:16px;padding:18px 20px;color:#fff;display:flex;align-items:center;gap:14px;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -52,7 +50,7 @@ input[type=range]{width:100%;accent-color:#1D1D1F;margin-top:8px}
     </div>
   </div>
   <div style="padding:0 20px calc(env(safe-area-inset-bottom,0px)+32px)">
-    <button class="btn btn-blue" onclick="goScreen('s-phone')">ابدأ الآن ←</button>
+    <button class="btn btn-blue" id="btn-start">ابدأ الآن ←</button>
     <div style="text-align:center;margin-top:14px"><a href="/" style="color:var(--text3);font-size:14px;text-decoration:none">← للعملاء</a></div>
   </div>
 </div>
@@ -61,19 +59,19 @@ input[type=range]{width:100%;accent-color:#1D1D1F;margin-top:8px}
 
 <div class="screen" id="s-phone">
   <div style="padding:calc(env(safe-area-inset-top,0px)+16px) 20px 0">
-    <button class="nav-btn" onclick="goScreen('s-welcome')">‹ رجوع</button>
+    <button class="nav-btn" id="btn-back-phone">‹ رجوع</button>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 20px 48px">
     <div style="text-align:center;margin-bottom:32px">
       <div style="font-size:48px;margin-bottom:12px">📱</div>
-      <div style="font-size:24px;font-weight:700;margin-bottom:8px">رقم الجوال</div>
+      <div style="font-size:24px;font-weight:700">رقم الجوال</div>
     </div>
     <div style="background:var(--bg2);border-radius:14px;overflow:hidden;display:flex;align-items:center;direction:ltr;height:58px;margin-bottom:12px">
       <div style="padding:0 14px;border-left:1px solid var(--sep);font-size:15px;font-weight:600;color:var(--text3);height:100%;display:flex;align-items:center">🇸🇦 +966</div>
       <input type="tel" id="m-phone" maxlength="9" placeholder="5X XXX XXXX" style="flex:1;border:none;background:none;padding:0 14px;font-size:18px;font-weight:600;font-family:'Tajawal',sans-serif;color:var(--text);outline:none;direction:ltr;height:100%">
     </div>
     <div id="phone-err" class="err-box"></div>
-    <button class="btn btn-blue" onclick="checkPhone()">متابعة ←</button>
+    <button class="btn btn-blue" id="btn-check-phone">متابعة ←</button>
   </div>
 </div>
 
@@ -81,7 +79,7 @@ input[type=range]{width:100%;accent-color:#1D1D1F;margin-top:8px}
 
 <div class="screen" id="s-login">
   <div style="padding:calc(env(safe-area-inset-top,0px)+16px) 20px 0">
-    <button class="nav-btn" onclick="goScreen('s-phone')">‹ رجوع</button>
+    <button class="nav-btn" id="btn-back-login">‹ رجوع</button>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 20px 48px">
     <div style="text-align:center;margin-bottom:32px">
@@ -91,10 +89,10 @@ input[type=range]{width:100%;accent-color:#1D1D1F;margin-top:8px}
     </div>
     <div style="position:relative;margin-bottom:12px">
       <input type="password" id="m-pass" placeholder="كلمة المرور" class="field" style="padding-left:44px">
-      <button onclick="toggleVis('m-pass',this)" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:20px;cursor:pointer">👁️</button>
+      <button id="btn-toggle-pass" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:20px;cursor:pointer">👁️</button>
     </div>
     <div id="login-err" class="err-box">❌ كلمة المرور غير صحيحة</div>
-    <button class="btn btn-blue" onclick="doLogin()">دخول ←</button>
+    <button class="btn btn-blue" id="btn-login">دخول ←</button>
   </div>
 </div>
 
@@ -102,7 +100,7 @@ input[type=range]{width:100%;accent-color:#1D1D1F;margin-top:8px}
 
 <div class="screen" id="s-register">
   <div style="padding:calc(env(safe-area-inset-top,0px)+16px) 20px 0">
-    <button class="nav-btn" onclick="goScreen('s-phone')">‹ رجوع</button>
+    <button class="nav-btn" id="btn-back-reg">‹ رجوع</button>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 20px 48px">
     <div style="text-align:center;margin-bottom:32px">
@@ -112,130 +110,109 @@ input[type=range]{width:100%;accent-color:#1D1D1F;margin-top:8px}
     <div style="background:var(--bg2);border-radius:14px;overflow:hidden;margin-bottom:12px">
       <div style="position:relative;border-bottom:1px solid var(--sep)">
         <input type="password" id="r-pass" placeholder="كلمة المرور (6+)" class="field" style="border-radius:0;padding-left:44px">
-        <button onclick="toggleVis('r-pass',this)" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:20px;cursor:pointer">👁️</button>
+        <button id="btn-toggle-r" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:20px;cursor:pointer">👁️</button>
       </div>
       <div style="position:relative">
         <input type="password" id="r-confirm" placeholder="تأكيد كلمة المرور" class="field" style="border-radius:0;padding-left:44px">
-        <button onclick="toggleVis('r-confirm',this)" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:20px;cursor:pointer">👁️</button>
+        <button id="btn-toggle-r2" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:20px;cursor:pointer">👁️</button>
       </div>
     </div>
     <div id="reg-err" class="err-box"></div>
-    <button class="btn btn-blue" onclick="doRegister()">إنشاء الحساب ←</button>
+    <button class="btn btn-blue" id="btn-register">إنشاء الحساب ←</button>
   </div>
 </div>
 
 <!-- DASHBOARD -->
 
-<div class="screen" id="s-dash">
+<div class="screen" id="s-dash" style="overflow-y:auto">
   <div style="padding:calc(env(safe-area-inset-top,0px)+14px) 20px 0;display:flex;align-items:center;justify-content:space-between">
     <div style="display:flex;align-items:center;gap:10px">
       <div id="dash-icon" style="font-size:28px">🏪</div>
       <div><div id="dash-name" style="font-size:16px;font-weight:700">نشاطك</div><div style="font-size:12px;color:var(--text3)">لوحة التحكم</div></div>
     </div>
-    <button onclick="doLogout()" style="background:var(--bg2);border:none;border-radius:20px;padding:7px 14px;font-size:13px;font-weight:600;font-family:'Tajawal',sans-serif;color:var(--text3);cursor:pointer">خروج</button>
+    <button id="btn-logout" style="background:var(--bg2);border:none;border-radius:20px;padding:7px 14px;font-size:13px;font-weight:600;font-family:'Tajawal',sans-serif;color:var(--text3);cursor:pointer">خروج</button>
   </div>
   <div id="founder-box" style="display:none;padding:14px 16px 0">
-    <div class="founder-box">
+    <div style="background:linear-gradient(135deg,#0A2540,#1A4A7A);border-radius:16px;padding:18px 20px;color:#fff;display:flex;align-items:center;gap:14px">
       <div style="font-size:36px">🎖️</div>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:800;margin-bottom:2px">عضو مؤسس في حيّ</div>
-        <div id="founder-num" style="font-size:12px;opacity:0.8;margin-bottom:6px"></div>
-        <div id="founder-days" style="font-size:12px;font-weight:700;background:rgba(255,255,255,0.15);border-radius:8px;padding:4px 10px;display:inline-block"></div>
-      </div>
+      <div><div style="font-size:15px;font-weight:800;margin-bottom:2px">عضو مؤسس في حيّ</div><div id="founder-num" style="font-size:12px;opacity:0.8;margin-bottom:6px"></div><div id="founder-days" style="font-size:12px;font-weight:700;background:rgba(255,255,255,0.15);border-radius:8px;padding:4px 10px;display:inline-block"></div></div>
     </div>
   </div>
   <div style="padding:12px 16px 0;display:flex;gap:8px">
-    <button class="tab active" onclick="showTab('tab-profile',this)">✏️ النشاط</button>
-    <button class="tab" onclick="showTab('tab-stats',this)">📊 إحصائيات</button>
-    <button class="tab" onclick="showTab('tab-verify',this)">✅ كود</button>
+    <button class="tab active" id="tab-btn-profile">✏️ النشاط</button>
+    <button class="tab" id="tab-btn-stats">📊 إحصائيات</button>
+    <button class="tab" id="tab-btn-verify">✅ كود</button>
   </div>
 
-  <!-- Profile Tab -->
+  <!-- Profile -->
 
-  <div class="tab-pane active" id="tab-profile" style="overflow-y:auto;flex:1;padding-bottom:32px">
+  <div class="tab-pane active" id="tab-profile">
     <div style="margin:14px 0">
       <div style="background:linear-gradient(135deg,#0A2540,#2D7DD2);border-radius:18px;padding:22px;text-align:center;color:#fff">
         <div id="prev-icon" style="font-size:40px;margin-bottom:10px">🏪</div>
-        <img id="prev-logo" style="display:none;width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto 10px;border:2px solid rgba(255,255,255,0.4)">
+        <img id="prev-logo" style="display:none;width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto 10px">
         <div id="prev-name" style="font-size:18px;font-weight:900;margin-bottom:4px">اسم النشاط</div>
         <div id="prev-type" style="font-size:13px;opacity:0.8;margin-bottom:10px">نوع النشاط</div>
         <span id="prev-disc" style="background:rgba(255,255,255,0.2);border-radius:20px;padding:5px 18px;font-size:14px;font-weight:700">خصم 10%</span>
       </div>
     </div>
     <div class="card">
-      <div class="label" style="font-size:15px;font-weight:700;margin-bottom:14px">🏪 معلومات النشاط</div>
-      <label class="label">اسم النشاط</label>
-      <input type="text" id="f-name" class="field" placeholder="مثال: كافيه الورد" style="margin-bottom:12px" oninput="document.getElementById('prev-name').textContent=this.value||'اسم النشاط'">
-      <label class="label">نوع النشاط</label>
-      <select id="f-type" style="margin-bottom:12px" onchange="document.getElementById('prev-type').textContent=this.value.replace(/^.\s/,'')">
+      <div style="font-size:15px;font-weight:700;margin-bottom:14px">🏪 معلومات النشاط</div>
+      <label class="lbl">اسم النشاط</label>
+      <input type="text" id="f-name" class="field" placeholder="مثال: كافيه الورد" style="margin-bottom:12px">
+      <label class="lbl">نوع النشاط</label>
+      <select id="f-type" style="margin-bottom:12px">
         <option>☕ مقاهي ومشروبات</option><option>🍽️ مطاعم ومأكولات</option>
         <option>💊 صيدليات</option><option>🛒 بقالات</option>
         <option>✂️ حلاقة وتجميل</option><option>👗 ملابس وأزياء</option>
         <option>📱 إلكترونيات</option><option>🏪 أخرى</option>
       </select>
-      <label class="label">أيقونة</label>
-      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:14px">
-        <div class="emoji-btn" onclick="pickEmoji('☕',this)">☕</div>
-        <div class="emoji-btn" onclick="pickEmoji('🍽️',this)">🍽️</div>
-        <div class="emoji-btn" onclick="pickEmoji('💊',this)">💊</div>
-        <div class="emoji-btn" onclick="pickEmoji('🛒',this)">🛒</div>
-        <div class="emoji-btn" onclick="pickEmoji('✂️',this)">✂️</div>
-        <div class="emoji-btn" onclick="pickEmoji('🍕',this)">🍕</div>
-        <div class="emoji-btn" onclick="pickEmoji('🧴',this)">🧴</div>
-        <div class="emoji-btn" onclick="pickEmoji('📱',this)">📱</div>
-        <div class="emoji-btn" onclick="pickEmoji('🏪',this)">🏪</div>
-        <div class="emoji-btn" onclick="pickEmoji('🌿',this)">🌿</div>
-        <div class="emoji-btn" onclick="pickEmoji('🍰',this)">🍰</div>
-        <div class="emoji-btn" onclick="pickEmoji('💈',this)">💈</div>
+      <label class="lbl">أيقونة</label>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:14px" id="emoji-grid">
+        <div class="emoji-btn" data-e="☕">☕</div><div class="emoji-btn" data-e="🍽️">🍽️</div>
+        <div class="emoji-btn" data-e="💊">💊</div><div class="emoji-btn" data-e="🛒">🛒</div>
+        <div class="emoji-btn" data-e="✂️">✂️</div><div class="emoji-btn" data-e="🍕">🍕</div>
+        <div class="emoji-btn" data-e="🧴">🧴</div><div class="emoji-btn" data-e="📱">📱</div>
+        <div class="emoji-btn" data-e="🏪">🏪</div><div class="emoji-btn" data-e="🌿">🌿</div>
+        <div class="emoji-btn" data-e="🍰">🍰</div><div class="emoji-btn" data-e="💈">💈</div>
       </div>
-      <label class="label">نسبة الخصم: <span id="disc-val" style="color:#0A2540;font-weight:700">10%</span></label>
-      <input type="range" id="f-disc" min="5" max="50" value="10" step="5" oninput="document.getElementById('disc-val').textContent=this.value+'%';document.getElementById('prev-disc').textContent='خصم '+this.value+'%'">
+      <label class="lbl">نسبة الخصم: <span id="disc-val" style="color:#0A2540;font-weight:700">10%</span></label>
+      <input type="range" id="f-disc" min="5" max="50" value="10" step="5">
       <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text4);margin:4px 0 14px"><span>5%</span><span>25%</span><span>50%</span></div>
-      <label class="label">وصف العرض</label>
+      <label class="lbl">وصف العرض</label>
       <input type="text" id="f-desc" class="field" placeholder="مثال: خصم على جميع المشروبات">
     </div>
     <div class="card">
-      <div class="label" style="font-size:15px;font-weight:700;margin-bottom:14px">📍 الموقع</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:14px">📍 الموقع</div>
       <input type="text" id="f-area" class="field" placeholder="الحي" style="margin-bottom:12px">
-      <button class="btn btn-blue" onclick="getLocation()">📍 تحديد موقعي الحالي</button>
+      <button class="btn btn-blue" id="btn-location">📍 تحديد موقعي الحالي</button>
       <div id="loc-status" style="margin-top:8px;text-align:center;font-size:13px;color:var(--text3)"></div>
     </div>
     <div class="card">
-      <div class="label" style="font-size:15px;font-weight:700;margin-bottom:14px">📸 الصور</div>
-      <label class="label">الشعار</label>
-      <div onclick="document.getElementById('logo-inp').click()" style="border:2px dashed var(--sep);border-radius:14px;padding:24px;text-align:center;cursor:pointer;background:var(--bg2);margin-bottom:12px;position:relative;min-height:100px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px">
+      <div style="font-size:15px;font-weight:700;margin-bottom:14px">📸 الصور</div>
+      <label class="lbl">الشعار</label>
+      <div id="logo-area" style="border:2px dashed var(--sep);border-radius:14px;padding:24px;text-align:center;cursor:pointer;background:var(--bg2);margin-bottom:12px">
         <div id="logo-ph"><div style="font-size:32px">🖼️</div><div style="font-size:14px;color:var(--text3)">اضغط لرفع الشعار</div></div>
-        <img id="logo-prev" style="display:none;width:80px;height:80px;border-radius:50%;object-fit:cover">
+        <img id="logo-prev" style="display:none;width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto">
       </div>
-      <input type="file" id="logo-inp" accept="image/*" style="display:none" onchange="uploadLogo(this)">
+      <input type="file" id="logo-inp" accept="image/*" style="display:none">
       <div id="logo-status" style="font-size:13px;text-align:center;color:var(--text3);margin-bottom:14px"></div>
-      <label class="label">صور النشاط (حتى 3)</label>
+      <label class="lbl">صور النشاط (حتى 3)</label>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px">
-        <div class="photo-slot" onclick="document.getElementById('ph-0').click()">
-          <span style="font-size:26px">📷</span><span style="font-size:11px;color:var(--text4)">صورة 1</span>
-          <img id="ph-prev-0">
-        </div>
-        <div class="photo-slot" onclick="document.getElementById('ph-1').click()">
-          <span style="font-size:26px">📷</span><span style="font-size:11px;color:var(--text4)">صورة 2</span>
-          <img id="ph-prev-1">
-        </div>
-        <div class="photo-slot" onclick="document.getElementById('ph-2').click()">
-          <span style="font-size:26px">📷</span><span style="font-size:11px;color:var(--text4)">صورة 3</span>
-          <img id="ph-prev-2">
-        </div>
+        <div class="photo-slot" id="slot-0"><span style="font-size:26px">📷</span><span style="font-size:11px;color:var(--text4)">صورة 1</span><img id="ph-prev-0" style="display:none;width:100%;height:100%;object-fit:cover"></div>
+        <div class="photo-slot" id="slot-1"><span style="font-size:26px">📷</span><span style="font-size:11px;color:var(--text4)">صورة 2</span><img id="ph-prev-1" style="display:none;width:100%;height:100%;object-fit:cover"></div>
+        <div class="photo-slot" id="slot-2"><span style="font-size:26px">📷</span><span style="font-size:11px;color:var(--text4)">صورة 3</span><img id="ph-prev-2" style="display:none;width:100%;height:100%;object-fit:cover"></div>
       </div>
-      <input type="file" id="ph-0" accept="image/*" style="display:none" onchange="uploadPhoto(this,0)">
-      <input type="file" id="ph-1" accept="image/*" style="display:none" onchange="uploadPhoto(this,1)">
-      <input type="file" id="ph-2" accept="image/*" style="display:none" onchange="uploadPhoto(this,2)">
+      <input type="file" id="ph-0" accept="image/*" style="display:none">
+      <input type="file" id="ph-1" accept="image/*" style="display:none">
+      <input type="file" id="ph-2" accept="image/*" style="display:none">
       <div id="photos-status" style="font-size:12px;text-align:center;color:var(--text3)"></div>
     </div>
-    <div style="padding:0 0 16px">
-      <button class="btn btn-blue" onclick="saveStore()">💾 حفظ معلومات النشاط</button>
-      <div id="save-ok" style="display:none;background:rgba(52,199,89,0.1);border:1px solid rgba(52,199,89,0.3);border-radius:12px;padding:12px;text-align:center;font-size:14px;color:#1a7a3a;margin-top:10px">✅ تم الحفظ بنجاح!</div>
-    </div>
+    <button class="btn btn-blue" id="btn-save">💾 حفظ معلومات النشاط</button>
+    <div id="save-ok" style="display:none;background:rgba(52,199,89,0.1);border:1px solid rgba(52,199,89,0.3);border-radius:12px;padding:12px;text-align:center;font-size:14px;color:#1a7a3a;margin-top:10px">✅ تم الحفظ بنجاح!</div>
   </div>
 
-  <!-- Stats Tab -->
+  <!-- Stats -->
 
   <div class="tab-pane" id="tab-stats">
     <div class="card" style="margin-top:14px">
@@ -251,14 +228,13 @@ input[type=range]{width:100%;accent-color:#1D1D1F;margin-top:8px}
     </div>
   </div>
 
-  <!-- Verify Tab -->
+  <!-- Verify -->
 
   <div class="tab-pane" id="tab-verify">
     <div class="card" style="margin-top:14px">
       <div style="text-align:center;margin-bottom:22px">
         <div style="font-size:44px;margin-bottom:10px">🔍</div>
         <div style="font-size:18px;font-weight:700;margin-bottom:6px">تحقق من كود العميل</div>
-        <div style="font-size:14px;color:var(--text3)">اطلب الكود من العميل</div>
       </div>
       <div style="display:flex;gap:10px;direction:ltr;justify-content:center;margin-bottom:20px">
         <input type="text" inputmode="numeric" maxlength="1" class="otp-box" id="v0">
@@ -266,380 +242,220 @@ input[type=range]{width:100%;accent-color:#1D1D1F;margin-top:8px}
         <input type="text" inputmode="numeric" maxlength="1" class="otp-box" id="v2">
         <input type="text" inputmode="numeric" maxlength="1" class="otp-box" id="v3">
       </div>
-      <button class="btn btn-blue" onclick="doVerify()">✅ تحقق من الكود</button>
-      <div class="verify-result" id="vr">
-        <div style="font-size:32px;margin-bottom:8px" id="vr-icon">✅</div>
+      <button class="btn btn-blue" id="btn-verify">✅ تحقق من الكود</button>
+      <div class="vr" id="vr">
+        <div style="font-size:32px;margin-bottom:8px" id="vr-icon"></div>
         <div style="font-size:16px;font-weight:700;margin-bottom:4px" id="vr-title"></div>
         <div style="font-size:13px;color:var(--text3)" id="vr-sub"></div>
       </div>
     </div>
   </div>
-
-  <div style="height:calc(env(safe-area-inset-bottom,0px)+20px)"></div>
+  <div style="height:32px"></div>
 </div>
 
-<!-- Firebase SDKs -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.0/firebase-app-compat.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.0/firebase-auth-compat.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.0/firebase-firestore-compat.min.js"></script>
-
-<script>
-// ══ FIREBASE INIT ══
-firebase.initializeApp({
+const app = initializeApp({
   apiKey:"AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
-  authDomain:"fbrg87.firebaseapp.com",
-  projectId:"fbrg87",
+  authDomain:"fbrg87.firebaseapp.com",projectId:"fbrg87",
   storageBucket:"fbrg87.firebasestorage.app",
   messagingSenderId:"811335912659",
   appId:"1:811335912659:web:a923cc11d16315dfd4d826"
 });
-const db = firebase.firestore();
-const auth = firebase.auth();
-auth.signInAnonymously().catch(()=>{});
+const auth = getAuth(app);
+const db = getFirestore(app);
+signInAnonymously(auth).catch(()=>{});
 
-// ══ STATE ══
-let currentPhone = '', merchantId = '';
-let selectedEmoji = '🏪', logoUrl = '', photoUrls = ['','',''];
-let merchantLat = null, merchantLng = null;
-const CLOUDINARY = 'https://api.cloudinary.com/v1_1/dtwgl17iy/image/upload';
-const UPLOAD_PRESET = 'hayy_uploads';
+const CL = 'https://api.cloudinary.com/v1_1/dtwgl17iy/image/upload';
+const UP = 'hayy_uploads';
+let phone='', mid='', emoji='🏪', logoUrl='', photos=['','',''];
+let lat=null, lng=null;
 
-// ══ NAV ══
-function goScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+// NAV
+function goS(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
 }
 
-function showTab(id, btn) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(id).classList.add('active');
-  if (id === 'tab-stats') loadStats();
-}
-
-// ══ HELPERS ══
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str+'hayy_salt_2026'));
+// HASH
+async function h256(s) {
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s+'hayy_salt_2026'));
   return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-function toggleVis(id, btn) {
-  const inp = document.getElementById(id);
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-}
-
-function pickEmoji(e, btn) {
-  selectedEmoji = e;
-  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  document.getElementById('prev-icon').textContent = e;
-  document.getElementById('dash-icon').textContent = e;
-}
-
-// ══ PHONE CHECK ══
-async function checkPhone() {
-  const phone = document.getElementById('m-phone').value.trim();
-  const err = document.getElementById('phone-err');
-  if (phone.length < 9) { err.textContent='أدخل رقماً صحيحاً'; err.style.display='block'; return; }
-  currentPhone = '+966' + phone;
-  err.style.display = 'none';
-  document.getElementById('login-phone-txt').textContent = currentPhone;
-  try {
-    const snap = await db.collection('merchants').where('phone','==',currentPhone).get();
-    if (!snap.empty) { merchantId = snap.docs[0].id; goScreen('s-login'); }
-    else goScreen('s-register');
-  } catch(e) { goScreen('s-register'); }
-}
-
-// ══ LOGIN ══
-async function doLogin() {
-  const pass = document.getElementById('m-pass').value;
-  const err = document.getElementById('login-err');
-  err.style.display = 'none';
-  const hashed = await sha256(pass);
-  try {
-    const snap = await db.collection('merchants').where('phone','==',currentPhone).where('password','==',hashed).get();
-    if (!snap.empty) {
-      merchantId = snap.docs[0].id;
-      localStorage.setItem('m_id', merchantId);
-      localStorage.setItem('m_phone', currentPhone);
-      loadDash(snap.docs[0].data());
-      goScreen('s-dash');
-    } else { err.style.display = 'block'; }
-  } catch(e) { err.style.display = 'block'; }
-}
-
-// ══ REGISTER ══
-async function doRegister() {
-  const pass = document.getElementById('r-pass').value;
-  const confirm = document.getElementById('r-confirm').value;
-  const err = document.getElementById('reg-err');
-  err.style.display = 'none';
-  if (pass.length < 6) { err.textContent='كلمة المرور 6 أحرف على الأقل'; err.style.display='block'; return; }
-  if (pass !== confirm) { err.textContent='كلمتا المرور غير متطابقتين'; err.style.display='block'; return; }
-  try {
-    const hashed = await sha256(pass);
-    const allM = await db.collection('merchants').get();
-    const isFounder = allM.size < 30;
-    const founderNum = isFounder ? allM.size + 1 : null;
-    const ref = await db.collection('merchants').add({
-      phone: currentPhone, password: hashed,
-      is_founder: isFounder, founder_number: founderNum,
-      founder_since: isFounder ? new Date().toISOString() : null,
-      free_trial_ends: isFounder ? new Date(Date.now()+90*24*60*60*1000).toISOString() : null,
-      created_at: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    merchantId = ref.id;
-    localStorage.setItem('m_id', merchantId);
-    localStorage.setItem('m_phone', currentPhone);
-    loadDash({is_founder:isFounder, founder_number:founderNum, free_trial_ends:isFounder?new Date(Date.now()+90*24*60*60*1000).toISOString():null});
-    goScreen('s-dash');
-  } catch(e) { err.textContent='حدث خطأ'; err.style.display='block'; }
-}
-
-// ══ LOAD DASHBOARD ══
-function loadDash(data) {
-  if (data.store_name) {
-    document.getElementById('f-name').value = data.store_name;
-    document.getElementById('prev-name').textContent = data.store_name;
-    document.getElementById('dash-name').textContent = data.store_name;
-  }
-  if (data.store_type) {
-    document.getElementById('f-type').value = data.store_type;
-    document.getElementById('prev-type').textContent = data.store_type.replace(/^.\s/,'');
-  }
-  if (data.discount) {
-    document.getElementById('f-disc').value = data.discount;
-    document.getElementById('disc-val').textContent = data.discount+'%';
-    document.getElementById('prev-disc').textContent = 'خصم '+data.discount+'%';
-  }
-  if (data.icon) {
-    selectedEmoji = data.icon;
-    document.getElementById('prev-icon').textContent = data.icon;
-    document.getElementById('dash-icon').textContent = data.icon;
-  }
-  if (data.description) document.getElementById('f-desc').value = data.description;
-  if (data.area) document.getElementById('f-area').value = data.area;
-  if (data.logo_url) {
-    logoUrl = data.logo_url;
-    document.getElementById('logo-prev').src = data.logo_url;
-    document.getElementById('logo-prev').style.display = 'block';
-    document.getElementById('logo-ph').style.display = 'none';
-    document.getElementById('prev-logo').src = data.logo_url;
-    document.getElementById('prev-logo').style.display = 'block';
-    document.getElementById('prev-icon').style.display = 'none';
-  }
-  if (data.photos) {
-    photoUrls = [...data.photos,'',''].slice(0,3);
-    photoUrls.forEach((url,i) => {
-      if (url) {
-        const img = document.getElementById('ph-prev-'+i);
-        img.src = url; img.style.display = 'block';
-      }
-    });
-  }
-  if (data.lat) merchantLat = data.lat;
-  if (data.lng) merchantLng = data.lng;
-  if (data.is_founder) {
-    document.getElementById('founder-box').style.display = 'block';
-    document.getElementById('founder-num').textContent = 'مؤسس رقم '+data.founder_number+' من أصل 30';
-    if (data.free_trial_ends) {
-      const days = Math.max(0, Math.ceil((new Date(data.free_trial_ends)-Date.now())/(24*60*60*1000)));
-      document.getElementById('founder-days').textContent = days>0 ? '⏳ '+days+' يوم متبقي مجاناً' : 'انتهت الفترة المجانية';
-    }
-  }
-}
-
-// ══ LOGOUT ══
-function doLogout() {
-  localStorage.removeItem('m_id');
-  localStorage.removeItem('m_phone');
-  goScreen('s-welcome');
-}
-
-// ══ LOCATION ══
-function getLocation() {
-  const btn = event.target;
-  btn.textContent = '⏳ جاري التحديد...'; btn.disabled = true;
-  navigator.geolocation.getCurrentPosition(pos => {
-    merchantLat = pos.coords.latitude;
-    merchantLng = pos.coords.longitude;
-    document.getElementById('loc-status').innerHTML = '✅ تم! <a href="https://maps.google.com/?q='+merchantLat+','+merchantLng+'" target="_blank" style="color:#0A2540;font-weight:700">عرض على الخريطة</a>';
-    btn.textContent = '✅ تم تحديد الموقع'; btn.disabled = false;
-  }, () => {
-    document.getElementById('loc-status').textContent = '❌ تعذر تحديد الموقع';
-    btn.textContent = '📍 تحديد موقعي'; btn.disabled = false;
-  }, {enableHighAccuracy:true});
-}
-
-// ══ UPLOAD IMAGE ══
+// UPLOAD
 async function uploadImg(file) {
-  const fd = new FormData();
-  fd.append('file', file);
-  fd.append('upload_preset', UPLOAD_PRESET);
-  const res = await fetch(CLOUDINARY, {method:'POST', body:fd});
-  const data = await res.json();
-  return data.secure_url;
+  const fd=new FormData(); fd.append('file',file); fd.append('upload_preset',UP);
+  const r=await fetch(CL,{method:'POST',body:fd});
+  return (await r.json()).secure_url;
 }
 
-async function uploadLogo(input) {
-  const file = input.files[0]; if(!file) return;
-  document.getElementById('logo-status').textContent = '⏳ جاري الرفع...';
-  try {
-    logoUrl = await uploadImg(file);
-    document.getElementById('logo-prev').src = logoUrl;
-    document.getElementById('logo-prev').style.display = 'block';
-    document.getElementById('logo-ph').style.display = 'none';
-    document.getElementById('prev-logo').src = logoUrl;
-    document.getElementById('prev-logo').style.display = 'block';
-    document.getElementById('prev-icon').style.display = 'none';
-    document.getElementById('logo-status').textContent = '✅ تم رفع الشعار';
-  } catch(e) { document.getElementById('logo-status').textContent = '❌ فشل الرفع'; }
+// LOAD DASH
+function loadDash(d) {
+  if(d.store_name){document.getElementById('f-name').value=d.store_name;document.getElementById('prev-name').textContent=d.store_name;document.getElementById('dash-name').textContent=d.store_name;}
+  if(d.store_type){document.getElementById('f-type').value=d.store_type;document.getElementById('prev-type').textContent=d.store_type.replace(/^.\s/,'');}
+  if(d.discount){document.getElementById('f-disc').value=d.discount;document.getElementById('disc-val').textContent=d.discount+'%';document.getElementById('prev-disc').textContent='خصم '+d.discount+'%';}
+  if(d.icon){emoji=d.icon;document.getElementById('prev-icon').textContent=d.icon;document.getElementById('dash-icon').textContent=d.icon;}
+  if(d.description) document.getElementById('f-desc').value=d.description;
+  if(d.area) document.getElementById('f-area').value=d.area;
+  if(d.logo_url){logoUrl=d.logo_url;const lp=document.getElementById('logo-prev');lp.src=d.logo_url;lp.style.display='block';document.getElementById('logo-ph').style.display='none';const pl=document.getElementById('prev-logo');pl.src=d.logo_url;pl.style.display='block';document.getElementById('prev-icon').style.display='none';}
+  if(d.photos){photos=[...d.photos,'',''].slice(0,3);photos.forEach((u,i)=>{if(u){const img=document.getElementById('ph-prev-'+i);img.src=u;img.style.display='block';}});}
+  if(d.lat) lat=d.lat; if(d.lng) lng=d.lng;
+  if(d.is_founder){document.getElementById('founder-box').style.display='block';document.getElementById('founder-num').textContent='مؤسس رقم '+d.founder_number+' من أصل 30';if(d.free_trial_ends){const days=Math.max(0,Math.ceil((new Date(d.free_trial_ends)-Date.now())/(864e5)));document.getElementById('founder-days').textContent=days>0?'⏳ '+days+' يوم متبقي':'انتهت الفترة';}}
 }
 
-async function uploadPhoto(input, i) {
-  const file = input.files[0]; if(!file) return;
-  document.getElementById('photos-status').textContent = '⏳ جاري الرفع...';
-  try {
-    const url = await uploadImg(file);
-    photoUrls[i] = url;
-    const img = document.getElementById('ph-prev-'+i);
-    img.src = url; img.style.display = 'block';
-    document.getElementById('photos-status').textContent = '✅ تم رفع الصورة';
-  } catch(e) { document.getElementById('photos-status').textContent = '❌ فشل الرفع'; }
-}
-
-// ══ SAVE STORE ══
-async function saveStore() {
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) { alert('أدخل اسم النشاط'); return; }
-  const type = document.getElementById('f-type').value.replace(/^.\s/,'');
-  const discount = parseInt(document.getElementById('f-disc').value);
-  const desc = document.getElementById('f-desc').value.trim();
-  const area = document.getElementById('f-area').value.trim();
-  const info = {
-    store_name:name, store_type:type, discount, icon:selectedEmoji,
-    description:desc, area, logo_url:logoUrl,
-    photos:photoUrls.filter(u=>u), active:true,
-    lat:merchantLat||null, lng:merchantLng||null,
-    updated_at:firebase.firestore.FieldValue.serverTimestamp()
-  };
-  try {
-    await db.collection('merchants').doc(merchantId).set(info, {merge:true});
-    const bSnap = await db.collection('businesses').where('phone','==',currentPhone).get();
-    const bizData = {name,type,discount,icon:selectedEmoji,description:desc,area,phone:currentPhone,logo_url:logoUrl,photos:photoUrls.filter(u=>u),active:true,lat:merchantLat||null,lng:merchantLng||null,updated_at:firebase.firestore.FieldValue.serverTimestamp()};
-    if (!bSnap.empty) { await db.collection('businesses').doc(bSnap.docs[0].id).set(bizData,{merge:true}); }
-    else { await db.collection('businesses').add({...bizData,created_at:firebase.firestore.FieldValue.serverTimestamp()}); }
-    document.getElementById('dash-name').textContent = name;
-    const ok = document.getElementById('save-ok');
-    ok.style.display = 'block';
-    setTimeout(() => ok.style.display='none', 3000);
-  } catch(e) { alert('حدث خطأ — حاول مجدداً'); }
-}
-
-// ══ STATS ══
+// STATS
 async function loadStats() {
   try {
-    const snap = await db.collection('coupons').where('merchant_phone','==',currentPhone).get();
-    let total=0,today=0,week=0;
-    const now = new Date();
-    snap.forEach(d => {
-      const data=d.data();
-      if(data.status==='used'){
-        total++;
-        const t=data.used_at?.toDate?.()|| new Date(0);
-        if((now-t)<86400000) today++;
-        if((now-t)<604800000) week++;
-      }
-    });
-    document.getElementById('st-total').textContent = total;
-    document.getElementById('st-today').textContent = today;
-    document.getElementById('st-week').textContent = week;
-    const rs = await db.collection('ratings').where('business_name','==',document.getElementById('prev-name').textContent).get();
-    let rt=0,rc=0;
-    rs.forEach(d=>{if(d.data().stars){rt+=d.data().stars;rc++;}});
-    document.getElementById('st-rating').textContent = rc ? (rt/rc).toFixed(1)+'★' : '—';
+    const snap=await getDocs(query(collection(db,'coupons'),where('merchant_phone','==',phone)));
+    let t=0,td=0,wk=0; const now=new Date();
+    snap.forEach(d=>{const data=d.data();if(data.status==='used'){t++;const ts=data.used_at?.toDate?.()||new Date(0);if(now-ts<864e5)td++;if(now-ts<6048e5)wk++;}});
+    document.getElementById('st-total').textContent=t;
+    document.getElementById('st-today').textContent=td;
+    document.getElementById('st-week').textContent=wk;
+    const rs=await getDocs(query(collection(db,'ratings'),where('business_name','==',document.getElementById('prev-name').textContent)));
+    let rt=0,rc=0; rs.forEach(d=>{if(d.data().stars){rt+=d.data().stars;rc++;}});
+    document.getElementById('st-rating').textContent=rc?(rt/rc).toFixed(1)+'★':'—';
   } catch(e){}
 }
 
-// ══ VERIFY CODE ══
+// VERIFY
 async function doVerify() {
-  const code = ['v0','v1','v2','v3'].map(id=>document.getElementById(id).value).join('').trim();
-  const vr = document.getElementById('vr');
-  vr.className = 'verify-result';
-  if (code.length < 4) {
-    document.getElementById('vr-icon').textContent='❌';
-    document.getElementById('vr-title').textContent='أدخل الكود كاملاً';
-    document.getElementById('vr-sub').textContent='';
-    vr.classList.add('err'); return;
-  }
+  const code=['v0','v1','v2','v3'].map(id=>document.getElementById(id).value).join('').trim();
+  const vr=document.getElementById('vr'); vr.className='vr';
+  const setVR=(icon,title,sub,cls)=>{document.getElementById('vr-icon').textContent=icon;document.getElementById('vr-title').textContent=title;document.getElementById('vr-sub').textContent=sub;vr.classList.add(cls);};
+  if(code.length<4){setVR('❌','أدخل الكود كاملاً','','err');return;}
   try {
-    const now = new Date();
-    const snap = await db.collection('coupons').where('code','==',code).where('status','==','pending').get();
-    if (snap.empty) {
-      const usedSnap = await db.collection('coupons').where('code','==',code).where('status','==','used').get();
-      document.getElementById('vr-icon').textContent = usedSnap.empty?'❌':'⚠️';
-      document.getElementById('vr-title').textContent = usedSnap.empty?'كود غير موجود':'كود مستخدم مسبقاً';
-      document.getElementById('vr-sub').textContent = usedSnap.empty?'تأكد من الأرقام':'تم استخدام هذا الكود من قبل';
-      vr.classList.add('err');
+    const now=new Date();
+    const snap=await getDocs(query(collection(db,'coupons'),where('code','==',code),where('status','==','pending')));
+    if(snap.empty){
+      const u=await getDocs(query(collection(db,'coupons'),where('code','==',code),where('status','==','used')));
+      setVR(u.empty?'❌':'⚠️',u.empty?'كود غير موجود':'كود مستخدم مسبقاً',u.empty?'تأكد من الأرقام':'تم استخدامه من قبل','err');
     } else {
-      const coupon = snap.docs[0];
-      const exp = coupon.data().expires_at?.toDate ? coupon.data().expires_at.toDate() : new Date(coupon.data().expires_at);
-      if (exp < now) {
-        await db.collection('coupons').doc(coupon.id).set({status:'expired'},{merge:true});
-        document.getElementById('vr-icon').textContent='⏱️';
-        document.getElementById('vr-title').textContent='الكود منتهي!';
-        document.getElementById('vr-sub').textContent='اطلب كوداً جديداً';
-        vr.classList.add('err');
-      } else {
-        await db.collection('coupons').doc(coupon.id).set({status:'used',used_at:firebase.firestore.FieldValue.serverTimestamp(),merchant_phone:currentPhone},{merge:true});
-        document.getElementById('vr-icon').textContent='✅';
-        document.getElementById('vr-title').textContent='كود صالح!';
-        document.getElementById('vr-sub').textContent='تم تطبيق الخصم بنجاح ✨';
-        vr.classList.add('ok');
-        ['v0','v1','v2','v3'].forEach(id=>document.getElementById(id).value='');
-      }
+      const c=snap.docs[0]; const exp=c.data().expires_at?.toDate?c.data().expires_at.toDate():new Date(c.data().expires_at);
+      if(exp<now){await setDoc(doc(db,'coupons',c.id),{status:'expired'},{merge:true});setVR('⏱️','الكود منتهي!','اطلب كوداً جديداً','err');}
+      else{await setDoc(doc(db,'coupons',c.id),{status:'used',used_at:serverTimestamp(),merchant_phone:phone},{merge:true});setVR('✅','كود صالح!','تم تطبيق الخصم ✨','ok');['v0','v1','v2','v3'].forEach(id=>document.getElementById(id).value='');}
     }
-  } catch(e) {
-    document.getElementById('vr-icon').textContent='❌';
-    document.getElementById('vr-title').textContent='خطأ';
-    document.getElementById('vr-sub').textContent='حاول مجدداً';
-    vr.classList.add('err');
-  }
+  } catch(e){setVR('❌','خطأ','حاول مجدداً','err');}
 }
 
-// OTP navigation
-['v0','v1','v2','v3'].forEach((id,i) => {
-  const box = document.getElementById(id);
-  box.addEventListener('input', function() {
-    this.value = this.value.replace(/\D/,'').slice(-1);
-    if (this.value && i<3) document.getElementById(['v0','v1','v2','v3'][i+1]).focus();
-    if (['v0','v1','v2','v3'].map(id=>document.getElementById(id).value).join('').length===4) setTimeout(doVerify,200);
-  });
-  box.addEventListener('keydown', function(e) {
-    if (e.key==='Backspace'&&!this.value&&i>0) {
-      document.getElementById(['v0','v1','v2','v3'][i-1]).value='';
-      document.getElementById(['v0','v1','v2','v3'][i-1]).focus();
-    }
+// ALL EVENT LISTENERS
+document.getElementById('btn-start').addEventListener('click',()=>goS('s-phone'));
+document.getElementById('btn-back-phone').addEventListener('click',()=>goS('s-welcome'));
+document.getElementById('btn-back-login').addEventListener('click',()=>goS('s-phone'));
+document.getElementById('btn-back-reg').addEventListener('click',()=>goS('s-phone'));
+document.getElementById('btn-toggle-pass').addEventListener('click',()=>{const i=document.getElementById('m-pass');i.type=i.type==='password'?'text':'password';});
+document.getElementById('btn-toggle-r').addEventListener('click',()=>{const i=document.getElementById('r-pass');i.type=i.type==='password'?'text':'password';});
+document.getElementById('btn-toggle-r2').addEventListener('click',()=>{const i=document.getElementById('r-confirm');i.type=i.type==='password'?'text':'password';});
+document.getElementById('btn-logout').addEventListener('click',()=>{localStorage.removeItem('m_id');localStorage.removeItem('m_phone');goS('s-welcome');});
+document.getElementById('btn-verify').addEventListener('click',doVerify);
+document.getElementById('btn-save').addEventListener('click',async()=>{
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){alert('أدخل اسم النشاط');return;}
+  const type=document.getElementById('f-type').value.replace(/^.\s/,'');
+  const discount=parseInt(document.getElementById('f-disc').value);
+  const desc=document.getElementById('f-desc').value.trim();
+  const area=document.getElementById('f-area').value.trim();
+  const info={store_name:name,store_type:type,discount,icon:emoji,description:desc,area,logo_url:logoUrl,photos:photos.filter(u=>u),active:true,lat,lng,updated_at:serverTimestamp()};
+  try{
+    await setDoc(doc(db,'merchants',mid),info,{merge:true});
+    const bq=await getDocs(query(collection(db,'businesses'),where('phone','==',phone)));
+    const biz={name,type,discount,icon:emoji,description:desc,area,phone,logo_url:logoUrl,photos:photos.filter(u=>u),active:true,lat,lng,updated_at:serverTimestamp()};
+    if(!bq.empty)await setDoc(doc(db,'businesses',bq.docs[0].id),biz,{merge:true});
+    else await addDoc(collection(db,'businesses'),{...biz,created_at:serverTimestamp()});
+    document.getElementById('dash-name').textContent=name;
+    document.getElementById('prev-name').textContent=name;
+    const ok=document.getElementById('save-ok'); ok.style.display='block';
+    setTimeout(()=>ok.style.display='none',3000);
+  }catch(e){alert('خطأ — حاول مجدداً');}
+});
+
+document.getElementById('btn-check-phone').addEventListener('click',async()=>{
+  const val=document.getElementById('m-phone').value.trim();
+  const err=document.getElementById('phone-err');
+  if(val.length<9){err.textContent='أدخل رقماً صحيحاً';err.style.display='block';return;}
+  phone='+966'+val; err.style.display='none';
+  document.getElementById('login-phone-txt').textContent=phone;
+  try{const s=await getDocs(query(collection(db,'merchants'),where('phone','==',phone)));if(!s.empty){mid=s.docs[0].id;goS('s-login');}else goS('s-register');}catch(e){goS('s-register');}
+});
+
+document.getElementById('btn-login').addEventListener('click',async()=>{
+  const pass=document.getElementById('m-pass').value;
+  const err=document.getElementById('login-err'); err.style.display='none';
+  const hashed=await h256(pass);
+  try{const s=await getDocs(query(collection(db,'merchants'),where('phone','==',phone),where('password','==',hashed)));
+  if(!s.empty){mid=s.docs[0].id;localStorage.setItem('m_id',mid);localStorage.setItem('m_phone',phone);loadDash(s.docs[0].data());goS('s-dash');}
+  else err.style.display='block';}catch(e){err.style.display='block';}
+});
+
+document.getElementById('btn-register').addEventListener('click',async()=>{
+  const pass=document.getElementById('r-pass').value;
+  const confirm=document.getElementById('r-confirm').value;
+  const err=document.getElementById('reg-err'); err.style.display='none';
+  if(pass.length<6){err.textContent='6 أحرف على الأقل';err.style.display='block';return;}
+  if(pass!==confirm){err.textContent='كلمتا المرور غير متطابقتين';err.style.display='block';return;}
+  try{const hashed=await h256(pass);const all=await getDocs(collection(db,'merchants'));const isF=all.size<30;const fNum=isF?all.size+1:null;
+  const ref=await addDoc(collection(db,'merchants'),{phone,password:hashed,is_founder:isF,founder_number:fNum,founder_since:isF?new Date().toISOString():null,free_trial_ends:isF?new Date(Date.now()+90*864e5).toISOString():null,created_at:serverTimestamp()});
+  mid=ref.id;localStorage.setItem('m_id',mid);localStorage.setItem('m_phone',phone);
+  loadDash({is_founder:isF,founder_number:fNum,free_trial_ends:isF?new Date(Date.now()+90*864e5).toISOString():null});goS('s-dash');}
+  catch(e){err.textContent='حدث خطأ';err.style.display='block';}
+});
+
+document.getElementById('btn-location').addEventListener('click',function(){
+  this.textContent='⏳...';this.disabled=true;
+  navigator.geolocation.getCurrentPosition(p=>{lat=p.coords.latitude;lng=p.coords.longitude;document.getElementById('loc-status').innerHTML='✅ تم! <a href="https://maps.google.com/?q='+lat+','+lng+'" target="_blank" style="color:#0A2540;font-weight:700">الخريطة</a>';this.textContent='✅ تم';this.disabled=false;},()=>{this.textContent='📍 تحديد موقعي';this.disabled=false;},{enableHighAccuracy:true});
+});
+
+document.getElementById('logo-area').addEventListener('click',()=>document.getElementById('logo-inp').click());
+document.getElementById('logo-inp').addEventListener('change',async function(){
+  const f=this.files[0]; if(!f)return;
+  document.getElementById('logo-status').textContent='⏳ جاري الرفع...';
+  try{logoUrl=await uploadImg(f);const lp=document.getElementById('logo-prev');lp.src=logoUrl;lp.style.display='block';document.getElementById('logo-ph').style.display='none';const pl=document.getElementById('prev-logo');pl.src=logoUrl;pl.style.display='block';document.getElementById('prev-icon').style.display='none';document.getElementById('logo-status').textContent='✅ تم';}
+  catch(e){document.getElementById('logo-status').textContent='❌ فشل';}
+});
+
+[0,1,2].forEach(i=>{
+  document.getElementById('slot-'+i).addEventListener('click',()=>document.getElementById('ph-'+i).click());
+  document.getElementById('ph-'+i).addEventListener('change',async function(){
+    const f=this.files[0]; if(!f)return;
+    document.getElementById('photos-status').textContent='⏳ جاري الرفع...';
+    try{const url=await uploadImg(f);photos[i]=url;const img=document.getElementById('ph-prev-'+i);img.src=url;img.style.display='block';document.getElementById('photos-status').textContent='✅ تم';}
+    catch(e){document.getElementById('photos-status').textContent='❌ فشل';}
   });
 });
 
-// ══ SESSION RESTORE ══
-window.addEventListener('load', function() {
-  const id = localStorage.getItem('m_id');
-  const phone = localStorage.getItem('m_phone');
-  if (id && phone) {
-    merchantId = id; currentPhone = phone;
-    db.collection('merchants').doc(id).get().then(snap => {
-      if (snap.exists) { loadDash(snap.data()); goScreen('s-dash'); }
-    }).catch(()=>{});
-  }
+document.getElementById('emoji-grid').querySelectorAll('.emoji-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){emoji=this.dataset.e;document.querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('on'));this.classList.add('on');document.getElementById('prev-icon').textContent=emoji;document.getElementById('dash-icon').textContent=emoji;});
 });
+
+document.getElementById('f-disc').addEventListener('input',function(){document.getElementById('disc-val').textContent=this.value+'%';document.getElementById('prev-disc').textContent='خصم '+this.value+'%';});
+document.getElementById('f-name').addEventListener('input',function(){document.getElementById('prev-name').textContent=this.value||'اسم النشاط';});
+document.getElementById('f-type').addEventListener('change',function(){document.getElementById('prev-type').textContent=this.value.replace(/^.\s/,'');});
+
+[document.getElementById('tab-btn-profile'),document.getElementById('tab-btn-stats'),document.getElementById('tab-btn-verify')].forEach((btn,i)=>{
+  const tabs=['tab-profile','tab-stats','tab-verify'];
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    this.classList.add('active'); document.getElementById(tabs[i]).classList.add('active');
+    if(i===1) loadStats();
+  });
+});
+
+const vbs=['v0','v1','v2','v3'];
+vbs.forEach((id,i)=>{
+  const box=document.getElementById(id);
+  box.addEventListener('input',function(){this.value=this.value.replace(/\D/,'').slice(-1);if(this.value&&i<3)document.getElementById(vbs[i+1]).focus();if(vbs.map(id=>document.getElementById(id).value).join('').length===4)setTimeout(doVerify,200);});
+  box.addEventListener('keydown',function(e){if(e.key==='Backspace'&&!this.value&&i>0){document.getElementById(vbs[i-1]).value='';document.getElementById(vbs[i-1]).focus();}});
+});
+
+// SESSION RESTORE
+const sid=localStorage.getItem('m_id'), sphone=localStorage.getItem('m_phone');
+if(sid&&sphone){mid=sid;phone=sphone;getDocs(query(collection(db,'merchants'),where('phone','==',phone))).then(s=>{if(!s.empty){loadDash(s.docs[0].data());goS('s-dash');}}).catch(()=>{});}
 </script>
 
 </body>
