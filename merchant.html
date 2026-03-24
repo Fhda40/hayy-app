@@ -3,1412 +3,735 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>حيّ — بوابة التجار</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #F0F4F8;
-    --bg2: #E2E8F0;
-    --surface: #FFFFFF;
-    --surface2: #EEF2F7;
-    --blue: #0A2540;
-    --blue-mid: #1A4A7A;
-    --blue-light: #2D7DD2;
-    --blue-dim: rgba(10,37,64,0.08);
-    --accent: #2D7DD2;
-    --text: #0A2540;
-    --text-muted: #64748B;
-    --green: #059669;
-    --red: #DC2626;
-    --border: rgba(10,37,64,0.1);
-  }
-
-- { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-font-family: ‘Tajawal’, sans-serif;
-background: var(–bg);
-color: var(–text);
-min-height: 100vh;
-display: flex;
-align-items: center;
-justify-content: center;
+:root{
+  --bg:#fff;--bg2:#F5F5F7;--text:#1D1D1F;--text2:#3A3A3C;
+  --text3:#636366;--text4:#AEAEB2;--sep:rgba(60,60,67,0.12);
+  --blue:#0A2540;--blue2:#2D7DD2;--red:#FF3B30;--green:#34C759;
 }
-
-body::before {
-content: ‘’;
-position: fixed; inset: 0;
-background: radial-gradient(ellipse 70% 50% at 50% -5%, rgba(10,37,64,0.04) 0%, transparent 70%);
-pointer-events: none; z-index: 0;
-}
-
-.app {
-width: 100%; max-width: 420px;
-min-height: 100vh;
-position: relative; z-index: 1;
-display: flex; flex-direction: column;
-}
-
-.screen { display: none; flex-direction: column; min-height: 100vh; animation: fadeUp 0.4s ease; }
-.screen.active { display: flex; }
-
-@keyframes fadeUp {
-from { opacity: 0; transform: translateY(16px); }
-to { opacity: 1; transform: translateY(0); }
-}
-
-/* TOP BAR */
-.top-bar {
-padding: 20px 24px 16px;
-display: flex; align-items: center; justify-content: space-between;
-border-bottom: 1px solid var(–border);
-background: rgba(255,255,255,0.95);
-backdrop-filter: blur(8px);
-}
-
-.logo { display: flex; align-items: center; gap: 10px; }
-.logo-icon {
-width: 38px; height: 38px;
-background: linear-gradient(135deg, var(–blue), var(–blue-light));
-border-radius: 12px;
-display: flex; align-items: center; justify-content: center;
-font-size: 20px;
-box-shadow: 0 2px 8px rgba(45,125,210,0.3);
-}
-.logo-text { font-size: 18px; font-weight: 900; color: var(–accent); }
-.logo-sub { font-size: 10px; color: var(–text-muted); }
-
-.nav-link {
-font-size: 12px; color: var(–text-muted);
-cursor: pointer; font-weight: 600;
-display: flex; align-items: center; gap: 4px;
-padding: 6px 12px;
-background: var(–surface2);
-border-radius: 20px;
-border: 1px solid var(–border);
-text-decoration: none;
-}
-.nav-link:hover { color: var(–accent); border-color: var(–accent); }
-
-/* CARD */
-.card {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 20px;
-padding: 24px;
-margin: 0 16px 16px;
-box-shadow: 0 2px 16px rgba(10,37,64,0.04);
-}
-
-.card-title {
-font-size: 13px; font-weight: 700;
-color: var(–accent); margin-bottom: 16px;
-display: flex; align-items: center; gap: 8px;
-}
-
-/* INPUTS */
-.input-group { margin-bottom: 16px; }
-
-label {
-display: block; font-size: 12px;
-color: var(–text-muted); margin-bottom: 8px; font-weight: 600;
-}
-
-.phone-input-wrap { display: flex; gap: 8px; }
-
-.country-code {
-background: var(–surface2); border: 1px solid var(–border);
-border-radius: 12px; padding: 0 14px; font-size: 14px;
-color: var(–text); font-family: ‘Tajawal’, sans-serif;
-display: flex; align-items: center; white-space: nowrap;
-}
-
-input[type=“tel”], input[type=“text”], input[type=“number”] {
-width: 100%;
-background: var(–surface2); border: 1px solid var(–border);
-border-radius: 12px; padding: 14px 16px;
-font-size: 16px; color: var(–text);
-font-family: ‘Tajawal’, sans-serif;
-outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-direction: ltr; text-align: center;
-}
-input:focus { border-color: var(–accent); box-shadow: 0 0 0 3px var(–blue-dim); }
-
-select {
-width: 100%; background: var(–surface2);
-border: 1px solid var(–border); border-radius: 12px;
-padding: 14px 16px; font-size: 14px; color: var(–text);
-font-family: ‘Tajawal’, sans-serif; outline: none;
-}
-
-/* OTP */
-.otp-wrap { display: flex; gap: 6px; justify-content: center; direction: ltr; }
-.otp-input {
-width: 40px !important; height: 50px;
-font-size: 20px !important; font-weight: 700;
-border-radius: 10px !important; padding: 0 !important;
-text-align: center;
-}
-
-/* BUTTONS */
-.btn {
-width: 100%; padding: 16px; border: none; border-radius: 14px;
-font-size: 15px; font-weight: 700; font-family: ‘Tajawal’, sans-serif;
-cursor: pointer; transition: all 0.2s;
-display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.btn-primary {
-background: linear-gradient(135deg, var(–blue), var(–blue-light));
-color: #fff; box-shadow: 0 4px 16px rgba(45,125,210,0.3);
-}
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
--webkit-box-shadow: 0 0 0 1000px #EEF2F7 inset !important;
--webkit-text-fill-color: #0A2540 !important;
-}
-
-.btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none !important; }
-.btn-ghost { background: var(–surface2); color: var(–text); border: 1px solid var(–border); font-size: 13px; }
-
-/* TABS */
-.tab-bar {
-display: flex; margin: 0 16px 16px;
-background: var(–surface); border: 1px solid var(–border);
-border-radius: 14px; padding: 4px;
-}
-.tab {
-flex: 1; padding: 10px; text-align: center;
-font-size: 12px; font-weight: 600;
-font-family: ‘Tajawal’, sans-serif; border: none;
-background: none; color: var(–text-muted);
-border-radius: 10px; cursor: pointer; transition: all 0.2s;
-}
-.tab.active { background: linear-gradient(135deg, var(–blue), var(–blue-light)); color: white; }
-
-/* STATS */
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
-.stat-box {
-background: var(–surface); border: 1px solid var(–border);
-border-radius: 16px; padding: 16px; text-align: center;
-box-shadow: 0 1px 8px rgba(10,37,64,0.04);
-}
-.stat-num { font-size: 28px; font-weight: 900; color: var(–accent); display: block; }
-.stat-label { font-size: 11px; color: var(–text-muted); margin-top: 4px; }
-
-/* VERIFY */
-.verify-result { border-radius: 16px; padding: 20px; text-align: center; margin-top: 12px; display: none; }
-.verify-result.success { background: rgba(45,122,79,0.08); border: 1px solid rgba(45,122,79,0.3); display: block; }
-.verify-result.error { background: rgba(192,57,43,0.08); border: 1px solid rgba(192,57,43,0.3); display: block; }
-.verify-icon { font-size: 32px; margin-bottom: 8px; }
-.verify-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-.verify-sub { font-size: 12px; color: var(–text-muted); }
-
-/* PREVIEW CARD */
-.preview-card {
-background: linear-gradient(135deg, var(–blue), var(–blue-light));
-border-radius: 20px; padding: 20px; text-align: center;
-color: white; margin-bottom: 12px;
-}
-
-/* HELPERS */
-.mt-8 { margin-top: 8px; }
-.mt-12 { margin-top: 12px; }
-.mt-16 { margin-top: 16px; }
-.center { text-align: center; }
-.text-muted { color: var(–text-muted); font-size: 12px; }
-.spacer { flex: 1; }
-.separator { height: 1px; background: var(–border); margin: 0 16px 16px; }
-.bottom-pad { padding-bottom: 32px; }
-
-/* EMOJI PICKER */
-.emoji-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
-.emoji-btn {
-font-size: 24px; padding: 6px; border-radius: 8px;
-border: 1px solid var(–border); cursor: pointer;
-background: var(–surface2); transition: all 0.2s;
-}
-.emoji-btn:hover { border-color: var(–accent); transform: scale(1.1); }
-.emoji-btn.selected { border-color: var(–accent); background: var(–blue-dim); }
-
-/* SUCCESS MSG */
-.success-msg {
-display: none;
-background: rgba(45,122,79,0.1); border: 1px solid rgba(45,122,79,0.3);
-border-radius: 12px; padding: 12px; text-align: center;
-font-size: 13px; color: var(–green); margin-top: 12px;
-}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Tajawal',sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;position:fixed;width:100%;height:100%}
+.screen{display:none;flex-direction:column;min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.screen.active{display:flex}
+.btn{display:block;width:100%;padding:17px;border:none;border-radius:14px;font-size:16px;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer}
+.btn-blue{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 4px 16px rgba(10,37,64,0.25)}
+.btn-dark{background:#1D1D1F;color:#fff}
+.btn:active{opacity:0.85}
+.field{background:var(--bg2);border:none;border-radius:12px;padding:15px 16px;font-size:16px;font-family:'Tajawal',sans-serif;color:var(--text);width:100%;outline:none;direction:rtl}
+.field-wrap{background:var(--bg2);border-radius:14px;overflow:hidden;margin-bottom:12px}
+.field-wrap .field{border-radius:0;background:transparent}
+.field-wrap .field+.field{border-top:1px solid var(--sep)}
+.card{background:#fff;border-radius:18px;border:1px solid var(--sep);padding:20px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.card-title{font-size:15px;font-weight:700;margin-bottom:14px;color:var(--text)}
+.nav-btn{background:var(--bg2);border:none;border-radius:20px;padding:8px 14px 8px 10px;font-size:14px;font-weight:600;font-family:'Tajawal',sans-serif;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.tab-bar{display:flex;gap:8px;padding:0 20px;margin-bottom:16px}
+.tab{flex:1;padding:10px;border:none;background:var(--bg2);border-radius:12px;font-size:13px;font-weight:600;font-family:'Tajawal',sans-serif;color:var(--text3);cursor:pointer}
+.tab.active{background:#1D1D1F;color:#fff}
+.tab-pane{display:none;padding:0 20px}
+.tab-pane.active{display:block}
+.otp-box{width:64px;height:72px;border-radius:14px;border:2px solid var(--sep);background:var(--bg2);font-size:28px;font-weight:800;text-align:center;color:var(--text);font-family:'Tajawal',sans-serif;outline:none}
+.otp-box:focus{border-color:var(--blue)}
+.stat-card{background:var(--bg2);border-radius:14px;padding:16px;text-align:center;flex:1}
+.stat-num{font-size:28px;font-weight:900;color:var(--text)}
+.stat-label{font-size:12px;color:var(--text3);margin-top:4px}
+.verify-result{border-radius:14px;padding:18px;text-align:center;display:none;margin-top:14px}
+.verify-result.success{background:rgba(52,199,89,0.08);border:1px solid rgba(52,199,89,0.3);display:block}
+.verify-result.error{background:rgba(255,59,48,0.06);border:1px solid rgba(255,59,48,0.2);display:block}
+.emoji-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px}
+.emoji-btn{font-size:24px;padding:8px;border-radius:10px;background:var(--bg2);border:2px solid transparent;cursor:pointer;text-align:center}
+.emoji-btn.selected{border-color:#1D1D1F;background:#f0f0f0}
+.photo-slot{aspect-ratio:1;border:2px dashed var(--sep);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;background:var(--bg2);gap:4px}
+.photo-slot img{width:100%;height:100%;object-fit:cover;display:none}
+.founder-banner{background:linear-gradient(135deg,#0A2540,#1A4A7A);border-radius:16px;padding:18px 20px;color:#fff;display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.progress-bar{height:4px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;margin-top:10px}
+.progress-fill{height:100%;background:var(--blue2);border-radius:4px}
+select{background:var(--bg2);border:none;border-radius:12px;padding:15px 16px;font-size:16px;font-family:'Tajawal',sans-serif;color:var(--text);width:100%;outline:none;-webkit-appearance:none;direction:rtl}
+input[type=range]{width:100%;accent-color:#1D1D1F;height:4px;margin-top:8px}
+.label{font-size:13px;font-weight:600;color:var(--text3);margin-bottom:8px;display:block}
+.success-msg{background:rgba(52,199,89,0.1);border:1px solid rgba(52,199,89,0.3);border-radius:12px;padding:12px;text-align:center;font-size:14px;color:#1a7a3a;display:none;margin-top:10px}
+.grecaptcha-badge{visibility:hidden!important}
 </style>
-
 </head>
 <body>
-<div class="app">
 
-  <!-- ══ SCREEN 1: إدخال رقم الجوال ══ -->
+<!-- ══ WELCOME ══ -->
 
-  <div class="screen active" id="screen-login">
-    <div class="top-bar">
-      <div class="logo">
-        <div class="logo-icon" style="background:linear-gradient(135deg,#0A2540,#2D7DD2);">🏪</div>
-        <div>
-          <img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png" style="height:24px; object-fit:contain;">
-          <div class="logo-sub">بوابة التجار</div>
-        </div>
+<div class="screen active" id="s-welcome">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;text-align:center;gap:20px">
+    <div style="width:80px;height:80px;background:linear-gradient(135deg,#0A2540,#2D7DD2);border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 8px 32px rgba(45,125,210,0.3)">🏪</div>
+    <div>
+      <div style="font-size:32px;font-weight:900;color:#0A2540;margin-bottom:8px">بوابة التجار</div>
+      <div style="font-size:15px;color:var(--text3);line-height:1.6">أدر نشاطك وتابع عروضك<br>مع أهل شرورة</div>
+    </div>
+  </div>
+  <div style="padding:0 20px calc(env(safe-area-inset-bottom,0px)+32px)">
+    <button class="btn btn-blue" id="start-btn">ابدأ الآن ←</button>
+    <div style="text-align:center;margin-top:14px"><a href="/" style="color:var(--text3);font-size:14px;text-decoration:none">← للعملاء</a></div>
+  </div>
+</div>
+
+<!-- ══ PHONE ══ -->
+
+<div class="screen" id="s-phone">
+  <div style="padding:calc(env(safe-area-inset-top,0px)+16px) 20px 0">
+    <button class="nav-btn" onclick="go('s-welcome')">‹ رجوع</button>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 20px 48px">
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="font-size:48px;margin-bottom:12px">📱</div>
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">رقم الجوال</div>
+      <div style="font-size:15px;color:var(--text3)">أدخل رقمك للمتابعة</div>
+    </div>
+    <div style="background:var(--bg2);border-radius:14px;overflow:hidden;display:flex;align-items:center;direction:ltr;height:58px;margin-bottom:12px">
+      <div style="padding:0 14px;border-left:1px solid var(--sep);font-size:15px;font-weight:600;color:var(--text3);height:100%;display:flex;align-items:center">🇸🇦 +966</div>
+      <input type="tel" id="m-phone" maxlength="9" placeholder="5X XXX XXXX"
+        style="flex:1;border:none;background:none;padding:0 14px;font-size:18px;font-weight:600;font-family:'Tajawal',sans-serif;color:var(--text);outline:none;direction:ltr;height:100%">
+    </div>
+    <div id="phone-err" style="display:none;color:var(--red);font-size:13px;text-align:center;margin-bottom:10px"></div>
+    <button class="btn btn-blue" id="check-phone-btn">متابعة ←</button>
+  </div>
+</div>
+
+<!-- ══ LOGIN ══ -->
+
+<div class="screen" id="s-login">
+  <div style="padding:calc(env(safe-area-inset-top,0px)+16px) 20px 0">
+    <button class="nav-btn" onclick="go('s-phone')">‹ رجوع</button>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 20px 48px">
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="font-size:48px;margin-bottom:12px">👋</div>
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">أهلاً بعودتك!</div>
+      <div id="login-phone-txt" style="font-size:15px;color:var(--text3)"></div>
+    </div>
+    <div style="position:relative;margin-bottom:12px">
+      <input type="password" id="m-pass" placeholder="كلمة المرور" class="field" style="padding-left:44px">
+      <button id="toggle-pass" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:20px;cursor:pointer">👁️</button>
+    </div>
+    <div id="login-err" style="display:none;color:var(--red);font-size:13px;text-align:center;margin-bottom:10px;padding:10px;background:rgba(255,59,48,0.06);border-radius:10px">❌ كلمة المرور غير صحيحة</div>
+    <button class="btn btn-blue" id="login-btn">دخول ←</button>
+  </div>
+</div>
+
+<!-- ══ REGISTER ══ -->
+
+<div class="screen" id="s-register">
+  <div style="padding:calc(env(safe-area-inset-top,0px)+16px) 20px 0">
+    <button class="nav-btn" onclick="go('s-phone')">‹ رجوع</button>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 20px 48px">
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="font-size:48px;margin-bottom:12px">🎉</div>
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">حساب جديد</div>
+      <div style="font-size:15px;color:var(--text3)">أنشئ كلمة مرور لنشاطك</div>
+    </div>
+    <div class="field-wrap">
+      <div style="position:relative">
+        <input type="password" id="r-pass" placeholder="كلمة المرور (6 أحرف+)" class="field" style="padding-left:44px">
+        <button id="toggle-r" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:20px;cursor:pointer">👁️</button>
       </div>
-      <a href="index.html" class="nav-link">🏠 للعملاء</a>
-    </div>
-
-```
-<div style="padding: 40px 24px 16px; text-align: center;">
-  <div style="
-    width:80px; height:80px; border-radius:24px; margin:0 auto 20px;
-    background:linear-gradient(135deg,#0A2540,#2D7DD2);
-    display:flex; align-items:center; justify-content:center;
-    font-size:36px;
-    box-shadow: 0 8px 32px rgba(45,125,210,0.3);
-  ">🏪</div>
-  <h1 style="font-size:28px; font-weight:900; margin-bottom:8px; color:#0A2540;">بوابة التجار</h1>
-  <p style="color:var(--text-muted); font-size:15px;">أدخل رقم جوالك للمتابعة</p>
-</div>
-
-<div class="card">
-  <div class="input-group">
-    <div style="
-      display:flex; align-items:center; direction:ltr;
-      background:var(--surface2); border:2px solid var(--border);
-      border-radius:14px; overflow:hidden; height:62px;
-      transition:border-color 0.2s;
-    " id="phone-wrap">
-      <div style="
-        padding:0 16px; font-size:16px; font-weight:600;
-        color:var(--text); white-space:nowrap;
-        border-left:1px solid var(--border);
-        height:100%; display:flex; align-items:center;
-      ">🇸🇦 +966</div>
-      <input type="tel" id="merchant-phone" placeholder="5X XXX XXXX" maxlength="9"
-        style="
-          flex:1; border:none; background:none; outline:none;
-          font-size:20px; font-weight:700; letter-spacing:1px;
-          padding:0 16px; height:100%; text-align:left;
-          font-family:'Tajawal',sans-serif; color:var(--text);
-          direction:ltr;
-        ">
-    </div>
-  </div>
-  <button class="btn btn-primary" id="check-phone-btn"
-    style="background:linear-gradient(135deg,#0A2540,#2D7DD2); box-shadow:0 4px 16px rgba(10,37,64,0.3); font-size:17px; padding:18px;">
-    متابعة ←
-  </button>
-  <div id="phone-error" style="display:none; color:var(--red); text-align:center; font-size:13px; margin-top:8px;"></div>
-</div>
-<div class="spacer"></div>
-```
-
-  </div>
-
-  <!-- ══ SCREEN 2: كلمة مرور - تاجر موجود ══ -->
-
-  <div class="screen" id="screen-password-login">
-    <div class="top-bar">
-      <div class="logo">
-        <div class="logo-icon">🏪</div>
-        <div><img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png" style="height:24px; object-fit:contain;"><div class="logo-sub">تسجيل الدخول</div></div>
+      <div style="position:relative">
+        <input type="password" id="r-confirm" placeholder="تأكيد كلمة المرور" class="field" style="padding-left:44px">
+        <button id="toggle-r2" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:20px;cursor:pointer">👁️</button>
       </div>
-      <span class="nav-link" id="back-from-password">← رجوع</span>
     </div>
-
-```
-<div style="padding: 32px 24px 8px; text-align: center;">
-  <div style="font-size: 48px; margin-bottom: 12px;">👋</div>
-  <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 12px;">أهلاً بعودتك!</h2>
-  <div style="display:inline-flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:8px 20px;">
-    <span style="font-size:14px;">🇸🇦 +966</span>
-    <span id="returning-phone" style="font-size:15px; font-weight:700; direction:ltr;">5X XXX XXXX</span>
+    <div id="reg-err" style="display:none;color:var(--red);font-size:13px;text-align:center;margin-bottom:10px;padding:10px;background:rgba(255,59,48,0.06);border-radius:10px"></div>
+    <button class="btn btn-blue" id="reg-btn">إنشاء الحساب ←</button>
   </div>
 </div>
 
-<div class="card" style="margin-top:20px;">
-  <div class="input-group" style="margin-bottom:8px;">
-    <label style="font-size:13px;">كلمة المرور</label>
-    <div style="position:relative;">
-      <input type="password" id="login-password"
-        placeholder="أدخل كلمة مرورك"
-        style="direction:rtl; text-align:right; padding-left:50px; font-size:16px; height:52px;">
-      <button id="toggle-login-pass"
-        style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:22px; padding:4px; line-height:1;">
-        👁️
-      </button>
-    </div>
-  </div>
+<!-- ══ DASHBOARD ══ -->
 
-  <div id="password-error" style="display:none; background:rgba(192,57,43,0.08); border:1px solid rgba(192,57,43,0.25); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--red); margin-bottom:12px; text-align:center;">
-    ❌ كلمة المرور غير صحيحة — حاول مجدداً
-  </div>
-
-  <button class="btn btn-primary" id="login-with-password-btn"
-    style="background:linear-gradient(135deg,#0A2540,#2D7DD2); box-shadow:0 4px 16px rgba(10,37,64,0.3); font-size:16px; padding:18px; margin-top:4px;">
-    دخول ←
-  </button>
-</div>
-<div class="spacer"></div>
-```
-
-  </div>
-
-  <!-- ══ SCREEN 3: تسجيل جديد - إنشاء كلمة مرور ══ -->
-
-  <div class="screen" id="screen-register">
-    <div class="top-bar">
-      <div class="logo">
-        <div class="logo-icon">🏪</div>
-        <div><img src="https://res.cloudinary.com/dtwgl17iy/image/upload/v1774160618/%D8%AD%D9%8E%D9%8A%D9%91_otbkdk.png" style="height:24px; object-fit:contain;"><div class="logo-sub">تسجيل جديد</div></div>
+<div class="screen" id="s-dash">
+  <!-- Header -->
+  <div style="padding:calc(env(safe-area-inset-top,0px)+14px) 20px 0;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div id="dash-icon" style="font-size:28px">🏪</div>
+      <div>
+        <div id="dash-name" style="font-size:16px;font-weight:700">نشاطك</div>
+        <div style="font-size:12px;color:var(--text3)">لوحة التحكم</div>
       </div>
-      <span class="nav-link" id="back-from-register">← رجوع</span>
     </div>
-
-```
-<div style="padding: 24px 24px 8px; text-align: center;">
-  <div style="font-size: 48px; margin-bottom: 12px;">🎉</div>
-  <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">مرحباً بك في حيّ!</h2>
-  <p class="text-muted">أنشئ كلمة مرور لحسابك</p>
-</div>
-
-<div class="card">
-  <div class="input-group">
-    <label>كلمة المرور (6 أحرف أو أكثر)</label>
-    <div style="position:relative;">
-      <input type="password" id="new-password"
-        placeholder="أنشئ كلمة مرور"
-        style="direction:rtl; text-align:right; padding-left:50px; font-size:16px; height:52px;">
-      <button id="toggle-new-pass"
-        style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:22px; padding:4px; line-height:1;">
-        👁️
-      </button>
-    </div>
+    <button id="logout-btn" style="background:var(--bg2);border:none;border-radius:20px;padding:7px 14px;font-size:13px;font-weight:600;font-family:'Tajawal',sans-serif;color:var(--text3);cursor:pointer">خروج</button>
   </div>
 
-  <!-- مؤشر قوة -->
-  <div id="password-strength" style="display:none; margin: -8px 0 16px;">
-    <div style="height:5px; border-radius:4px; background:var(--surface2); overflow:hidden;">
-      <div id="strength-bar" style="height:100%; width:0%; transition:all 0.3s; border-radius:4px;"></div>
-    </div>
-    <div id="strength-label" style="font-size:12px; margin-top:6px; text-align:center; font-weight:600;"></div>
-  </div>
+  <!-- Founder Banner -->
 
-  <div class="input-group">
-    <label>تأكيد كلمة المرور</label>
-    <div style="position:relative;">
-      <input type="password" id="confirm-password"
-        placeholder="أعد كتابة كلمة المرور"
-        style="direction:rtl; text-align:right; padding-left:50px; font-size:16px; height:52px;">
-      <button id="toggle-confirm-pass"
-        style="position:absolute; left:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:22px; padding:4px; line-height:1;">
-        👁️
-      </button>
-    </div>
-  </div>
-
-  <div id="register-error" style="display:none; background:rgba(192,57,43,0.08); border:1px solid rgba(192,57,43,0.25); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--red); margin-bottom:12px; text-align:center;"></div>
-
-  <button class="btn btn-primary" id="create-account-btn" style="font-size:16px; padding:18px;">
-    إنشاء الحساب ←
-  </button>
-</div>
-<div class="spacer"></div>
-```
-
-  </div>
-
-  <!-- ══ SCREEN 2: DASHBOARD ══ -->
-
-  <div class="screen" id="screen-dashboard">
-    <div class="top-bar">
-      <div class="logo">
-        <div class="logo-icon" id="dash-icon">🏪</div>
-        <div>
-          <div class="logo-text" id="dash-name">نشاطك</div>
-          <div class="logo-sub">لوحة التحكم</div>
-        </div>
-      </div>
-      <span class="nav-link" id="logout-btn">← خروج</span>
-    </div>
-
-```
-<!-- بانر المؤسس -->
-<div id="founder-banner" style="display:none; margin:12px 16px 0; border-radius:16px; overflow:hidden;">
-  <div style="
-    background:linear-gradient(135deg,#0A2540,#1A4A7A);
-    padding:16px 20px; color:#fff;
-    display:flex; align-items:center; gap:14px;
-  ">
-    <div style="font-size:36px; flex-shrink:0;">🎖️</div>
-    <div style="flex:1;">
-      <div style="font-size:15px; font-weight:800; margin-bottom:3px;">عضو مؤسس في حيّ</div>
-      <div id="founder-number-text" style="font-size:12px; opacity:0.8; margin-bottom:6px;"></div>
-      <div style="background:rgba(255,255,255,0.15); border-radius:8px; padding:6px 12px; display:inline-flex; align-items:center; gap:6px;">
-        <span style="font-size:12px;">⏳</span>
-        <span id="founder-days-text" style="font-size:12px; font-weight:700;"></span>
+  <div id="founder-banner" style="display:none;margin:14px 20px 0">
+    <div class="founder-banner">
+      <div style="font-size:36px;flex-shrink:0">🎖️</div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:800;margin-bottom:2px">عضو مؤسس في حيّ</div>
+        <div id="founder-num" style="font-size:12px;opacity:0.8;margin-bottom:8px"></div>
+        <div style="font-size:12px;font-weight:700;background:rgba(255,255,255,0.15);border-radius:8px;padding:5px 10px;display:inline-block" id="founder-days"></div>
+        <div class="progress-bar"><div class="progress-fill" id="founder-progress" style="width:0%"></div></div>
       </div>
     </div>
   </div>
-  <!-- شريط تقدم الأيام -->
-  <div style="background:#0A2540; padding:8px 20px 12px;">
-    <div style="height:4px; background:rgba(255,255,255,0.15); border-radius:4px; overflow:hidden;">
-      <div id="founder-progress" style="height:100%; background:#2D7DD2; border-radius:4px; transition:width 0.5s;"></div>
+
+  <!-- Tabs -->
+
+  <div style="padding:16px 20px 0">
+    <div class="tab-bar" style="padding:0">
+      <button class="tab active" data-tab="tab-profile">✏️ النشاط</button>
+      <button class="tab" data-tab="tab-stats">📊 إحصائيات</button>
+      <button class="tab" data-tab="tab-verify">✅ كود</button>
     </div>
   </div>
-</div>
 
-<div class="tab-bar" style="margin-top:12px;">
-  <button class="tab active" id="tab-profile-btn">✏️ النشاط</button>
-  <button class="tab" id="tab-stats-btn">📊 إحصائيات</button>
-  <button class="tab" id="tab-verify-btn">✅ كود</button>
-</div>
+  <!-- TAB: Profile -->
 
-<!-- TAB: Profile -->
-<div id="tab-profile">
-  <div style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px;">
-
+  <div class="tab-pane active" id="tab-profile">
     <!-- Preview -->
-    <div class="preview-card">
-      <div id="preview-logo-wrap">
-        <div id="preview-icon" style="font-size: 40px; margin-bottom: 8px;">🏪</div>
-      </div>
-      <img id="preview-logo-img" style="display:none; width:64px; height:64px; border-radius:50%; object-fit:cover; margin:0 auto 8px; border:2px solid rgba(255,255,255,0.5);" />
-      <div id="preview-name" style="font-size: 18px; font-weight: 900; margin-bottom: 4px;">اسم النشاط</div>
-      <div id="preview-type" style="font-size: 12px; opacity: 0.85; margin-bottom: 8px;">نوع النشاط</div>
-      <div id="preview-discount" style="background: rgba(255,255,255,0.25); border-radius: 20px; padding: 4px 16px; font-size: 13px; font-weight: 700; display: inline-block;">خصم 10%</div>
+    <div style="margin:0 20px 14px;background:linear-gradient(135deg,#0A2540,#2D7DD2);border-radius:18px;padding:22px;text-align:center;color:#fff">
+      <div id="prev-icon" style="font-size:40px;margin-bottom:10px">🏪</div>
+      <img id="prev-logo" style="display:none;width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto 10px;border:2px solid rgba(255,255,255,0.4)">
+      <div id="prev-name" style="font-size:18px;font-weight:900;margin-bottom:4px">اسم النشاط</div>
+      <div id="prev-type" style="font-size:13px;opacity:0.8;margin-bottom:10px">نوع النشاط</div>
+      <span id="prev-discount" style="background:rgba(255,255,255,0.2);border-radius:20px;padding:5px 18px;font-size:14px;font-weight:700">خصم 10%</span>
     </div>
 
-    <!-- Form -->
-    <div class="card" style="margin:0;">
-      <div class="card-title">🏪 معلومات النشاط</div>
-
-      <div class="input-group">
-        <label>اسم النشاط التجاري</label>
-        <input type="text" id="store-name" placeholder="مثال: كافيه الورد"
-          style="text-align:right; direction:rtl; height:54px; font-size:16px; border-radius:12px;">
-      </div>
-
-      <div class="input-group">
-        <label>نوع النشاط</label>
-        <select id="store-type" style="height:54px; font-size:15px; border-radius:12px;">
-          <option value="مقاهي ومشروبات">☕ مقاهي ومشروبات</option>
-          <option value="مطاعم ومأكولات">🍽️ مطاعم ومأكولات</option>
-          <option value="صيدليات">💊 صيدليات</option>
-          <option value="بقالات">🛒 بقالات</option>
-          <option value="حلاقة وتجميل">✂️ حلاقة وتجميل</option>
-          <option value="ملابس وأزياء">👗 ملابس وأزياء</option>
-          <option value="إلكترونيات">📱 إلكترونيات</option>
-          <option value="أخرى">🏪 أخرى</option>
-        </select>
-      </div>
-
-      <div class="input-group">
-        <label>شعار النشاط</label>
-        <div class="emoji-grid" id="emoji-grid">
-          <span class="emoji-btn" data-emoji="☕">☕</span>
-          <span class="emoji-btn" data-emoji="🍽️">🍽️</span>
-          <span class="emoji-btn" data-emoji="💊">💊</span>
-          <span class="emoji-btn" data-emoji="🛒">🛒</span>
-          <span class="emoji-btn" data-emoji="✂️">✂️</span>
-          <span class="emoji-btn" data-emoji="🍕">🍕</span>
-          <span class="emoji-btn" data-emoji="🧴">🧴</span>
-          <span class="emoji-btn" data-emoji="📱">📱</span>
-          <span class="emoji-btn" data-emoji="🏪">🏪</span>
-          <span class="emoji-btn" data-emoji="🌿">🌿</span>
-          <span class="emoji-btn" data-emoji="🍰">🍰</span>
-          <span class="emoji-btn" data-emoji="💈">💈</span>
-        </div>
-      </div>
-
-      <div class="input-group">
-        <label>نسبة الخصم: <span id="discount-label" style="color:var(--accent); font-weight:700;">10%</span></label>
-        <input type="range" id="discount-slider" min="5" max="50" value="10" step="5"
-          style="width:100%; accent-color:#0A2540; margin-top:8px; cursor:pointer; height:6px;">
-        <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-top:6px;">
-          <span>5%</span><span>25%</span><span>50%</span>
-        </div>
-      </div>
-
-      <div class="input-group" style="margin-bottom:0;">
-        <label>وصف العرض (اختياري)</label>
-        <input type="text" id="store-desc" placeholder="مثال: خصم على جميع المشروبات"
-          style="text-align:right; direction:rtl; height:54px; font-size:16px; border-radius:12px;">
-      </div>
-
-      <div class="input-group" style="margin-bottom:0; margin-top:16px;">
-        <label>رقم السجل التجاري (اختياري)
-          <span style="font-size:11px; background:#0A2540; color:#fff; border-radius:6px; padding:2px 8px; margin-right:6px; font-weight:700;">✓ موثق</span>
-        </label>
-        <input type="text" id="store-cr" placeholder="1234567890" inputmode="numeric"
-          style="direction:ltr; text-align:left; height:54px; font-size:16px; border-radius:12px; letter-spacing:2px;">
-        <div style="font-size:12px; color:var(--text-muted); margin-top:6px; padding:8px 12px; background:var(--surface2); border-radius:8px;">
-          💡 إضافة السجل التجاري يمنح نشاطك badge <strong>✓ موثق</strong> ويزيد ثقة العملاء
-        </div>
-      </div>
-    </div>
-
-    <div class="card" style="margin:0;">
-      <div class="card-title">📍 موقع النشاط</div>
-      <div class="input-group">
-        <label>الحي</label>
-        <input type="text" id="store-area" placeholder="مثال: حي الروضة"
-          style="text-align:right; direction:rtl; height:54px; font-size:16px; border-radius:12px;">
-      </div>
-      <button class="btn" id="location-btn" style="
-        background:linear-gradient(135deg,#0A2540,#2D7DD2);
-        color:#fff; border:none;
-        box-shadow:0 4px 16px rgba(10,37,64,0.25);
-        font-size:15px; padding:16px; border-radius:14px;
-      ">📍 تحديد موقعي الحالي</button>
-      <div id="location-status" style="margin-top:8px; text-align:center; font-size:13px; color:var(--text-muted);"></div>
-    </div>
-
-    <div class="card" style="margin:0;">
-      <div class="card-title">📸 صور النشاط</div>
-
-      <div class="input-group">
-        <label>شعار النشاط (لوجو)</label>
-        <div id="logo-upload-area" style="
-          border:2px dashed var(--border); border-radius:14px;
-          padding:24px; text-align:center; cursor:pointer;
-          transition:all 0.2s; background:var(--surface2);
-        " onclick="document.getElementById('logo-input').click()">
-          <div id="logo-preview-wrap">
-            <div style="font-size:36px; margin-bottom:8px;">🖼️</div>
-            <div style="font-size:14px; font-weight:600; color:var(--text);">اضغط لرفع الشعار</div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">JPG, PNG — حد أقصى 2MB</div>
-          </div>
-          <img id="logo-preview" style="display:none; width:90px; height:90px; border-radius:50%; object-fit:cover; margin:0 auto;" />
-        </div>
-        <input type="file" id="logo-input" accept="image/*" style="display:none;">
-        <div id="logo-status" style="margin-top:8px; text-align:center; font-size:13px; color:var(--text-muted);"></div>
-      </div>
-
-      <div class="input-group" style="margin-bottom:0;">
-        <label>صور النشاط (حتى 3 صور)</label>
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:8px;">
-          <div class="photo-slot" data-index="0" onclick="document.getElementById('photo-input-0').click()"
-            style="aspect-ratio:1; border:2px dashed var(--border); border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background:var(--surface2); gap:4px;">
-            <span style="font-size:28px;">📷</span>
-            <span style="font-size:11px; color:var(--text-muted);">صورة 1</span>
-            <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
-          </div>
-          <div class="photo-slot" data-index="1" onclick="document.getElementById('photo-input-1').click()"
-            style="aspect-ratio:1; border:2px dashed var(--border); border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background:var(--surface2); gap:4px;">
-            <span style="font-size:28px;">📷</span>
-            <span style="font-size:11px; color:var(--text-muted);">صورة 2</span>
-            <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
-          </div>
-          <div class="photo-slot" data-index="2" onclick="document.getElementById('photo-input-2').click()"
-            style="aspect-ratio:1; border:2px dashed var(--border); border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; background:var(--surface2); gap:4px;">
-            <span style="font-size:28px;">📷</span>
-            <span style="font-size:11px; color:var(--text-muted);">صورة 3</span>
-            <img class="photo-preview" style="display:none; width:100%; height:100%; object-fit:cover;" />
-          </div>
-        </div>
-        <input type="file" id="photo-input-0" accept="image/*" style="display:none;">
-        <input type="file" id="photo-input-1" accept="image/*" style="display:none;">
-        <input type="file" id="photo-input-2" accept="image/*" style="display:none;">
-        <div id="photos-status" style="text-align:center; font-size:12px; color:var(--text-muted);"></div>
-      </div>
-    </div>
-
-    <button class="btn btn-primary" id="save-btn"
-      style="background:linear-gradient(135deg,#0A2540,#2D7DD2); box-shadow:0 4px 16px rgba(10,37,64,0.3); font-size:16px; padding:18px;">
-      💾 حفظ معلومات النشاط
-    </button>
-    <div class="success-msg" id="save-success">✅ تم حفظ معلومات النشاط بنجاح!</div>
-
+```
+<!-- Form -->
+<div class="card">
+  <div class="card-title">🏪 معلومات النشاط</div>
+  <label class="label">اسم النشاط</label>
+  <input type="text" id="f-name" class="field" placeholder="مثال: كافيه الورد" style="margin-bottom:12px">
+  <label class="label">نوع النشاط</label>
+  <select id="f-type" style="margin-bottom:12px">
+    <option>☕ مقاهي ومشروبات</option>
+    <option>🍽️ مطاعم ومأكولات</option>
+    <option>💊 صيدليات</option>
+    <option>🛒 بقالات</option>
+    <option>✂️ حلاقة وتجميل</option>
+    <option>👗 ملابس وأزياء</option>
+    <option>📱 إلكترونيات</option>
+    <option>🏪 أخرى</option>
+  </select>
+  <label class="label">أيقونة النشاط</label>
+  <div class="emoji-grid" id="emoji-grid">
+    <div class="emoji-btn" data-e="☕">☕</div>
+    <div class="emoji-btn" data-e="🍽️">🍽️</div>
+    <div class="emoji-btn" data-e="💊">💊</div>
+    <div class="emoji-btn" data-e="🛒">🛒</div>
+    <div class="emoji-btn" data-e="✂️">✂️</div>
+    <div class="emoji-btn" data-e="🍕">🍕</div>
+    <div class="emoji-btn" data-e="🧴">🧴</div>
+    <div class="emoji-btn" data-e="📱">📱</div>
+    <div class="emoji-btn" data-e="🏪">🏪</div>
+    <div class="emoji-btn" data-e="🌿">🌿</div>
+    <div class="emoji-btn" data-e="🍰">🍰</div>
+    <div class="emoji-btn" data-e="💈">💈</div>
+  </div>
+  <div style="margin-top:14px">
+    <label class="label">نسبة الخصم: <span id="discount-val" style="color:#0A2540;font-weight:700">10%</span></label>
+    <input type="range" id="f-discount" min="5" max="50" value="10" step="5">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text4);margin-top:4px"><span>5%</span><span>25%</span><span>50%</span></div>
+  </div>
+  <div style="margin-top:14px">
+    <label class="label">وصف العرض (اختياري)</label>
+    <input type="text" id="f-desc" class="field" placeholder="مثال: خصم على جميع المشروبات">
   </div>
 </div>
 
-<!-- TAB: Stats -->
-<div id="tab-stats" style="display: none;">
-  <div class="stats-grid">
-    <div class="stat-box"><span class="stat-num" id="stat-today">0</span><div class="stat-label">استخدامات اليوم</div></div>
-    <div class="stat-box"><span class="stat-num" id="stat-week">0</span><div class="stat-label">استخدامات الأسبوع</div></div>
-    <div class="stat-box"><span class="stat-num" id="stat-total" style="font-size: 22px;">0</span><div class="stat-label">إجمالي الاستخدام</div></div>
-    <div class="stat-box"><span class="stat-num" id="stat-return" style="color: var(--green);">—</span><div class="stat-label">معدل العودة</div></div>
-  </div>
-  <div class="separator"></div>
-  <div style="padding: 0 16px 32px;">
-    <div class="card-title" style="padding: 0 0 12px;">📈 آخر الاستخدامات</div>
-    <div id="recent-logs">
-      <div class="center text-muted" style="padding: 24px;">لا توجد استخدامات بعد</div>
-    </div>
-  </div>
+<div class="card">
+  <div class="card-title">📍 الموقع</div>
+  <input type="text" id="f-area" class="field" placeholder="الحي" style="margin-bottom:12px">
+  <button class="btn btn-blue" id="loc-btn">📍 تحديد موقعي الحالي</button>
+  <div id="loc-status" style="margin-top:8px;text-align:center;font-size:13px;color:var(--text3)"></div>
 </div>
 
-<!-- TAB: Verify -->
-<div id="tab-verify" style="display: none;">
-  <div style="padding: 24px 16px;">
-
-    <!-- Header -->
-    <div style="text-align:center; margin-bottom:28px;">
-      <div style="font-size:48px; margin-bottom:12px;">🔍</div>
-      <div style="font-size:20px; font-weight:800; color:var(--text); margin-bottom:6px;">تحقق من كود العميل</div>
-      <div style="font-size:13px; color:var(--text-muted);">اطلب من العميل الكود وأدخله هنا</div>
+<div class="card">
+  <div class="card-title">📸 الصور</div>
+  <label class="label">شعار النشاط</label>
+  <div id="logo-area" style="border:2px dashed var(--sep);border-radius:14px;padding:24px;text-align:center;cursor:pointer;background:var(--bg2);margin-bottom:14px" onclick="document.getElementById('logo-input').click()">
+    <div id="logo-placeholder"><div style="font-size:32px;margin-bottom:6px">🖼️</div><div style="font-size:14px;color:var(--text3)">اضغط لرفع الشعار</div></div>
+    <img id="logo-preview" style="display:none;width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto">
+  </div>
+  <input type="file" id="logo-input" accept="image/*" style="display:none">
+  <div id="logo-status" style="font-size:13px;text-align:center;color:var(--text3);margin-bottom:14px"></div>
+  <label class="label">صور النشاط (حتى 3)</label>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px">
+    <div class="photo-slot" id="slot-0" onclick="document.getElementById('photo-0').click()">
+      <span style="font-size:26px">📷</span><span style="font-size:11px;color:var(--text4)">صورة 1</span>
+      <img id="photo-preview-0">
     </div>
-
-    <!-- OTP Boxes — 4 خانات -->
-    <div style="display:flex; gap:10px; direction:ltr; justify-content:center; margin-bottom:24px;">
-      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1"
-        class="merchant-otp-box" style="
-          width:64px; height:72px; border-radius:14px;
-          border:2px solid var(--border); background:var(--surface2);
-          font-size:28px; font-weight:800; text-align:center;
-          color:var(--text); font-family:'Tajawal',sans-serif;
-          outline:none; transition:border-color 0.2s;
-          -webkit-appearance:none;
-        ">
-      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1"
-        class="merchant-otp-box" style="
-          width:64px; height:72px; border-radius:14px;
-          border:2px solid var(--border); background:var(--surface2);
-          font-size:28px; font-weight:800; text-align:center;
-          color:var(--text); font-family:'Tajawal',sans-serif;
-          outline:none; transition:border-color 0.2s;
-          -webkit-appearance:none;
-        ">
-      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1"
-        class="merchant-otp-box" style="
-          width:64px; height:72px; border-radius:14px;
-          border:2px solid var(--border); background:var(--surface2);
-          font-size:28px; font-weight:800; text-align:center;
-          color:var(--text); font-family:'Tajawal',sans-serif;
-          outline:none; transition:border-color 0.2s;
-          -webkit-appearance:none;
-        ">
-      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1"
-        class="merchant-otp-box" style="
-          width:64px; height:72px; border-radius:14px;
-          border:2px solid var(--border); background:var(--surface2);
-          font-size:28px; font-weight:800; text-align:center;
-          color:var(--text); font-family:'Tajawal',sans-serif;
-          outline:none; transition:border-color 0.2s;
-          -webkit-appearance:none;
-        ">
+    <div class="photo-slot" id="slot-1" onclick="document.getElementById('photo-1').click()">
+      <span style="font-size:26px">📷</span><span style="font-size:11px;color:var(--text4)">صورة 2</span>
+      <img id="photo-preview-1">
     </div>
-
-    <!-- زر التحقق — أزرق -->
-    <button class="btn" id="verify-code-btn" style="
-      background:linear-gradient(135deg,#0A2540,#2D7DD2);
-      color:#fff; border:none;
-      box-shadow:0 4px 16px rgba(10,37,64,0.3);
-      font-size:16px; padding:18px;
-      border-radius:14px;
-    ">
-      ✅ تحقق من الكود
-    </button>
-
-    <!-- النتيجة -->
-    <div class="verify-result" id="verify-result">
-      <div class="verify-icon" id="verify-icon">✅</div>
-      <div class="verify-title" id="verify-title">كود صالح!</div>
-      <div class="verify-sub" id="verify-sub">تم تطبيق الخصم بنجاح</div>
+    <div class="photo-slot" id="slot-2" onclick="document.getElementById('photo-2').click()">
+      <span style="font-size:26px">📷</span><span style="font-size:11px;color:var(--text4)">صورة 3</span>
+      <img id="photo-preview-2">
     </div>
   </div>
+  <input type="file" id="photo-0" accept="image/*" style="display:none">
+  <input type="file" id="photo-1" accept="image/*" style="display:none">
+  <input type="file" id="photo-2" accept="image/*" style="display:none">
+  <div id="photos-status" style="font-size:12px;text-align:center;color:var(--text3)"></div>
 </div>
 
-<div class="bottom-pad"></div>
+<div style="padding:0 20px 32px">
+  <button class="btn btn-blue" id="save-btn">💾 حفظ معلومات النشاط</button>
+  <div class="success-msg" id="save-success">✅ تم حفظ معلومات النشاط بنجاح!</div>
+</div>
 ```
 
   </div>
 
-</div>
+  <!-- TAB: Stats -->
 
-<div id="recaptcha-container"></div>
+  <div class="tab-pane" id="tab-stats">
+    <div class="card">
+      <div class="card-title">📊 إحصائياتك</div>
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-label">إجمالي الكوبونات</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-today">—</div><div class="stat-label">اليوم</div></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <div class="stat-card"><div class="stat-num" id="stat-week">—</div><div class="stat-label">هذا الأسبوع</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-rating">—</div><div class="stat-label">متوسط التقييم</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Verify -->
+
+  <div class="tab-pane" id="tab-verify">
+    <div class="card">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="font-size:44px;margin-bottom:10px">🔍</div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:6px">تحقق من كود العميل</div>
+        <div style="font-size:14px;color:var(--text3)">اطلب من العميل الكود وأدخله هنا</div>
+      </div>
+      <div style="display:flex;gap:10px;direction:ltr;justify-content:center;margin-bottom:20px">
+        <input type="text" inputmode="numeric" maxlength="1" class="otp-box" id="v0">
+        <input type="text" inputmode="numeric" maxlength="1" class="otp-box" id="v1">
+        <input type="text" inputmode="numeric" maxlength="1" class="otp-box" id="v2">
+        <input type="text" inputmode="numeric" maxlength="1" class="otp-box" id="v3">
+      </div>
+      <button class="btn btn-blue" id="verify-btn">✅ تحقق من الكود</button>
+      <div class="verify-result" id="verify-result">
+        <div style="font-size:32px;margin-bottom:8px" id="v-icon">✅</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:4px" id="v-title"></div>
+        <div style="font-size:13px;color:var(--text3)" id="v-sub"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:calc(env(safe-area-inset-bottom,0px)+20px)"></div>
+</div>
 
 <script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-  import { getAuth, signInAnonymously, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-  import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, orderBy, limit, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
-  const firebaseConfig = {
-    apiKey: "AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
-    authDomain: "fbrg87.firebaseapp.com",
-    projectId: "fbrg87",
-    storageBucket: "fbrg87.firebasestorage.app",
-    messagingSenderId: "811335912659",
-    appId: "1:811335912659:web:a923cc11d16315dfd4d826"
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+const app = initializeApp({
+  apiKey:"AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
+  authDomain:"fbrg87.firebaseapp.com", projectId:"fbrg87",
+  storageBucket:"fbrg87.firebasestorage.app",
+  messagingSenderId:"811335912659",
+  appId:"1:811335912659:web:a923cc11d16315dfd4d826"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+signInAnonymously(auth).catch(()=>{});
+
+const CLOUDINARY = 'https://api.cloudinary.com/v1_1/dtwgl17iy/image/upload';
+const UPLOAD_PRESET = 'hayy_uploads';
+
+// ══ STATE ══
+let currentPhone = '', merchantId = '';
+let selectedEmoji = '🏪', logoUrl = '', photoUrls = ['','',''];
+let merchantLat = null, merchantLng = null;
+
+// ══ NAV ══
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+window.go = go;
+
+// ══ HELPERS ══
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str + 'hayy_salt_2026'));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+function togglePass(iId, bId) {
+  const i = document.getElementById(iId), b = document.getElementById(bId);
+  if(i&&b) b.addEventListener('click', () => i.type = i.type==='password'?'text':'password');
+}
+
+// ══ PHONE CHECK ══
+async function checkPhone() {
+  const phone = document.getElementById('m-phone').value.trim();
+  const err = document.getElementById('phone-err');
+  if (phone.length < 9) { err.textContent='أدخل رقماً صحيحاً'; err.style.display='block'; return; }
+  currentPhone = '+966' + phone;
+  err.style.display = 'none';
+  document.getElementById('login-phone-txt').textContent = currentPhone;
+  try {
+    const q = query(collection(db,'merchants'), where('phone','==',currentPhone));
+    const snap = await getDocs(q);
+    if (!snap.empty) { merchantId = snap.docs[0].id; go('s-login'); }
+    else go('s-register');
+  } catch(e) { go('s-register'); }
+}
+
+// ══ LOGIN ══
+async function login() {
+  const pass = document.getElementById('m-pass').value;
+  const err = document.getElementById('login-err');
+  const hashed = await sha256(pass);
+  try {
+    const q = query(collection(db,'merchants'), where('phone','==',currentPhone), where('password','==',hashed));
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      merchantId = snap.docs[0].id;
+      localStorage.setItem('m_id', merchantId);
+      localStorage.setItem('m_phone', currentPhone);
+      loadDashboard(snap.docs[0].data());
+      go('s-dash');
+    } else { err.style.display = 'block'; }
+  } catch(e) { err.style.display = 'block'; }
+}
+
+// ══ REGISTER ══
+async function register() {
+  const pass = document.getElementById('r-pass').value;
+  const confirm = document.getElementById('r-confirm').value;
+  const err = document.getElementById('reg-err');
+  if (pass.length < 6) { err.textContent='كلمة المرور 6 أحرف على الأقل'; err.style.display='block'; return; }
+  if (pass !== confirm) { err.textContent='كلمتا المرور غير متطابقتين'; err.style.display='block'; return; }
+  try {
+    const hashed = await sha256(pass);
+    const allM = await getDocs(collection(db,'merchants'));
+    const isFounder = allM.size < 30;
+    const founderNum = isFounder ? allM.size + 1 : null;
+    const ref = await addDoc(collection(db,'merchants'), {
+      phone: currentPhone, password: hashed,
+      is_founder: isFounder, founder_number: founderNum,
+      founder_since: isFounder ? new Date().toISOString() : null,
+      free_trial_ends: isFounder ? new Date(Date.now()+90*24*60*60*1000).toISOString() : null,
+      created_at: serverTimestamp()
+    });
+    merchantId = ref.id;
+    localStorage.setItem('m_id', merchantId);
+    localStorage.setItem('m_phone', currentPhone);
+    loadDashboard({is_founder:isFounder, founder_number:founderNum, free_trial_ends: isFounder?new Date(Date.now()+90*24*60*60*1000).toISOString():null});
+    go('s-dash');
+  } catch(e) { err.textContent='حدث خطأ — حاول مجدداً'; err.style.display='block'; }
+}
+
+// ══ LOAD DASHBOARD ══
+function loadDashboard(data) {
+  if (data.store_name) {
+    document.getElementById('f-name').value = data.store_name;
+    document.getElementById('dash-name').textContent = data.store_name;
+    document.getElementById('prev-name').textContent = data.store_name;
+  }
+  if (data.store_type) {
+    document.getElementById('f-type').value = data.store_type;
+    document.getElementById('prev-type').textContent = data.store_type;
+  }
+  if (data.discount) {
+    document.getElementById('f-discount').value = data.discount;
+    document.getElementById('discount-val').textContent = data.discount + '%';
+    document.getElementById('prev-discount').textContent = 'خصم ' + data.discount + '%';
+  }
+  if (data.icon) {
+    selectedEmoji = data.icon;
+    document.getElementById('prev-icon').textContent = data.icon;
+    document.getElementById('dash-icon').textContent = data.icon;
+    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.toggle('selected', b.dataset.e === data.icon));
+  }
+  if (data.description) document.getElementById('f-desc').value = data.description;
+  if (data.area) document.getElementById('f-area').value = data.area;
+  if (data.logo_url) {
+    logoUrl = data.logo_url;
+    document.getElementById('logo-preview').src = data.logo_url;
+    document.getElementById('logo-preview').style.display = 'block';
+    document.getElementById('logo-placeholder').style.display = 'none';
+    document.getElementById('prev-logo').src = data.logo_url;
+    document.getElementById('prev-logo').style.display = 'block';
+    document.getElementById('prev-icon').style.display = 'none';
+    document.getElementById('dash-icon').style.display = 'none';
+  }
+  if (data.photos) {
+    photoUrls = [...data.photos, '', ''].slice(0,3);
+    photoUrls.forEach((url, i) => {
+      if (url) {
+        const img = document.getElementById('photo-preview-'+i);
+        img.src = url; img.style.display = 'block';
+        const slot = document.getElementById('slot-'+i);
+        slot.querySelector('span:first-child').style.display = 'none';
+        slot.querySelector('span:last-child').style.display = 'none';
+      }
+    });
+  }
+  if (data.lat) merchantLat = data.lat;
+  if (data.lng) merchantLng = data.lng;
+
+  // Founder banner
+  if (data.is_founder) {
+    document.getElementById('founder-banner').style.display = 'block';
+    document.getElementById('founder-num').textContent = `مؤسس رقم ${data.founder_number} من أصل 30`;
+    if (data.free_trial_ends) {
+      const daysLeft = Math.max(0, Math.ceil((new Date(data.free_trial_ends)-Date.now())/(24*60*60*1000)));
+      document.getElementById('founder-days').textContent = daysLeft > 0 ? `⏳ ${daysLeft} يوم متبقي مجاناً` : 'انتهت الفترة المجانية';
+      document.getElementById('founder-progress').style.width = Math.min(100, ((90-daysLeft)/90)*100) + '%';
+    }
+  }
+
+  loadStats();
+}
+
+// ══ STATS ══
+async function loadStats() {
+  try {
+    const snap = await getDocs(collection(db,'coupons'));
+    let total=0, today=0, week=0;
+    const now = new Date();
+    snap.forEach(d => {
+      const data = d.data();
+      if (data.status==='used' && (data.business_id===currentStoreId || data.merchant_phone===currentPhone)) {
+        total++;
+        const t = data.created_at?.toDate?.() || new Date(0);
+        if ((now-t) < 86400000) today++;
+        if ((now-t) < 604800000) week++;
+      }
+    });
+    // Rating
+    const rs = await getDocs(query(collection(db,'ratings'), where('business_name','==',document.getElementById('prev-name').textContent)));
+    let rtotal=0, rcount=0;
+    rs.forEach(d => { if(d.data().stars){rtotal+=d.data().stars;rcount++;} });
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-today').textContent = today;
+    document.getElementById('stat-week').textContent = week;
+    document.getElementById('stat-rating').textContent = rcount ? (rtotal/rcount).toFixed(1)+'★' : '—';
+  } catch(e){}
+}
+
+let currentStoreId = '';
+
+// ══ SAVE STORE ══
+async function saveStore() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { alert('أدخل اسم النشاط'); return; }
+  const type = document.getElementById('f-type').value.replace(/^.\s/, '');
+  const discount = parseInt(document.getElementById('f-discount').value);
+  const desc = document.getElementById('f-desc').value.trim();
+  const area = document.getElementById('f-area').value.trim();
+  const btn = document.getElementById('save-btn');
+  btn.textContent = '⏳ جاري الحفظ...'; btn.disabled = true;
+
+  const storeInfo = {
+    store_name:name, store_type:type, discount, icon:selectedEmoji,
+    description:desc, area, logo_url:logoUrl,
+    photos:photoUrls.filter(u=>u), active:true,
+    lat:merchantLat||null, lng:merchantLng||null,
+    updated_at:serverTimestamp()
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  try {
+    if (merchantId) await setDoc(doc(db,'merchants',merchantId), storeInfo, {merge:true});
+    const bq = query(collection(db,'businesses'), where('phone','==',currentPhone));
+    const bSnap = await getDocs(bq);
+    const bizData = {name,type,discount,icon:selectedEmoji,description:desc,area,phone:currentPhone,logo_url:logoUrl,photos:photoUrls.filter(u=>u),active:true,lat:merchantLat||null,lng:merchantLng||null,updated_at:serverTimestamp()};
+    if (!bSnap.empty) { await setDoc(doc(db,'businesses',bSnap.docs[0].id),bizData,{merge:true}); currentStoreId=bSnap.docs[0].id; }
+    else { const r=await addDoc(collection(db,'businesses'),{...bizData,created_at:serverTimestamp()}); currentStoreId=r.id; }
 
-  // تسجيل دخول مجهول فوراً لضمان الوصول لـ Firestore
-  signInAnonymously(auth).catch(e => console.log('Anon auth:', e));
-
-  // ══════════════════════════════
-  // Auth — Phone + Password System
-  // ══════════════════════════════
-  let currentPhone = '';
-  let merchantDocId = ''; // معرف وثيقة التاجر في Firestore
-
-  // Simple hash function for password storage
-  async function hashPassword(password) {
-    const msgBuffer = new TextEncoder().encode(password + 'hayy_salt_2026');
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  }
-
-  async function checkPhone() {
-    const phone = document.getElementById('merchant-phone').value.trim();
-    const error = document.getElementById('phone-error');
-
-    if (phone.length < 9) {
-      error.textContent = '⚠️ أدخل رقم جوال صحيح';
-      error.style.display = 'block';
-      return;
-    }
-
-    error.style.display = 'none';
-    currentPhone = '+966' + phone;
-    document.getElementById('returning-phone').textContent = phone;
-
-    // تحقق إذا الرقم مسجل في Firestore
-    try {
-      const btn = document.getElementById('check-phone-btn');
-      btn.textContent = '⏳ جاري التحقق...';
-      btn.disabled = true;
-
-      const q = query(collection(db, 'merchants'), where('phone', '==', currentPhone));
-      const snapshot = await getDocs(q);
-
-      btn.textContent = 'متابعة ←';
-      btn.disabled = false;
-
-      if (!snapshot.empty) {
-        // تاجر موجود — اذهب لصفحة كلمة المرور
-        goScreen('screen-password-login');
-      } else {
-        // تاجر جديد — اذهب لصفحة التسجيل
-        goScreen('screen-register');
-      }
-    } catch (e) {
-      console.error(e);
-      document.getElementById('check-phone-btn').textContent = 'متابعة ←';
-      document.getElementById('check-phone-btn').disabled = false;
-      // في حالة خطأ — افتح التسجيل
-      goScreen('screen-register');
-    }
-  }
-
-  async function loginWithPassword() {
-    const password = document.getElementById('login-password').value;
-    const error = document.getElementById('password-error');
-
-    if (!password) { error.style.display = 'block'; return; }
-
-    try {
-      const hashedPassword = await hashPassword(password);
-      const q = query(collection(db, 'merchants'),
-        where('phone', '==', currentPhone),
-        where('password', '==', hashedPassword)
-      );
-      const snapshot = await getDocs(q);
-
-      if (!snapshot.empty) {
-        const merchantDoc = snapshot.docs[0];
-        const merchantData = merchantDoc.data();
-        merchantDocId = merchantDoc.id;
-        error.style.display = 'none';
-        localStorage.setItem('merchant_session', 'active');
-        localStorage.setItem('merchant_phone', currentPhone);
-        localStorage.setItem('merchant_doc_id', merchantDocId);
-        loadMerchantData(merchantData);
-        goScreen('screen-dashboard');
-        loadStats();
-      } else {
-        error.style.display = 'block';
-        document.getElementById('login-password').value = '';
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  async function createAccount() {
-    const password = document.getElementById('new-password').value;
-    const confirm = document.getElementById('confirm-password').value;
-    const error = document.getElementById('register-error');
-
-    if (password.length < 6) {
-      error.textContent = '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل';
-      error.style.display = 'block'; return;
-    }
-    if (password !== confirm) {
-      error.textContent = '⚠️ كلمتا المرور غير متطابقتين';
-      error.style.display = 'block'; return;
-    }
-
-    error.style.display = 'none';
-    const btn = document.getElementById('create-account-btn');
-    btn.textContent = '⏳ جاري الإنشاء...';
-    btn.disabled = true;
-
-    try {
-      const hashedPassword = await hashPassword(password);
-
-      // تحقق هل لا يزال هناك مقاعد للمؤسسين
-      const allMerchants = await getDocs(collection(db, 'merchants'));
-      const totalMerchants = allMerchants.size;
-      const isFounder = totalMerchants < 30;
-      const founderNumber = isFounder ? totalMerchants + 1 : null;
-
-      const docRef = await addDoc(collection(db, 'merchants'), {
-        phone: currentPhone,
-        password: hashedPassword,
-        created_at: serverTimestamp(),
-        is_founder: isFounder,
-        founder_number: founderNumber,
-        founder_since: isFounder ? new Date().toISOString() : null,
-        free_trial_ends: isFounder ? new Date(Date.now() + 90*24*60*60*1000).toISOString() : null
-      });
-      merchantDocId = docRef.id;
-      localStorage.setItem('merchant_session', 'active');
-      localStorage.setItem('merchant_phone', currentPhone);
-      localStorage.setItem('merchant_doc_id', merchantDocId);
-      localStorage.setItem('merchant_is_founder', isFounder ? 'true' : 'false');
-      localStorage.setItem('merchant_founder_number', founderNumber || '');
-      btn.textContent = 'إنشاء الحساب ←';
-      btn.disabled = false;
-      goScreen('screen-dashboard');
-    } catch (e) {
-      console.error(e);
-      btn.textContent = 'إنشاء الحساب ←';
-      btn.disabled = false;
-    }
-  }
-
-  function showFounderBanner(data) {
-    const isFounder = data?.is_founder || localStorage.getItem('merchant_is_founder') === 'true';
-    if (!isFounder) return;
-
-    const banner = document.getElementById('founder-banner');
-    if (!banner) return;
-    banner.style.display = 'block';
-
-    const num = data?.founder_number || localStorage.getItem('merchant_founder_number');
-    if (num) {
-      document.getElementById('founder-number-text').textContent = `مؤسس رقم ${num} من أصل 30 مؤسساً`;
-    }
-
-    const trialEnds = data?.free_trial_ends ? new Date(data.free_trial_ends) : null;
-    if (trialEnds) {
-      const daysLeft = Math.max(0, Math.ceil((trialEnds - Date.now()) / (24*60*60*1000)));
-      const daysUsed = 90 - daysLeft;
-      document.getElementById('founder-days-text').textContent =
-        daysLeft > 0 ? `${daysLeft} يوم متبقي من التجربة المجانية` : 'انتهت التجربة المجانية';
-      const progress = Math.min(100, (daysUsed / 90) * 100);
-      document.getElementById('founder-progress').style.width = progress + '%';
-    }
-  }
-
-  function loadMerchantData(data) {
-    // عرض بانر المؤسس
-    showFounderBanner(data);
-    if (data.store_name) {
-      document.getElementById('store-name').value = data.store_name;
-      document.getElementById('dash-name').textContent = data.store_name;
-      document.getElementById('preview-name').textContent = data.store_name;
-    }
-    if (data.store_type) {
-      document.getElementById('store-type').value = data.store_type;
-      document.getElementById('preview-type').textContent = data.store_type;
-    }
-    if (data.discount) {
-      document.getElementById('discount-slider').value = data.discount;
-      document.getElementById('discount-label').textContent = data.discount + '%';
-      document.getElementById('preview-discount').textContent = 'خصم ' + data.discount + '%';
-    }
-    if (data.icon) {
-      selectedEmoji = data.icon;
-      document.getElementById('preview-icon').textContent = data.icon;
-      document.getElementById('dash-icon').textContent = data.icon;
-    }
-    if (data.description) document.getElementById('store-desc').value = data.description;
-    if (data.area) document.getElementById('store-area').value = data.area;
-    if (data.logo_url) {
-      logoUrl = data.logo_url;
-      document.getElementById('logo-preview').src = data.logo_url;
-      document.getElementById('logo-preview').style.display = 'block';
-      document.getElementById('logo-preview-wrap').style.display = 'none';
-      document.getElementById('preview-logo-img').src = data.logo_url;
-      document.getElementById('preview-logo-img').style.display = 'block';
-      document.getElementById('preview-logo-wrap').style.display = 'none';
-    }
-    if (data.photos) {
-      photoUrls = data.photos;
-      data.photos.forEach((url, i) => {
-        if (url && i < 3) {
-          const slot = document.querySelectorAll('.photo-slot')[i];
-          const preview = slot?.querySelector('.photo-preview');
-          const icon = slot?.querySelector('span');
-          if (preview) { preview.src = url; preview.style.display = 'block'; }
-          if (icon) icon.style.display = 'none';
-          photoUrls[i] = url;
-        }
-      });
-    }
-  }
-
-  function checkPasswordStrength(password) {
-    const bar = document.getElementById('strength-bar');
-    const label = document.getElementById('strength-label');
-    document.getElementById('password-strength').style.display = 'block';
-
-    if (password.length < 4) {
-      bar.style.width = '25%'; bar.style.background = 'var(--red)';
-      label.textContent = 'ضعيفة'; label.style.color = 'var(--red)';
-    } else if (password.length < 6) {
-      bar.style.width = '50%'; bar.style.background = 'var(--accent)';
-      label.textContent = 'متوسطة'; label.style.color = 'var(--accent)';
-    } else if (password.length < 10) {
-      bar.style.width = '75%'; bar.style.background = 'var(--green)';
-      label.textContent = 'جيدة'; label.style.color = 'var(--green)';
-    } else {
-      bar.style.width = '100%'; bar.style.background = 'var(--green)';
-      label.textContent = 'قوية جداً ✓'; label.style.color = 'var(--green)';
-    }
-  }
-
-  // ── Navigation ──
-  function goScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    window.scrollTo(0, 0);
-    if (id === 'screen-dashboard') {
-      localStorage.setItem('merchant_session', 'active');
-    }
-  }
-
-  // ── Session Restore ──
-  window.addEventListener('load', () => {
-    currentPhone = localStorage.getItem('merchant_phone') || '';
-    merchantDocId = localStorage.getItem('merchant_doc_id') || '';
-  });
-
-  // ── Tabs ──
-  function switchTab(tabId) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(tabId + '-btn').classList.add('active');
-    ['tab-profile', 'tab-stats', 'tab-verify'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.display = id === tabId ? 'block' : 'none';
-    });
-    if (tabId === 'tab-stats') loadStats();
-  }
-
-  // ── Preview ──
-  function updatePreview() {
-    const name = document.getElementById('store-name').value || 'اسم النشاط';
-    const type = document.getElementById('store-type').value;
-    document.getElementById('preview-name').textContent = name;
-    document.getElementById('preview-type').textContent = type;
     document.getElementById('dash-name').textContent = name;
     document.getElementById('dash-icon').textContent = selectedEmoji;
-    document.getElementById('preview-icon').textContent = selectedEmoji;
+    document.getElementById('save-success').style.display = 'block';
+    setTimeout(() => document.getElementById('save-success').style.display='none', 3000);
+  } catch(e) { alert('حدث خطأ — حاول مجدداً'); }
+  btn.textContent = '💾 حفظ معلومات النشاط'; btn.disabled = false;
+}
+
+// ══ CLOUDINARY UPLOAD ══
+async function uploadImage(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', UPLOAD_PRESET);
+  const res = await fetch(CLOUDINARY, {method:'POST', body:fd});
+  const data = await res.json();
+  return data.secure_url;
+}
+
+// ══ VERIFY CODE ══
+async function verifyCode() {
+  const code = [0,1,2,3].map(i => document.getElementById('v'+i).value).join('').trim();
+  const result = document.getElementById('verify-result');
+  const btn = document.getElementById('verify-btn');
+  result.className = 'verify-result';
+  if (code.length < 4) {
+    document.getElementById('v-icon').textContent = '❌';
+    document.getElementById('v-title').textContent = 'أدخل الكود كاملاً';
+    document.getElementById('v-sub').textContent = '';
+    result.classList.add('error'); return;
   }
-
-  // ── Cloudinary Config ──
-  const CLOUDINARY_CLOUD = 'dtwgl17iy';
-  const CLOUDINARY_PRESET = 'hayy_uploads';
-  let logoUrl = '';
-  let photoUrls = ['', '', ''];
-  let merchantLat = null, merchantLng = null;
-
-  async function uploadToCloudinary(file, statusEl) {
-    statusEl.textContent = '⏳ جاري الرفع...';
-    statusEl.style.color = 'var(--text-muted)';
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', CLOUDINARY_PRESET);
-    formData.append('folder', 'hayy');
-
-    try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
-        method: 'POST',
-        body: formData
-      });
-      const data = await res.json();
-      statusEl.textContent = '✅ تم الرفع بنجاح';
-      statusEl.style.color = 'var(--green)';
-      return data.secure_url;
-    } catch (err) {
-      statusEl.textContent = '❌ فشل الرفع — حاول مجدداً';
-      statusEl.style.color = 'var(--red)';
-      return null;
-    }
-  }
-
-  function setupPhotoUploads() {
-    // Logo upload
-    document.getElementById('logo-input').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        // عرض في منطقة الرفع
-        document.getElementById('logo-preview').src = ev.target.result;
-        document.getElementById('logo-preview').style.display = 'block';
-        document.getElementById('logo-preview-wrap').style.display = 'none';
-        // عرض في البطاقة التجريبية
-        document.getElementById('preview-logo-img').src = ev.target.result;
-        document.getElementById('preview-logo-img').style.display = 'block';
-        document.getElementById('preview-logo-wrap').style.display = 'none';
-      };
-      reader.readAsDataURL(file);
-      const url = await uploadToCloudinary(file, document.getElementById('logo-status'));
-      if (url) logoUrl = url;
-    });
-
-    // Drag over effect for logo
-    const logoArea = document.getElementById('logo-upload-area');
-    logoArea.addEventListener('dragover', (e) => { e.preventDefault(); logoArea.style.borderColor = 'var(--accent)'; });
-    logoArea.addEventListener('dragleave', () => { logoArea.style.borderColor = ''; });
-    logoArea.addEventListener('drop', async (e) => {
-      e.preventDefault();
-      logoArea.style.borderColor = '';
-      const file = e.dataTransfer.files[0];
-      if (file) document.getElementById('logo-input').files = e.dataTransfer.files;
-    });
-
-    // Photos upload
-    [0, 1, 2].forEach(idx => {
-      document.getElementById(`photo-input-${idx}`).addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const slot = document.querySelectorAll('.photo-slot')[idx];
-        const preview = slot.querySelector('.photo-preview');
-        const icon = slot.querySelector('span');
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          preview.src = ev.target.result;
-          preview.style.display = 'block';
-          if (icon) icon.style.display = 'none';
-        };
-        reader.readAsDataURL(file);
-        const statusEl = document.getElementById('photos-status');
-        const url = await uploadToCloudinary(file, statusEl);
-        if (url) photoUrls[idx] = url;
-      });
-    });
-  }
-  function getLocation() {
-    const status = document.getElementById('location-status');
-    const btn = document.getElementById('location-btn');
-    status.textContent = '⏳ جاري تحديد موقعك...';
-    btn.disabled = true;
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        merchantLat = pos.coords.latitude;
-        merchantLng = pos.coords.longitude;
-        status.innerHTML = `
-          ✅ تم تحديد الموقع!<br>
-          <a href="https://maps.google.com/?q=${merchantLat},${merchantLng}" target="_blank"
-            style="color:#0A2540; font-weight:700; font-size:13px; text-decoration:none;">
-            📍 عرض على Google Maps
-          </a>
-        `;
-        status.style.color = 'var(--green)';
-        btn.disabled = false;
-        btn.textContent = '✅ تم تحديد الموقع';
-      },
-      () => {
-        status.textContent = '❌ تعذر تحديد الموقع — اسمح بالوصول للموقع';
-        status.style.color = 'var(--red)';
-        btn.disabled = false;
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
-  }
-
-  // ── Stats ──
-  async function loadStats() {
-    try {
-      const snapshot = await getDocs(collection(db, 'coupons'));
-      let total = 0, today = 0, week = 0;
-      const now = new Date();
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data.status === 'used') {
-          total++;
-          if (data.created_at) {
-            const date = data.created_at.toDate();
-            const diffDays = (now - date) / (1000 * 60 * 60 * 24);
-            if (diffDays < 1) today++;
-            if (diffDays < 7) week++;
-          }
-        }
-      });
-      document.getElementById('stat-today').textContent = today;
-      document.getElementById('stat-week').textContent = week;
-      document.getElementById('stat-total').textContent = total;
-    } catch (e) { console.error(e); }
-  }
-
-  // ── Verify Code ──
-  async function verifyCode() {
-    const boxes = [...document.querySelectorAll('.merchant-otp-box')];
-    const code = boxes.map(b => b.value).join('').trim();
-    const result = document.getElementById('verify-result');
-    const btn = document.getElementById('verify-code-btn');
-    result.className = 'verify-result';
-
-    if (!code || code.length < 4) {
-      document.getElementById('verify-icon').textContent = '❌';
-      document.getElementById('verify-title').textContent = 'كود غير صحيح';
-      document.getElementById('verify-sub').textContent = 'أدخل كوداً صحيحاً';
+  btn.textContent = '⏳ جاري التحقق...'; btn.disabled = true;
+  try {
+    const now = new Date();
+    const q = query(collection(db,'coupons'), where('code','==',code), where('status','==','pending'));
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      const usedSnap = await getDocs(query(collection(db,'coupons'), where('code','==',code), where('status','==','used')));
+      document.getElementById('v-icon').textContent = usedSnap.empty ? '❌' : '⚠️';
+      document.getElementById('v-title').textContent = usedSnap.empty ? 'كود غير موجود' : 'كود مستخدم مسبقاً';
+      document.getElementById('v-sub').textContent = usedSnap.empty ? 'تأكد من الأرقام' : 'تم استخدام هذا الكود من قبل';
       result.classList.add('error');
-      return;
-    }
-
-    btn.textContent = '⏳ جاري التحقق...';
-    btn.disabled = true;
-
-    try {
-      const now = new Date();
-
-      // البحث عن الكود في Firebase
-      const q = query(
-        collection(db, 'coupons'),
-        where('code', '==', code),
-        where('status', '==', 'pending')
-      );
-      const snap = await getDocs(q);
-
-      if (snap.empty) {
-        // الكود غير موجود أو مستخدم مسبقاً
-        const usedQ = query(collection(db, 'coupons'), where('code', '==', code), where('status', '==', 'used'));
-        const usedSnap = await getDocs(usedQ);
-
-        document.getElementById('verify-icon').textContent = usedSnap.empty ? '❌' : '⚠️';
-        document.getElementById('verify-title').textContent = usedSnap.empty ? 'كود غير موجود' : 'كود مستخدم مسبقاً';
-        document.getElementById('verify-sub').textContent = usedSnap.empty ? 'تأكد من الأرقام' : 'تم استخدام هذا الكود من قبل';
+    } else {
+      const coupon = snap.docs[0];
+      const expiresAt = coupon.data().expires_at?.toDate ? coupon.data().expires_at.toDate() : new Date(coupon.data().expires_at);
+      if (expiresAt < now) {
+        await setDoc(doc(db,'coupons',coupon.id), {status:'expired'}, {merge:true});
+        document.getElementById('v-icon').textContent = '⏱️';
+        document.getElementById('v-title').textContent = 'الكود منتهي!';
+        document.getElementById('v-sub').textContent = 'اطلب من العميل كوداً جديداً';
         result.classList.add('error');
-
       } else {
-        const couponDoc = snap.docs[0];
-        const couponData = couponDoc.data();
-        const expiresAt = couponData.expires_at?.toDate ? couponData.expires_at.toDate() : new Date(couponData.expires_at);
-
-        if (expiresAt < now) {
-          // الكود منتهي الصلاحية
-          await setDoc(doc(db, 'coupons', couponDoc.id), { status: 'expired' }, { merge: true });
-          document.getElementById('verify-icon').textContent = '⏱️';
-          document.getElementById('verify-title').textContent = 'الكود منتهي!';
-          document.getElementById('verify-sub').textContent = 'انتهت صلاحية الكود — اطلب من العميل كوداً جديداً';
-          result.classList.add('error');
-
-        } else {
-          // ✅ كود صالح — سجّله كمستخدم
-          await setDoc(doc(db, 'coupons', couponDoc.id), {
-            status: 'used',
-            used_at: serverTimestamp(),
-            merchant_phone: currentPhone
-          }, { merge: true });
-
-          const businessName = couponData.business_name || 'المحل';
-          document.getElementById('verify-icon').textContent = '✅';
-          document.getElementById('verify-title').textContent = 'كود صالح!';
-          document.getElementById('verify-sub').textContent = `تم تطبيق الخصم بنجاح`;
-          result.classList.add('success');
-
-          // مسح خانات الكود
-          document.querySelectorAll('.merchant-otp-box').forEach(b => b.value = '');
-        }
+        await setDoc(doc(db,'coupons',coupon.id), {status:'used', used_at:serverTimestamp(), merchant_phone:currentPhone}, {merge:true});
+        document.getElementById('v-icon').textContent = '✅';
+        document.getElementById('v-title').textContent = 'كود صالح!';
+        document.getElementById('v-sub').textContent = 'تم تطبيق الخصم بنجاح ✨';
+        result.classList.add('success');
+        [0,1,2,3].forEach(i => document.getElementById('v'+i).value='');
       }
-    } catch(e) {
-      console.error(e);
-      document.getElementById('verify-icon').textContent = '❌';
-      document.getElementById('verify-title').textContent = 'خطأ في التحقق';
-      document.getElementById('verify-sub').textContent = 'حاول مجدداً';
-      result.classList.add('error');
     }
-
-    btn.textContent = '✅ تحقق من الكود';
-    btn.disabled = false;
+  } catch(e) {
+    document.getElementById('v-icon').textContent = '❌';
+    document.getElementById('v-title').textContent = 'خطأ في التحقق';
+    document.getElementById('v-sub').textContent = 'حاول مجدداً';
+    result.classList.add('error');
   }
+  btn.textContent = '✅ تحقق من الكود'; btn.disabled = false;
+}
 
-  // ── Save Store ──
-  async function saveStore() {
-    const name = document.getElementById('store-name').value.trim();
-    const type = document.getElementById('store-type').value;
-    const discount = parseInt(document.getElementById('discount-slider').value);
-    const desc = document.getElementById('store-desc').value.trim();
-    const area = document.getElementById('store-area').value.trim();
-    const cr = document.getElementById('store-cr')?.value.trim() || '';
-    const isVerified = cr.length >= 7;
+// ══ EVENT LISTENERS ══
+document.getElementById('start-btn').addEventListener('click', () => go('s-phone'));
+document.getElementById('check-phone-btn').addEventListener('click', checkPhone);
+document.getElementById('m-phone').addEventListener('keydown', e => e.key==='Enter' && checkPhone());
+document.getElementById('login-btn').addEventListener('click', login);
+document.getElementById('reg-btn').addEventListener('click', register);
+document.getElementById('save-btn').addEventListener('click', saveStore);
+document.getElementById('verify-btn').addEventListener('click', verifyCode);
+document.getElementById('logout-btn').addEventListener('click', () => { localStorage.removeItem('m_id'); localStorage.removeItem('m_phone'); go('s-welcome'); });
 
-    if (!name) { alert('أدخل اسم النشاط'); return; }
+togglePass('m-pass','toggle-pass');
+togglePass('r-pass','toggle-r');
+togglePass('r-confirm','toggle-r2');
 
-    const btn = document.getElementById('save-btn');
-    btn.textContent = '⏳ جاري الحفظ...';
-    btn.disabled = true;
-
-    const storeInfo = {
-      store_name: name, store_type: type,
-      discount, icon: selectedEmoji,
-      description: desc, area,
-      logo_url: logoUrl || '',
-      photos: photoUrls.filter(u => u),
-      active: true,
-      updated_at: serverTimestamp(),
-      cr_number: cr || null,
-      is_verified: isVerified,
-      lat: merchantLat || null,
-      lng: merchantLng || null
-    };
-
-    try {
-      if (merchantDocId) {
-        await setDoc(doc(db, 'merchants', merchantDocId), storeInfo, { merge: true });
-      }
-
-      const bq = query(collection(db, 'businesses'), where('phone', '==', currentPhone));
-      const bSnap = await getDocs(bq);
-
-      const businessData = {
-        name, type, discount,
-        icon: selectedEmoji, description: desc, area,
-        phone: currentPhone,
-        logo_url: logoUrl || '',
-        photos: photoUrls.filter(u => u),
-        active: true,
-        updated_at: serverTimestamp(),
-        is_verified: isVerified,
-        lat: merchantLat || null,
-        lng: merchantLng || null
-      };
-
-      if (!bSnap.empty) {
-        await setDoc(doc(db, 'businesses', bSnap.docs[0].id), businessData, { merge: true });
-      } else {
-        await addDoc(collection(db, 'businesses'), { ...businessData, created_at: serverTimestamp() });
-      }
-
-    } catch (e) { console.error(e); }
-
-    btn.textContent = '💾 حفظ معلومات النشاط ←';
-    btn.disabled = false;
-
-    const msg = document.getElementById('save-success');
-    msg.style.display = 'block';
-    setTimeout(() => msg.style.display = 'none', 3000);
-  }
-
-  // ── Event Listeners ──
-  let selectedEmoji = '🏪';
-
-  document.addEventListener('DOMContentLoaded', () => {
-
-    // تحقق من الجلسة
-    if (localStorage.getItem('merchant_session') === 'active') {
-      goScreen('screen-dashboard');
-      loadStats();
-    }
-
-    // أزرار المصادقة
-    document.getElementById('check-phone-btn').addEventListener('click', checkPhone);
-    document.getElementById('merchant-phone').addEventListener('keydown', e => { if (e.key === 'Enter') checkPhone(); });
-
-    document.getElementById('back-from-password').addEventListener('click', () => goScreen('screen-login'));
-    document.getElementById('login-with-password-btn').addEventListener('click', loginWithPassword);
-    document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') loginWithPassword(); });
-
-    document.getElementById('back-from-register').addEventListener('click', () => goScreen('screen-login'));
-    document.getElementById('create-account-btn').addEventListener('click', createAccount);
-    document.getElementById('new-password').addEventListener('input', e => checkPasswordStrength(e.target.value));
-
-    // إظهار/إخفاء كلمة المرور
-    function togglePasswordVisibility(inputId, btnId) {
-      const input = document.getElementById(inputId);
-      const btn = document.getElementById(btnId);
-      if (!btn) return;
-      btn.addEventListener('click', () => {
-        const isPass = input.type === 'password';
-        input.type = isPass ? 'text' : 'password';
-        btn.textContent = isPass ? '🙈' : '👁️';
-      });
-    }
-    togglePasswordVisibility('login-password', 'toggle-login-pass');
-    togglePasswordVisibility('new-password', 'toggle-new-pass');
-    togglePasswordVisibility('confirm-password', 'toggle-confirm-pass');
-    document.getElementById('logout-btn').addEventListener('click', () => {
-      localStorage.removeItem('merchant_session');
-      goScreen('screen-login');
-    });
-
-    document.getElementById('tab-profile-btn').addEventListener('click', () => switchTab('tab-profile'));
-    document.getElementById('tab-stats-btn').addEventListener('click', () => switchTab('tab-stats'));
-    document.getElementById('tab-verify-btn').addEventListener('click', () => switchTab('tab-verify'));
-
-    document.getElementById('save-btn').addEventListener('click', saveStore);
-    document.getElementById('location-btn').addEventListener('click', getLocation);
-    document.getElementById('verify-code-btn').addEventListener('click', verifyCode);
-
-    // خانات كود التحقق
-    const merchantOtpBoxes = [...document.querySelectorAll('.merchant-otp-box')];
-    merchantOtpBoxes.forEach((box, i) => {
-      box.addEventListener('input', function() {
-        const v = this.value.replace(/\D/g, '');
-        this.value = v ? v[v.length - 1] : '';
-        if (this.value && i < merchantOtpBoxes.length - 1) {
-          merchantOtpBoxes[i + 1].focus();
-        }
-        if (merchantOtpBoxes.map(b => b.value).join('').length === 4) {
-          setTimeout(() => verifyCode(), 200);
-        }
-      });
-      box.addEventListener('keydown', function(e) {
-        if (e.key === 'Backspace') {
-          if (this.value) { this.value = ''; }
-          else if (i > 0) { merchantOtpBoxes[i-1].value = ''; merchantOtpBoxes[i-1].focus(); }
-        }
-      });
-      box.addEventListener('focus', function() { this.select(); });
-    });
-    setupPhotoUploads();
-
-    document.getElementById('store-name').addEventListener('input', updatePreview);
-    document.getElementById('store-type').addEventListener('change', updatePreview);
-
-    document.getElementById('discount-slider').addEventListener('input', () => {
-      const val = document.getElementById('discount-slider').value;
-      document.getElementById('discount-label').textContent = val + '%';
-      document.getElementById('preview-discount').textContent = 'خصم ' + val + '%';
-    });
-
-    // Emoji picker
-    document.querySelectorAll('.emoji-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedEmoji = btn.dataset.emoji;
-        updatePreview();
-      });
-    });
-
-    // OTP inputs
-    const otpInputs = document.querySelectorAll('.otp-input');
-    otpInputs.forEach((input, idx) => {
-      input.addEventListener('input', () => {
-        if (input.value.length > 1) input.value = input.value[0];
-        if (input.value && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
-      });
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !input.value && idx > 0) otpInputs[idx - 1].focus();
-      });
-    });
-
+// Tabs
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    const target = this.dataset.tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById(target).classList.add('active');
+    if (target==='tab-stats') loadStats();
   });
+});
+
+// Emoji
+document.querySelectorAll('.emoji-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    selectedEmoji = this.dataset.e;
+    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+    this.classList.add('selected');
+    document.getElementById('prev-icon').textContent = selectedEmoji;
+  });
+});
+
+// Discount slider
+document.getElementById('f-discount').addEventListener('input', function() {
+  document.getElementById('discount-val').textContent = this.value + '%';
+  document.getElementById('prev-discount').textContent = 'خصم ' + this.value + '%';
+});
+
+// Preview update
+['f-name','f-type','f-desc'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => {
+    if (id==='f-name') { document.getElementById('prev-name').textContent = el.value||'اسم النشاط'; }
+    if (id==='f-type') { document.getElementById('prev-type').textContent = el.value.replace(/^.\s/,''); }
+  });
+});
+
+// Location
+document.getElementById('loc-btn').addEventListener('click', function() {
+  this.textContent = '⏳ جاري التحديد...'; this.disabled = true;
+  navigator.geolocation.getCurrentPosition(pos => {
+    merchantLat = pos.coords.latitude; merchantLng = pos.coords.longitude;
+    document.getElementById('loc-status').innerHTML = `✅ تم! <a href="https://maps.google.com/?q=${merchantLat},${merchantLng}" target="_blank" style="color:#0A2540;font-weight:700">عرض على الخريطة</a>`;
+    this.textContent = '✅ تم تحديد الموقع'; this.disabled = false;
+  }, () => { document.getElementById('loc-status').textContent = '❌ تعذر تحديد الموقع'; this.textContent = '📍 تحديد موقعي'; this.disabled = false; }, {enableHighAccuracy:true});
+});
+
+// Logo upload
+document.getElementById('logo-input').addEventListener('change', async function() {
+  const file = this.files[0]; if(!file) return;
+  document.getElementById('logo-status').textContent = '⏳ جاري الرفع...';
+  try {
+    logoUrl = await uploadImage(file);
+    document.getElementById('logo-preview').src = logoUrl;
+    document.getElementById('logo-preview').style.display = 'block';
+    document.getElementById('logo-placeholder').style.display = 'none';
+    document.getElementById('prev-logo').src = logoUrl;
+    document.getElementById('prev-logo').style.display = 'block';
+    document.getElementById('prev-icon').style.display = 'none';
+    document.getElementById('logo-status').textContent = '✅ تم رفع الشعار';
+  } catch(e) { document.getElementById('logo-status').textContent = '❌ فشل الرفع'; }
+});
+
+// Photo uploads
+[0,1,2].forEach(i => {
+  document.getElementById('photo-'+i).addEventListener('change', async function() {
+    const file = this.files[0]; if(!file) return;
+    document.getElementById('photos-status').textContent = '⏳ جاري الرفع...';
+    try {
+      const url = await uploadImage(file);
+      photoUrls[i] = url;
+      const img = document.getElementById('photo-preview-'+i);
+      img.src = url; img.style.display = 'block';
+      const slot = document.getElementById('slot-'+i);
+      slot.querySelector('span:first-child').style.display = 'none';
+      slot.querySelector('span:last-child').style.display = 'none';
+      document.getElementById('photos-status').textContent = '✅ تم رفع الصورة';
+    } catch(e) { document.getElementById('photos-status').textContent = '❌ فشل الرفع'; }
+  });
+});
+
+// OTP boxes for verify
+const vboxes = [0,1,2,3].map(i => document.getElementById('v'+i));
+vboxes.forEach((box, i) => {
+  box.addEventListener('input', function() {
+    this.value = this.value.replace(/\D/,'').slice(-1);
+    if (this.value && i < 3) vboxes[i+1].focus();
+    if (vboxes.map(b=>b.value).join('').length===4) setTimeout(verifyCode, 200);
+  });
+  box.addEventListener('keydown', function(e) {
+    if (e.key==='Backspace' && !this.value && i>0) { vboxes[i-1].value=''; vboxes[i-1].focus(); }
+  });
+});
+
+// Session restore
+const savedId = localStorage.getItem('m_id');
+const savedPhone = localStorage.getItem('m_phone');
+if (savedId && savedPhone) {
+  merchantId = savedId; currentPhone = savedPhone;
+  try {
+    const snap = await getDocs(query(collection(db,'merchants'), where('phone','==',currentPhone)));
+    if (!snap.empty) { loadDashboard(snap.docs[0].data()); go('s-dash'); }
+  } catch(e){}
+}
 </script>
 
 </body>
