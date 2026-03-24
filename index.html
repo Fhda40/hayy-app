@@ -902,6 +902,16 @@ pointer-events:none !important;
 
   // تسجيل دخول مجهول فوراً — ضروري لـ Firestore Rules
   signInAnonymously(auth).catch(e => console.log('Anon auth:', e));
+
+  // listener دائم على stores-list — يعمل حتى بعد تغيير المحتوى
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('stores-list').addEventListener('click', function(e) {
+      var card = e.target.closest ? e.target.closest('.store-card') : null;
+      if (!card) return;
+      var id = card.getAttribute('data-id');
+      if (id) openStore(id);
+    });
+  });
   const VAPID_KEY = 'eWDJZ90Iqm4sFBPCIy3Ayc79O42hgxIj_i3QUfxzPSs';
   let messaging = null;
 
@@ -1302,17 +1312,7 @@ pointer-events:none !important;
         document.getElementById('geo-title').textContent = 'أنت في شرورة!';
         document.getElementById('geo-sub').textContent = `على بعد ${distText} من المركز`;
         await loadStores();
-        setTimeout(() => {
-          go('screen-stores');
-          setTimeout(() => {
-            var cards = document.querySelectorAll('.store-card');
-            for (var i = 0; i < cards.length; i++) {
-              (function(c, sid) {
-                c.onclick = function() { openStore(sid); };
-              })(cards[i], cards[i].getAttribute('data-id'));
-            }
-          }, 100);
-        }, 900);
+        setTimeout(() => go('screen-stores'), 900);
       } else {
         document.getElementById('geo-icon-wrap').textContent = '🗺️';
         document.getElementById('geo-title').textContent = 'قريباً في حيّك!';
@@ -1403,14 +1403,6 @@ pointer-events:none !important;
         '<span class="chevron">›</span>' +
       '</div>';
     }).join('');
-
-    // إضافة listeners مباشرة
-    var cards = list.querySelectorAll('.store-card');
-    for (var i = 0; i < cards.length; i++) {
-      (function(c, sid) {
-        c.onclick = function() { openStore(sid); };
-      })(cards[i], cards[i].getAttribute('data-id'));
-    }
   }
 
   async function openStore(id) {
