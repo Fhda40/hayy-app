@@ -193,17 +193,12 @@ animation:ripple 2.5s ease-out infinite;
 /* STORE CARD */
 .store-card {
 display:flex; align-items:center;
-width:calc(100% - 32px);
 margin:0 16px 10px; padding:14px 14px;
 background:var(–surface); border-radius:16px;
 border:1px solid var(–separator);
 box-shadow:var(–shadow-sm);
 cursor:pointer; transition:all 0.12s;
-font-family:‘Tajawal’,sans-serif;
-color:var(–text);
-text-align:right; gap:14px;
--webkit-appearance:none;
-outline:none;
+-webkit-tap-highlight-color:rgba(0,0,0,0.1);
 }
 .store-card:active { background:var(–bg2); transform:scale(0.988); }
 .store-logo {
@@ -1472,7 +1467,7 @@ pointer-events:none !important;
       const dist = (userLat && userLng && s.lat && s.lng)
         ? `<span style="font-size:11px;color:var(--text-4);">📍 ${haversine(userLat,userLng,s.lat,s.lng).toFixed(1)} كم</span>` : '';
       const logo = s.logo_url ? '<img src="' + s.logo_url + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">' : (s.icon||'🏪');
-      return '<button class="store-card" data-id="' + s.id + '" onclick="openS(\'' + s.id + '\')">' +
+      return '<div class="store-card" data-id="' + s.id + '">' +
         '<div class="store-logo">' + logo + '</div>' +
         '<div style="flex:1;text-align:right;">' +
           '<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap;">' +
@@ -1484,25 +1479,19 @@ pointer-events:none !important;
           '</div>' +
         '</div>' +
         '<span class="chevron">›</span>' +
-      '</button>';
+      '</div>';
     }).join('');
   }
 
   // إضافة listeners لبطاقات المحلات
   function addStoreListeners() {
-    const cards = document.querySelectorAll('.store-card');
-    cards.forEach(function(card) {
-      const id = card.getAttribute('data-id');
-      card.style.cursor = 'pointer';
-      card.addEventListener('click', function(e) {
-        e.stopPropagation();
-        openStore(id);
-      });
-      card.addEventListener('touchend', function(e) {
-        e.preventDefault();
-        openStore(id);
-      }, {passive: false});
-    });
+    var cards = document.querySelectorAll('.store-card');
+    for (var i = 0; i < cards.length; i++) {
+      (function(card) {
+        var id = card.getAttribute('data-id');
+        card.onclick = function() { openStore(id); };
+      })(cards[i]);
+    }
   }
 
   async function openStore(id) {
