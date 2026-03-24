@@ -407,24 +407,40 @@ document.getElementById('btn-check-phone').addEventListener('click',async()=>{
 
 document.getElementById('btn-login').addEventListener('click',async()=>{
   const pass=document.getElementById('m-pass').value;
-  const err=document.getElementById('login-err'); err.style.display='none';
+  const err=document.getElementById('login-err');
+  const btn=document.getElementById('btn-login');
+  err.style.display='none';
+  btn.textContent='⏳ جاري الدخول...'; btn.disabled=true;
+  await waitAuth();
   const hashed=await h256(pass);
-  try{const s=await getDocs(query(collection(db,'merchants'),where('phone','==',phone),where('password','==',hashed)));
-  if(!s.empty){mid=s.docs[0].id;localStorage.setItem('m_id',mid);localStorage.setItem('m_phone',phone);loadDash(s.docs[0].data());goS('s-dash');}
-  else err.style.display='block';}catch(e){err.style.display='block';}
+  try{
+    const s=await getDocs(query(collection(db,'merchants'),where('phone','==',phone),where('password','==',hashed)));
+    if(!s.empty){mid=s.docs[0].id;localStorage.setItem('m_id',mid);localStorage.setItem('m_phone',phone);loadDash(s.docs[0].data());goS('s-dash');}
+    else{err.style.display='block';}
+  }catch(e){err.style.display='block';}
+  btn.textContent='دخول ←'; btn.disabled=false;
 });
 
 document.getElementById('btn-register').addEventListener('click',async()=>{
   const pass=document.getElementById('r-pass').value;
   const confirm=document.getElementById('r-confirm').value;
-  const err=document.getElementById('reg-err'); err.style.display='none';
+  const err=document.getElementById('reg-err');
+  const btn=document.getElementById('btn-register');
+  err.style.display='none';
   if(pass.length<6){err.textContent='6 أحرف على الأقل';err.style.display='block';return;}
   if(pass!==confirm){err.textContent='كلمتا المرور غير متطابقتين';err.style.display='block';return;}
-  try{const hashed=await h256(pass);const all=await getDocs(collection(db,'merchants'));const isF=all.size<30;const fNum=isF?all.size+1:null;
-  const ref=await addDoc(collection(db,'merchants'),{phone,password:hashed,is_founder:isF,founder_number:fNum,founder_since:isF?new Date().toISOString():null,free_trial_ends:isF?new Date(Date.now()+90*864e5).toISOString():null,created_at:serverTimestamp()});
-  mid=ref.id;localStorage.setItem('m_id',mid);localStorage.setItem('m_phone',phone);
-  loadDash({is_founder:isF,founder_number:fNum,free_trial_ends:isF?new Date(Date.now()+90*864e5).toISOString():null});goS('s-dash');}
-  catch(e){err.textContent='حدث خطأ';err.style.display='block';}
+  btn.textContent='⏳ جاري الإنشاء...'; btn.disabled=true;
+  await waitAuth();
+  try{
+    const hashed=await h256(pass);
+    const all=await getDocs(collection(db,'merchants'));
+    const isF=all.size<30; const fNum=isF?all.size+1:null;
+    const ref=await addDoc(collection(db,'merchants'),{phone,password:hashed,is_founder:isF,founder_number:fNum,founder_since:isF?new Date().toISOString():null,free_trial_ends:isF?new Date(Date.now()+90*864e5).toISOString():null,created_at:serverTimestamp()});
+    mid=ref.id;localStorage.setItem('m_id',mid);localStorage.setItem('m_phone',phone);
+    loadDash({is_founder:isF,founder_number:fNum,free_trial_ends:isF?new Date(Date.now()+90*864e5).toISOString():null});
+    goS('s-dash');
+  }catch(e){err.textContent='حدث خطأ — حاول مجدداً';err.style.display='block';}
+  btn.textContent='إنشاء الحساب ←'; btn.disabled=false;
 });
 
 document.getElementById('btn-location').addEventListener('click',function(){
