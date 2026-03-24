@@ -390,7 +390,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;p
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
 import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
 const app = initializeApp({
@@ -403,15 +403,9 @@ const app = initializeApp({
 });
 const auth = getAuth(app);
 const db = getFirestore(app);
-signInAnonymously(auth).catch(()=>{});
 
-// انتظر Auth قبل أي عملية
-function waitForAuth() {
-  return new Promise(resolve => {
-    if (auth.currentUser) { resolve(); return; }
-    const unsub = onAuthStateChanged(auth, user => { if(user){ unsub(); resolve(); } });
-  });
-}
+// انتظر تسجيل الدخول المجهول قبل أي شيء
+await signInAnonymously(auth).catch(()=>{});
 
 // ══ STATE ══
 let currentPhone = '', currentUserId = '', currentStoreId = '', currentCode = null;
@@ -750,17 +744,34 @@ async function generateCode() {
   btn.textContent = '⏱ الكود نشط — توجّه للمحل';
   btn.style.background = '#34C759'; btn.disabled = true;
 
+  // حفظ الكوبون في Firestore
+  const uid = auth.currentUser?.uid || localStorage.getItem('h_uid') || 'guest';
   try {
-    await waitForAuth();
-    const uid = localStorage.getItem('h_uid') || auth.currentUser?.uid || 'guest';
     const ref = await addDoc(collection(db,'coupons'), {
-      code, user_id:uid, business_id:currentStoreId,
-      business_name:stores[currentStoreId]?.name||'',
-      created_at:serverTimestamp(), expires_at:new Date(Date.now()+180000), status:'pending'
+      code,
+      user_id: uid,
+      business_id: currentStoreId,
+      business_name: stores[currentStoreId]?.name || '',
+      created_at: serverTimestamp(),
+      expires_at: new Date(Date.now() + 180000),
+      status: 'pending'
     });
     currentCouponId = ref.id;
-    console.log('Coupon saved:', ref.id, 'code:', code);
-  } catch(e){ console.error('Coupon save error:', e); }
+  } catch(e) {
+    // حاول مرة ثانية بعد انتظار Auth
+    try {
+      await new Promise(r => setTimeout(r, 1500));
+      const uid2 = auth.currentUser?.uid || 'guest';
+      const ref2 = await addDoc(collection(db,'coupons'), {
+        code, user_id: uid2, business_id: currentStoreId,
+        business_name: stores[currentStoreId]?.name || '',
+        created_at: serverTimestamp(),
+        expires_at: new Date(Date.now() + 180000),
+        status: 'pending'
+      });
+      currentCouponId = ref2.id;
+    } catch(e2) {}
+  }
   startTimer();
 }
 
