@@ -1037,7 +1037,7 @@ pointer-events:none !important;
   const CITY = { lat:17.5049999, lng:47.1025904 };
   const RADIUS = 5;
 
-  let storeData = {}, currentStoreId = null, currentCode = null;
+  let storeData = window.__storeData = {}, currentStoreId = null, currentCode = null;
   let currentCouponId = null, timer = null, timerSecs = 180, expired = false;
   let rApplied = null, rStars = 0;
   window.__storeData = storeData; // مشاركة مع global scope
@@ -1425,10 +1425,6 @@ pointer-events:none !important;
     document.getElementById('stores-count').textContent = defaults.length + ' محل';
     defaults.forEach(s => { storeData[s.id] = {...s, discount: (s.discount||0)+'%'}; });
     window.__allStores = defaults;
-    window.__storeData = storeData; // للتأكد
-
-    console.log('storeData keys:', Object.keys(storeData));
-    console.log('defaults ids:', defaults.map(s => s.id));
 
     // أضف listeners مباشرة بعد بناء القائمة
     list.innerHTML = buildStoreCards(defaults);
@@ -1490,22 +1486,17 @@ pointer-events:none !important;
   // إضافة listeners لبطاقات المحلات
   function addStoreListeners() {
     var cards = document.querySelectorAll('.store-card');
-    console.log('addStoreListeners: found', cards.length, 'cards');
     for (var i = 0; i < cards.length; i++) {
       (function(card) {
         var id = card.getAttribute('data-id');
-        console.log('binding card id:', id, 'exists in storeData:', !!storeData[id]);
-        card.onclick = function() {
-          console.log('clicked id:', id, 'storeData:', !!storeData[id]);
-          openStore(id);
-        };
+        card.onclick = function() { openStore(id); };
       })(cards[i]);
     }
   }
 
   async function openStore(id) {
     const s = storeData[id];
-    if (!s) { console.log('openStore: no data for', id, Object.keys(storeData)); return; }
+    if (!s) return;
     currentStoreId = id;
 
     const logo = document.getElementById('coupon-logo');
