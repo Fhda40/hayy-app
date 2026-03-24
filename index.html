@@ -112,6 +112,30 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;p
 @keyframes codeReveal{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
 .grecaptcha-badge{visibility:hidden!important}
 #recaptcha-container *{position:fixed!important;bottom:-9999px!important;left:-9999px!important;opacity:0!important;pointer-events:none!important}
+
+/* ── Code digit boxes ── */
+.code-digits{display:flex;gap:10px;justify-content:center;margin:14px 0 8px}
+.code-digit-box{
+  width:58px;height:66px;background:var(--bg2);border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:34px;font-weight:900;color:var(--text);
+  border:2px solid var(--sep);
+  transition:background .25s,border-color .2s,color .2s;
+}
+.code-digit-box.spinning{border-color:rgba(0,122,255,.45);background:rgba(0,122,255,.04)}
+.code-digit-box.locked{background:#1D1D1F;border-color:#1D1D1F;color:#fff;animation:lockBounce .42s cubic-bezier(.34,1.56,.64,1) forwards}
+@keyframes lockBounce{0%{transform:scale(.88)}55%{transform:scale(1.12)}80%{transform:scale(.96)}100%{transform:scale(1)}}
+
+/* ── Location slide-in ── */
+@keyframes locSlide{
+  0%{opacity:0;transform:translateY(22px) scale(.97)}
+  65%{opacity:1;transform:translateY(-4px) scale(1.01)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+.loc-animate{animation:locSlide .55s cubic-bezier(.34,1.2,.64,1) forwards}
+
+/* ── Confetti ── */
+.conf-dot{position:fixed;pointer-events:none;z-index:9999;will-change:transform,opacity}
 </style>
 </head>
 <body>
@@ -330,13 +354,16 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;p
         <div style="font-size:32px;margin-bottom:6px">🎁</div>
         <div style="font-size:14px;color:var(--text3)">اضغط لتوليد كودك الحصري</div>
       </div>
-      <div id="post-gen" style="display:none;animation:codeReveal 0.4s ease">
-        <div style="font-size:13px;color:var(--text3);margin-bottom:4px;font-weight:600">🎉 جاهز خصمك!</div>
-        <div style="font-size:13px;color:var(--text3);margin-bottom:2px">كودك:</div>
-        <div class="code-display" id="coupon-code">- - - -</div>
-        <div style="font-size:13px;color:var(--text3);font-weight:500;margin-bottom:10px">📍 توجّه للمحل الآن</div>
-        <div class="t-bar"><div class="t-fill" id="t-fill"></div></div>
-        <div style="font-size:13px;color:var(--text3)">⏱ صالح لمدة <strong id="t-text">3:00</strong></div>
+      <div id="post-gen" style="display:none">
+        <div style="font-size:13px;color:var(--text3);font-weight:600;margin-bottom:4px">🎉 كودك جاهز!</div>
+        <div class="code-digits">
+          <div class="code-digit-box" id="cd-0"><span class="di">—</span></div>
+          <div class="code-digit-box" id="cd-1"><span class="di">—</span></div>
+          <div class="code-digit-box" id="cd-2"><span class="di">—</span></div>
+          <div class="code-digit-box" id="cd-3"><span class="di">—</span></div>
+        </div>
+        <div class="t-bar" style="margin-top:10px"><div class="t-fill" id="t-fill"></div></div>
+        <div style="font-size:13px;color:var(--text3);margin-top:4px">⏱ صالح لمدة <strong id="t-text">3:00</strong></div>
       </div>
       <div id="expired-note" style="display:none;padding:10px;background:rgba(255,59,48,0.06);border-radius:10px;margin-top:8px">
         <span style="font-size:13px;color:var(--red);font-weight:600">⏰ انتهت صلاحية الكود</span>
@@ -347,8 +374,16 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;p
   <div style="height:14px"></div>
   <button class="btn-main" id="gen-btn">🎁 احصل على خصمك</button>
   <div style="height:8px"></div>
-  <div id="go-location-wrap" style="display:none;padding:0 16px 4px">
-    <a id="go-location-btn" href="#" target="_blank" style="display:block;padding:16px;border-radius:14px;background:#F0F4FF;border:2px solid #0A2540;font-size:16px;font-weight:700;font-family:'Tajawal',sans-serif;color:#0A2540;text-align:center;text-decoration:none">📍 الذهاب إلى الموقع الآن</a>
+  <div id="go-location-wrap" style="display:none;padding:0 16px 6px">
+    <a id="go-location-btn" href="#" target="_blank"
+      style="display:flex;align-items:center;justify-content:center;gap:10px;padding:15px 20px;border-radius:16px;background:linear-gradient(135deg,#0A2540,#1565C0);color:#fff;text-decoration:none;box-shadow:0 5px 18px rgba(10,37,64,.3)">
+      <span style="font-size:24px">📍</span>
+      <div>
+        <div style="font-size:16px;font-weight:700;font-family:'Tajawal',sans-serif">الذهاب إلى المحل الآن</div>
+        <div id="loc-distance" style="font-size:12px;opacity:.75;font-family:'Tajawal',sans-serif;margin-top:1px"></div>
+      </div>
+      <span style="font-size:20px;opacity:.7;margin-right:auto">←</span>
+    </a>
   </div>
   <div style="text-align:center;padding:4px 0 8px"><span style="font-size:12px;color:var(--text4)">مرة واحدة يومياً لكل محل</span></div>
   <div style="flex:1"></div>
@@ -392,6 +427,9 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;p
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
 import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
 import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+import { getMessaging, getToken } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging.js';
+
+const VAPID = 'eWDJZ90Iqm4sFBPCIy3Ayc79O42hgxIj_i3QUfxzPSs';
 
 const app = initializeApp({
   apiKey:"AIzaSyAPkinYnCQr8dJPxuYLRFI5ZrC56hR-reg",
@@ -404,6 +442,21 @@ const app = initializeApp({
 const auth = getAuth(app);
 const db = getFirestore(app);
 signInAnonymously(auth).catch(()=>{});
+let messaging; try { messaging = getMessaging(app); } catch(e) {}
+
+async function initPush() {
+  if (!messaging || Notification?.permission === 'denied') return;
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') return;
+    const sw = await navigator.serviceWorker.ready;
+    const token = await getToken(messaging, { vapidKey: VAPID, serviceWorkerRegistration: sw });
+    if (token) {
+      const uid = auth.currentUser?.uid || localStorage.getItem('h_uid');
+      if (uid) await setDoc(doc(db,'fcm_tokens',uid), { token, phone: currentPhone, updated_at: serverTimestamp() }, { merge: true });
+    }
+  } catch(e) {}
+}
 
 // ══ STATE ══
 let currentPhone = '', currentUserId = '', currentStoreId = '', currentCode = null;
@@ -475,6 +528,7 @@ async function login() {
       localStorage.setItem('h_screen', 'stores');
       await loadStores();
       go('screen-stores');
+      setTimeout(initPush, 3000);
     } else {
       err.style.display = 'block';
     }
@@ -501,6 +555,7 @@ async function register() {
     localStorage.setItem('h_screen', 'stores');
     await loadStores();
     go('screen-stores');
+    setTimeout(initPush, 3000);
   } catch(e) { err.textContent='حدث خطأ — حاول مجدداً'; err.style.display='block'; }
 }
 
@@ -653,8 +708,13 @@ async function openStore(id) {
   document.getElementById('post-gen').style.display = 'none';
   document.getElementById('expired-note').style.display = 'none';
   document.getElementById('cashier-note').style.display = 'none';
-  document.getElementById('go-location-wrap').style.display = 'none';
-  document.getElementById('coupon-code').textContent = '- - - -';
+  const locWrapReset = document.getElementById('go-location-wrap');
+  locWrapReset.style.display = 'none'; locWrapReset.classList.remove('loc-animate');
+  ['cd-0','cd-1','cd-2','cd-3'].forEach(id=>{
+    const b=document.getElementById(id); if(!b) return;
+    b.classList.remove('locked','spinning');
+    const di=b.querySelector('.di'); if(di) di.textContent='—';
+  });
   document.getElementById('t-fill').style.width = '100%';
   document.getElementById('t-fill').style.background = 'var(--green)';
   document.getElementById('t-text').textContent = '3:00';
@@ -689,16 +749,6 @@ async function openStore(id) {
     [0,1,2].forEach(i => { const img=document.getElementById('p'+i); if(photos[i]){img.src=photos[i];img.style.display='block';}else img.style.display='none'; });
   } else pw.style.display = 'none';
 
-  // Google Maps — يظهر الزر فوراً لو عنده موقع
-  const locWrap = document.getElementById('go-location-wrap');
-  const locBtn = document.getElementById('go-location-btn');
-  if (s.lat && s.lng) {
-    locBtn.href = `https://maps.google.com/?q=${s.lat},${s.lng}`;
-    locWrap.style.display = 'block';
-  } else {
-    locWrap.style.display = 'none';
-  }
-
   // تحقق من الاستخدام اليومي
   try {
     const uid = localStorage.getItem('h_uid') || 'guest';
@@ -718,38 +768,63 @@ async function openStore(id) {
 // ══ GENERATE CODE ══
 async function generateCode() {
   if (currentCode && !expired) return;
+  const btn = document.getElementById('gen-btn');
+
+  // فحص الاستخدام اليومي
   try {
     const uid = localStorage.getItem('h_uid') || 'guest';
     const today = new Date(); today.setHours(0,0,0,0);
     const q = query(collection(db,'coupons'),where('user_id','==',uid),where('business_id','==',currentStoreId),where('status','==','used'));
     const snap = await getDocs(q);
     if (snap.docs.some(d => { const t=d.data().used_at?.toDate?.(); return t&&t>=today; })) {
-      const btn = document.getElementById('gen-btn');
       btn.textContent = '✅ استخدمت هذا العرض اليوم';
       btn.style.background = '#636366'; btn.disabled = true; return;
     }
   } catch(e){}
 
+  // حالة التحميل
+  btn.textContent = '⏳ جاري التوليد...';
+  btn.style.background = '#8E8E93'; btn.disabled = true;
+
   const code = Math.floor(1000+Math.random()*9000).toString();
   currentCode = code; expired = false;
+
   document.getElementById('pre-gen').style.display = 'none';
-  const post = document.getElementById('post-gen');
-  post.style.display = 'block';
-  document.getElementById('coupon-code').textContent = code.split('').join(' ');
+  document.getElementById('post-gen').style.display = 'block';
   document.getElementById('cashier-note').style.display = 'block';
 
-  const btn = document.getElementById('gen-btn');
-  btn.textContent = '⏱ الكود نشط — توجّه للمحل';
+  // أنيميشن الأرقام
+  await animateDigits(code);
+
+  // اهتزاز + كونفيتي
+  if (navigator.vibrate) navigator.vibrate([50, 30, 80]);
+  confettiBurst();
+
+  // إظهار الموقع بعد تأخير بسيط
+  const s = stores[currentStoreId];
+  if (s?.lat && s?.lng) {
+    const locWrap = document.getElementById('go-location-wrap');
+    document.getElementById('go-location-btn').href = `https://maps.google.com/?q=${s.lat},${s.lng}`;
+    if (userLat && userLng) {
+      const dist = haversine(userLat, userLng, s.lat, s.lng);
+      document.getElementById('loc-distance').textContent =
+        dist < 1 ? `على بعد ${Math.round(dist*1000)} متر منك` : `على بعد ${dist.toFixed(1)} كم منك`;
+    }
+    setTimeout(() => {
+      locWrap.style.display = 'block';
+      locWrap.classList.add('loc-animate');
+    }, 350);
+  }
+
+  btn.textContent = '⏱ الكود نشط — توجّه للمحل الآن';
   btn.style.background = '#34C759'; btn.disabled = true;
 
-  // احفظ الكوبون
+  // حفظ في Firebase
   try {
     await signInAnonymously(auth);
     const uid = auth.currentUser?.uid || localStorage.getItem('h_uid') || 'guest';
     const ref = await addDoc(collection(db,'coupons'), {
-      code,
-      user_id: uid,
-      business_id: currentStoreId,
+      code, user_id: uid, business_id: currentStoreId,
       business_name: stores[currentStoreId]?.name || '',
       created_at: serverTimestamp(),
       expires_at: new Date(Date.now() + 180000),
@@ -758,6 +833,70 @@ async function generateCode() {
     currentCouponId = ref.id;
   } catch(e) {}
   startTimer();
+}
+
+// ── أنيميشن الأرقام (slot machine) ──
+async function animateDigits(code) {
+  const digits = code.split('');
+  ['cd-0','cd-1','cd-2','cd-3'].forEach(id => {
+    const b = document.getElementById(id);
+    if (b) { b.classList.add('spinning'); b.classList.remove('locked'); }
+  });
+  for (let i = 0; i < 4; i++) {
+    await new Promise(r => setTimeout(r, 160 + i * 190));
+    const box = document.getElementById('cd-'+i);
+    const di  = box?.querySelector('.di');
+    if (!box || !di) continue;
+    const spins = 10 + i * 4;
+    await new Promise(r => {
+      let n = 0;
+      const iv = setInterval(() => {
+        di.textContent = Math.floor(Math.random()*10);
+        if (++n >= spins) {
+          clearInterval(iv);
+          di.textContent = digits[i];
+          box.classList.remove('spinning');
+          box.classList.add('locked');
+          if (navigator.vibrate) navigator.vibrate(20);
+          r();
+        }
+      }, 48);
+    });
+  }
+}
+
+// ── كونفيتي ──
+function confettiBurst() {
+  const colors = ['#FF3B30','#34C759','#007AFF','#FF9500','#AF52DE','#FFD60A'];
+  const el = document.getElementById('screen-coupon');
+  const r  = el.getBoundingClientRect();
+  const cx = r.left + r.width / 2;
+  const cy = r.top  + r.height * 0.42;
+  for (let i = 0; i < 32; i++) {
+    const p = document.createElement('div');
+    p.className = 'conf-dot';
+    const sz  = 6 + Math.random()*8;
+    const ang = Math.random() * Math.PI * 2;
+    const dst = 80 + Math.random()*170;
+    const tx  = Math.cos(ang)*dst;
+    const ty  = Math.sin(ang)*dst - 70;
+    const dur = 650 + Math.random()*450;
+    Object.assign(p.style, {
+      width:sz+'px', height:sz+'px',
+      background: colors[i % colors.length],
+      borderRadius: i%3===0 ? '2px' : '50%',
+      left: cx+'px', top: cy+'px',
+      transform: 'translate(-50%,-50%)',
+      transition: `transform ${dur}ms cubic-bezier(.2,.8,.2,1), opacity ${dur}ms ease`,
+      opacity: '1',
+    });
+    document.body.appendChild(p);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      p.style.transform = `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) rotate(${Math.random()*360}deg)`;
+      p.style.opacity = '0';
+    }));
+    setTimeout(() => p.remove(), dur + 100);
+  }
 }
 
 function startTimer() {
@@ -855,6 +994,14 @@ const style = document.createElement('style');
 style.textContent = '@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}';
 document.head.appendChild(style);
 
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
 </script>
 
 </body>

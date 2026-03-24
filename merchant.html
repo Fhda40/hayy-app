@@ -502,5 +502,13 @@ const sid=localStorage.getItem('m_id'), sphone=localStorage.getItem('m_phone');
 if(sid&&sphone){mid=sid;phone=sphone;getDocs(query(collection(db,'merchants'),where('phone','==',phone))).then(s=>{if(!s.empty){loadDash(s.docs[0].data());goS('s-dash');}}).catch(()=>{});}
 </script>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
+</script>
+
 </body>
 </html>
