@@ -69,7 +69,7 @@ input[type=range]{width:100%;accent-color:#1D1D1F;height:4px;margin-top:8px}
     </div>
   </div>
   <div style="padding:0 20px calc(env(safe-area-inset-bottom,0px)+32px)">
-    <button class="btn btn-blue" id="start-btn">ابدأ الآن ←</button>
+    <button class="btn btn-blue" id="start-btn" onclick="go('s-phone')">ابدأ الآن ←</button>
     <div style="text-align:center;margin-top:14px"><a href="/" style="color:var(--text3);font-size:14px;text-decoration:none">← للعملاء</a></div>
   </div>
 </div>
@@ -325,6 +325,15 @@ input[type=range]{width:100%;accent-color:#1D1D1F;height:4px;margin-top:8px}
 
   <div style="height:calc(env(safe-area-inset-bottom,0px)+20px)"></div>
 </div>
+
+<script>
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  var el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
