@@ -403,9 +403,7 @@ const app = initializeApp({
 });
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-// انتظر تسجيل الدخول المجهول قبل أي شيء
-await signInAnonymously(auth).catch(()=>{});
+signInAnonymously(auth).catch(()=>{});
 
 // ══ STATE ══
 let currentPhone = '', currentUserId = '', currentStoreId = '', currentCode = null;
@@ -744,9 +742,10 @@ async function generateCode() {
   btn.textContent = '⏱ الكود نشط — توجّه للمحل';
   btn.style.background = '#34C759'; btn.disabled = true;
 
-  // حفظ الكوبون في Firestore
-  const uid = auth.currentUser?.uid || localStorage.getItem('h_uid') || 'guest';
+  // احفظ الكوبون
   try {
+    await signInAnonymously(auth);
+    const uid = auth.currentUser?.uid || localStorage.getItem('h_uid') || 'guest';
     const ref = await addDoc(collection(db,'coupons'), {
       code,
       user_id: uid,
@@ -757,21 +756,7 @@ async function generateCode() {
       status: 'pending'
     });
     currentCouponId = ref.id;
-  } catch(e) {
-    // حاول مرة ثانية بعد انتظار Auth
-    try {
-      await new Promise(r => setTimeout(r, 1500));
-      const uid2 = auth.currentUser?.uid || 'guest';
-      const ref2 = await addDoc(collection(db,'coupons'), {
-        code, user_id: uid2, business_id: currentStoreId,
-        business_name: stores[currentStoreId]?.name || '',
-        created_at: serverTimestamp(),
-        expires_at: new Date(Date.now() + 180000),
-        status: 'pending'
-      });
-      currentCouponId = ref2.id;
-    } catch(e2) {}
-  }
+  } catch(e) { console.error('coupon error:', e); }
   startTimer();
 }
 
