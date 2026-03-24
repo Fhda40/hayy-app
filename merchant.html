@@ -439,7 +439,10 @@ document.getElementById('btn-register').addEventListener('click',async()=>{
     mid=ref.id;localStorage.setItem('m_id',mid);localStorage.setItem('m_phone',phone);
     loadDash({is_founder:isF,founder_number:fNum,free_trial_ends:isF?new Date(Date.now()+90*864e5).toISOString():null});
     goS('s-dash');
-  }catch(e){err.textContent='حدث خطأ — حاول مجدداً';err.style.display='block';}
+  }catch(e){
+    err.textContent='خطأ: ' + (e.message || e.code || JSON.stringify(e));
+    err.style.display='block';
+  }
   btn.textContent='إنشاء الحساب ←'; btn.disabled=false;
 });
 
