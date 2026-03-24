@@ -405,6 +405,14 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 signInAnonymously(auth).catch(()=>{});
 
+// انتظر Auth قبل أي عملية
+function waitForAuth() {
+  return new Promise(resolve => {
+    if (auth.currentUser) { resolve(); return; }
+    const unsub = auth.onAuthStateChanged(user => { if(user){ unsub(); resolve(); } });
+  });
+}
+
 // ══ STATE ══
 let currentPhone = '', currentUserId = '', currentStoreId = '', currentCode = null;
 let currentCouponId = null, timer = null, expired = false, timerSecs = 180;
@@ -741,14 +749,16 @@ async function generateCode() {
   btn.style.background = '#34C759'; btn.disabled = true;
 
   try {
-    const uid = localStorage.getItem('h_uid') || 'guest';
+    await waitForAuth();
+    const uid = localStorage.getItem('h_uid') || auth.currentUser?.uid || 'guest';
     const ref = await addDoc(collection(db,'coupons'), {
       code, user_id:uid, business_id:currentStoreId,
       business_name:stores[currentStoreId]?.name||'',
       created_at:serverTimestamp(), expires_at:new Date(Date.now()+180000), status:'pending'
     });
     currentCouponId = ref.id;
-  } catch(e){}
+    console.log('Coupon saved:', ref.id, 'code:', code);
+  } catch(e){ console.error('Coupon save error:', e); }
   startTimer();
 }
 
