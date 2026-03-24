@@ -391,14 +391,10 @@ document.getElementById('btn-check-phone').addEventListener('click',async()=>{
   if(val.length<9){err.textContent='أدخل رقماً صحيحاً';err.style.display='block';return;}
   phone='+966'+val; err.style.display='none';
   document.getElementById('login-phone-txt').textContent=phone;
-  btn.textContent='⏳ جاري التحقق...'; btn.disabled=true;
-  await waitAuth();
-  const timeout = new Promise((_,rej) => setTimeout(()=>rej('timeout'), 4000));
+  btn.textContent='⏳'; btn.disabled=true;
   try{
-    const s = await Promise.race([
-      getDocs(query(collection(db,'merchants'),where('phone','==',phone))),
-      timeout
-    ]);
+    await signInAnonymously(auth);
+    const s=await getDocs(query(collection(db,'merchants'),where('phone','==',phone)));
     if(!s.empty){mid=s.docs[0].id;goS('s-login');}
     else goS('s-register');
   }catch(e){ goS('s-register'); }
@@ -410,10 +406,10 @@ document.getElementById('btn-login').addEventListener('click',async()=>{
   const err=document.getElementById('login-err');
   const btn=document.getElementById('btn-login');
   err.style.display='none';
-  btn.textContent='⏳ جاري الدخول...'; btn.disabled=true;
-  await waitAuth();
-  const hashed=await h256(pass);
+  btn.textContent='⏳'; btn.disabled=true;
   try{
+    await signInAnonymously(auth);
+    const hashed=await h256(pass);
     const s=await getDocs(query(collection(db,'merchants'),where('phone','==',phone),where('password','==',hashed)));
     if(!s.empty){mid=s.docs[0].id;localStorage.setItem('m_id',mid);localStorage.setItem('m_phone',phone);loadDash(s.docs[0].data());goS('s-dash');}
     else{err.style.display='block';}
@@ -429,18 +425,25 @@ document.getElementById('btn-register').addEventListener('click',async()=>{
   err.style.display='none';
   if(pass.length<6){err.textContent='6 أحرف على الأقل';err.style.display='block';return;}
   if(pass!==confirm){err.textContent='كلمتا المرور غير متطابقتين';err.style.display='block';return;}
-  btn.textContent='⏳ جاري الإنشاء...'; btn.disabled=true;
-  await waitAuth();
+  btn.textContent='⏳'; btn.disabled=true;
   try{
+    await signInAnonymously(auth);
     const hashed=await h256(pass);
     const all=await getDocs(collection(db,'merchants'));
     const isF=all.size<30; const fNum=isF?all.size+1:null;
-    const ref=await addDoc(collection(db,'merchants'),{phone,password:hashed,is_founder:isF,founder_number:fNum,founder_since:isF?new Date().toISOString():null,free_trial_ends:isF?new Date(Date.now()+90*864e5).toISOString():null,created_at:serverTimestamp()});
-    mid=ref.id;localStorage.setItem('m_id',mid);localStorage.setItem('m_phone',phone);
+    const ref=await addDoc(collection(db,'merchants'),{
+      phone,password:hashed,is_founder:isF,founder_number:fNum,
+      founder_since:isF?new Date().toISOString():null,
+      free_trial_ends:isF?new Date(Date.now()+90*864e5).toISOString():null,
+      created_at:serverTimestamp()
+    });
+    mid=ref.id;
+    localStorage.setItem('m_id',mid);
+    localStorage.setItem('m_phone',phone);
     loadDash({is_founder:isF,founder_number:fNum,free_trial_ends:isF?new Date(Date.now()+90*864e5).toISOString():null});
     goS('s-dash');
   }catch(e){
-    err.textContent='خطأ: ' + (e.message || e.code || JSON.stringify(e));
+    err.textContent='خطأ: '+(e.message||e.code||'حاول مجدداً');
     err.style.display='block';
   }
   btn.textContent='إنشاء الحساب ←'; btn.disabled=false;
