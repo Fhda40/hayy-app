@@ -1373,7 +1373,6 @@ pointer-events:none !important;
           if (mData.photos?.length) match.photos = mData.photos;
           if (mData.logo_url) match.logo_url = mData.logo_url;
           if (mData.is_founder) match.is_founder = true;
-          if (mData.is_verified) match.is_verified = true;
           if (mData.lat) match.lat = mData.lat;
           if (mData.lng) match.lng = mData.lng;
         }
@@ -1388,8 +1387,6 @@ pointer-events:none !important;
     list.innerHTML = defaults.map(s => {
       const badge = s.is_founder
         ? '<span style="font-size:10px;font-weight:700;background:#0A2540;color:#fff;border-radius:6px;padding:2px 7px;">🎖️ مؤسس</span>'
-        : s.is_verified
-        ? '<span style="font-size:10px;font-weight:700;background:#059669;color:#fff;border-radius:6px;padding:2px 7px;">✓ موثق</span>'
         : '';
       const logo = s.logo_url
         ? '<img src="' + s.logo_url + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">'
