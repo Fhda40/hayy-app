@@ -756,7 +756,8 @@ async function generateCode() {
       status: 'pending'
     });
     currentCouponId = ref.id;
-  } catch(e) { console.error('coupon error:', e); }
+    alert('✅ حُفظ: ' + ref.id + '\nالكود: ' + code);
+  } catch(e) { alert('❌ خطأ: ' + (e.message||e.code||JSON.stringify(e))); }
   startTimer();
 }
 
