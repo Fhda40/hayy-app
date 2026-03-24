@@ -13,9 +13,10 @@
   --blue:#0A2540;--blue2:#2D7DD2;--red:#FF3B30;--green:#34C759;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Tajawal',sans-serif}
-body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;position:fixed;width:100%;height:100%}
-.screen{display:none;flex-direction:column;min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.screen{display:none;flex-direction:column;min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch;position:fixed;top:0;left:0;right:0;bottom:0}
 .screen.active{display:flex}
+#s-dash{position:fixed;top:0;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .btn{display:block;width:100%;padding:17px;border:none;border-radius:14px;font-size:16px;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer}
 .btn-blue{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 4px 16px rgba(10,37,64,0.25)}
 .btn-dark{background:#1D1D1F;color:#fff}
