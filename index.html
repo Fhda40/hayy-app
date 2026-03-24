@@ -1490,8 +1490,12 @@ pointer-events:none !important;
       (function(card) {
         var id = card.getAttribute('data-id');
         card.onclick = function() {
-          alert('ضغطت على: ' + id);
-          openStore(id);
+          var s = storeData[id];
+          if (!s) {
+            alert('ID: ' + id + '\nKeys: ' + Object.keys(storeData).join(', '));
+          } else {
+            openStore(id);
+          }
         };
       })(cards[i]);
     }
