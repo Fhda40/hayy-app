@@ -1424,7 +1424,11 @@ pointer-events:none !important;
 
     document.getElementById('stores-count').textContent = defaults.length + ' محل';
     defaults.forEach(s => { storeData[s.id] = {...s, discount: (s.discount||0)+'%'}; });
-    window.__allStores = defaults; // حفظ للفلاتر
+    window.__allStores = defaults;
+    window.__storeData = storeData; // للتأكد
+
+    console.log('storeData keys:', Object.keys(storeData));
+    console.log('defaults ids:', defaults.map(s => s.id));
 
     // أضف listeners مباشرة بعد بناء القائمة
     list.innerHTML = buildStoreCards(defaults);
@@ -1486,16 +1490,14 @@ pointer-events:none !important;
   // إضافة listeners لبطاقات المحلات
   function addStoreListeners() {
     var cards = document.querySelectorAll('.store-card');
+    console.log('addStoreListeners: found', cards.length, 'cards');
     for (var i = 0; i < cards.length; i++) {
       (function(card) {
         var id = card.getAttribute('data-id');
+        console.log('binding card id:', id, 'exists in storeData:', !!storeData[id]);
         card.onclick = function() {
-          var s = storeData[id];
-          if (!s) {
-            alert('ID: ' + id + '\nKeys: ' + Object.keys(storeData).join(', '));
-          } else {
-            openStore(id);
-          }
+          console.log('clicked id:', id, 'storeData:', !!storeData[id]);
+          openStore(id);
         };
       })(cards[i]);
     }
