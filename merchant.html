@@ -723,16 +723,18 @@ vboxes.forEach((box, i) => {
   });
 });
 
-// Session restore
-const savedId = localStorage.getItem('m_id');
-const savedPhone = localStorage.getItem('m_phone');
-if (savedId && savedPhone) {
-  merchantId = savedId; currentPhone = savedPhone;
-  try {
-    const snap = await getDocs(query(collection(db,'merchants'), where('phone','==',currentPhone)));
-    if (!snap.empty) { loadDashboard(snap.docs[0].data()); go('s-dash'); }
-  } catch(e){}
-}
+// Session restore — لا يوقف تنفيذ الكود
+(async function() {
+  const savedId = localStorage.getItem('m_id');
+  const savedPhone = localStorage.getItem('m_phone');
+  if (savedId && savedPhone) {
+    merchantId = savedId; currentPhone = savedPhone;
+    try {
+      const snap = await getDocs(query(collection(db,'merchants'), where('phone','==',currentPhone)));
+      if (!snap.empty) { loadDashboard(snap.docs[0].data()); go('s-dash'); }
+    } catch(e){}
+  }
+})();
 </script>
 
 </body>
