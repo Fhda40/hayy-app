@@ -882,18 +882,6 @@ pointer-events:none !important;
 })();
 </script>
 
-<script>
-  document.addEventListener('click', function(e) {
-    var card = e.target.closest && e.target.closest('.store-card');
-    if (!card) return;
-    var id = card.getAttribute('data-id');
-    if (!id) return;
-    if (typeof window.__hs === 'function') {
-      window.__hs(id);
-    }
-  }, true); // useCapture=true يضمن استقبال الحدث أولاً
-</script>
-
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
   import { getAuth, signInAnonymously, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
@@ -1314,7 +1302,17 @@ pointer-events:none !important;
         document.getElementById('geo-title').textContent = 'أنت في شرورة!';
         document.getElementById('geo-sub').textContent = `على بعد ${distText} من المركز`;
         await loadStores();
-        setTimeout(() => go('screen-stores'), 900);
+        setTimeout(() => {
+          go('screen-stores');
+          setTimeout(() => {
+            var cards = document.querySelectorAll('.store-card');
+            for (var i = 0; i < cards.length; i++) {
+              (function(c, sid) {
+                c.onclick = function() { openStore(sid); };
+              })(cards[i], cards[i].getAttribute('data-id'));
+            }
+          }, 100);
+        }, 900);
       } else {
         document.getElementById('geo-icon-wrap').textContent = '🗺️';
         document.getElementById('geo-title').textContent = 'قريباً في حيّك!';
@@ -1405,6 +1403,14 @@ pointer-events:none !important;
         '<span class="chevron">›</span>' +
       '</div>';
     }).join('');
+
+    // إضافة listeners مباشرة
+    var cards = list.querySelectorAll('.store-card');
+    for (var i = 0; i < cards.length; i++) {
+      (function(c, sid) {
+        c.onclick = function() { openStore(sid); };
+      })(cards[i], cards[i].getAttribute('data-id'));
+    }
   }
 
   async function openStore(id) {
@@ -1503,8 +1509,6 @@ pointer-events:none !important;
     btn.textContent = 'توليد كود الخصم';
     btn.classList.remove('muted'); btn.disabled = false;
   }
-  window.__hs = openStore;
-
   async function generateCode() {
     if (currentCode && !expired) return;
     // re-check daily limit
@@ -1593,7 +1597,6 @@ pointer-events:none !important;
 
   // events — نستخدم load لأن module يعمل defer تلقائياً
   window.addEventListener('load', () => {
-    window.__hs = openStore;
     // Filter tabs
     document.querySelectorAll('.filter-tab').forEach(tab => {
       tab.addEventListener('click', function() {
