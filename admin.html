@@ -210,12 +210,14 @@ const db = getFirestore(app);
 const ADMIN_PASS = 'hayy_admin_2026';
 let allMerchants=[], allCoupons=[], allComplaints=[];
 let couponFilter='all', complaintFilter='open';
+let failedAttempts=0, lockoutUntil=0;
 
 // ── Helpers ──
 function go(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function toast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
@@ -233,13 +235,28 @@ function timeAgo(ts){
 
 // ── Login ──
 document.getElementById('login-btn').addEventListener('click',()=>{
+  const now=Date.now();
+  const errEl=document.getElementById('login-err');
+  if(now<lockoutUntil){
+    const mins=Math.ceil((lockoutUntil-now)/60000);
+    errEl.textContent=`🔒 محظور مؤقتاً — حاول بعد ${mins} دقيقة`;
+    errEl.style.display='block'; return;
+  }
   if(document.getElementById('admin-pass').value===ADMIN_PASS){
+    failedAttempts=0;
     sessionStorage.setItem('h_admin','1');
     go('screen-dashboard'); loadAll();
   } else {
-    document.getElementById('login-err').style.display='block';
+    failedAttempts++;
     document.getElementById('admin-pass').value='';
-    setTimeout(()=>document.getElementById('login-err').style.display='none',3000);
+    if(failedAttempts>=5){
+      lockoutUntil=Date.now()+15*60*1000;
+      errEl.textContent='🔒 تم تجميد الدخول 15 دقيقة بعد 5 محاولات فاشلة';
+    } else {
+      errEl.textContent=`❌ كلمة المرور غير صحيحة (${failedAttempts}/5)`;
+    }
+    errEl.style.display='block';
+    setTimeout(()=>errEl.style.display='none',4000);
   }
 });
 document.getElementById('admin-pass').addEventListener('keydown',e=>e.key==='Enter'&&document.getElementById('login-btn').click());
@@ -321,7 +338,7 @@ function updateOverview(){
     ?top.map(([n,cnt],i)=>`
       <div style="display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid var(--sep)${i===top.length-1?';border:none':''}">
         <span style="font-size:16px;font-weight:900;color:var(--text4);width:24px">${i+1}</span>
-        <span style="flex:1;font-size:14px">${n}</span>
+        <span style="flex:1;font-size:14px">${esc(n)}</span>
         <span style="font-size:13px;font-weight:700;color:var(--blue)">${cnt} كوبون</span>
       </div>`).join('')
     :'<div class="empty"><div class="empty-icon">📊</div><div class="empty-txt">لا بيانات بعد</div></div>';
@@ -340,14 +357,14 @@ function renderMerchants(q=''){
   list.innerHTML=filtered.map(m=>{
     const isActive=m.active!==false;
     return `<div class="m-row">
-      <div class="m-icon">${m.logo_url?`<img src="${m.logo_url}">`:(m.icon||'🏪')}</div>
+      <div class="m-icon">${m.logo_url?`<img src="${esc(m.logo_url)}">`:(m.icon||'🏪')}</div>
       <div style="flex:1;min-width:0">
-        <div style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.store_name||'بدون اسم'}</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:1px">${m.phone||'—'}</div>
-        <div style="font-size:12px;color:var(--text4);margin-top:1px">${m.store_type||''} ${m.discount?'• '+m.discount+'%':''}</div>
+        <div style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(m.store_name||'بدون اسم')}</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:1px">${esc(m.phone||'—')}</div>
+        <div style="font-size:12px;color:var(--text4);margin-top:1px">${esc(m.store_type||'')} ${m.discount?'• '+Number(m.discount)+'%':''}</div>
       </div>
       ${m.is_founder?'<span style="font-size:10px;background:var(--navy);color:#fff;border-radius:8px;padding:2px 8px;flex-shrink:0;margin-left:6px">🎖️ مؤسس</span>':''}
-      <button class="toggle ${isActive?'on':''}" data-id="${m.id}" data-active="${isActive}"></button>
+      <button class="toggle ${isActive?'on':''}" data-id="${esc(m.id)}" data-active="${isActive}"></button>
     </div>`;
   }).join('');
   list.querySelectorAll('.toggle').forEach(btn=>
@@ -390,8 +407,8 @@ function renderCoupons(){
   list.innerHTML=filtered.slice(0,60).map(c=>`
     <div class="c-row">
       <div style="min-width:0;flex:1">
-        <div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.business_name||'—'}</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:2px;direction:ltr;text-align:right">${c.code||'—'} · ${timeAgo(c.created_at)}</div>
+        <div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.business_name||'—')}</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px;direction:ltr;text-align:right">${esc(c.code||'—')} · ${timeAgo(c.created_at)}</div>
       </div>
       <span class="status-badge ${cls[c.status]||'s-expired'}" style="margin-right:10px">${map[c.status]||'—'}</span>
     </div>`).join('');
@@ -415,14 +432,14 @@ function renderComplaints(){
     return;
   }
   list.innerHTML=filtered.map(c=>`
-    <div class="comp-row" id="crow-${c.id}">
+    <div class="comp-row" id="crow-${esc(c.id)}">
       <div style="display:flex;justify-content:space-between;margin-bottom:5px">
-        <span style="font-size:15px;font-weight:700">${c.business_name||'محل غير معروف'}</span>
+        <span style="font-size:15px;font-weight:700">${esc(c.business_name||'محل غير معروف')}</span>
         <span style="font-size:12px;color:var(--text4)">${timeAgo(c.created_at)}</span>
       </div>
-      <div style="font-size:13px;color:var(--text3);margin-bottom:${c.status==='open'?'10px':'0'}">كوبون: ${c.coupon_id?.slice(-6)||'—'}</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:${c.status==='open'?'10px':'0'}">كوبون: ${esc(c.coupon_id?.slice(-6)||'—')}</div>
       ${c.status==='open'
-        ?`<button onclick="resolveComp('${c.id}')" style="width:100%;padding:10px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer">✅ تم الحل</button>`
+        ?`<button onclick="resolveComp('${esc(c.id)}')" style="width:100%;padding:10px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer">✅ تم الحل</button>`
         :`<span style="font-size:12px;color:var(--green);font-weight:600">✅ محلولة</span>`
       }
     </div>`).join('');

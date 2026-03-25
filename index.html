@@ -492,6 +492,30 @@ function togglePass(inputId, btnId) {
   btn.addEventListener('click', () => { inp.type = inp.type==='password' ? 'text' : 'password'; });
 }
 
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toast(msg, dur=2600) {
+  let t = document.getElementById('_toast');
+  if (!t) {
+    t = document.createElement('div'); t.id = '_toast';
+    Object.assign(t.style, {
+      position:'fixed', bottom:'calc(env(safe-area-inset-bottom,0px)+16px)',
+      left:'50%', transform:'translateX(-50%) translateY(80px)',
+      background:'#1D1D1F', color:'#fff', padding:'10px 22px',
+      borderRadius:'20px', fontSize:'14px', fontWeight:'600',
+      zIndex:'9999', transition:'transform .35s cubic-bezier(.34,1.56,.64,1)',
+      whiteSpace:'nowrap', pointerEvents:'none', fontFamily:"'Tajawal',sans-serif"
+    });
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(80px)'; }, dur);
+}
+
 // ══ PHONE CHECK ══
 async function checkPhone() {
   const phone = document.getElementById('phone-input').value.trim();
@@ -581,7 +605,7 @@ async function saveNewPass() {
     const hashed = await sha256(pass);
     await setDoc(doc(db,'users',resetUserId), {password:hashed}, {merge:true});
     go('screen-pass-login');
-    setTimeout(() => alert('✅ تم تغيير كلمة المرور'), 300);
+    setTimeout(() => toast('✅ تم تغيير كلمة المرور بنجاح'), 300);
   } catch(e) { err.textContent='حدث خطأ'; err.style.display='block'; }
 }
 
@@ -613,18 +637,25 @@ async function loadStores() {
   const list = document.getElementById('stores-list');
   list.innerHTML = '<div style="text-align:center;padding:60px 0;color:var(--text4)"><div style="font-size:28px">⏳</div><div style="margin-top:8px">جاري التحميل...</div></div>';
 
-  const all = [
+  const staticStores = [
     {id:'ooto',   icon:'☕', name:'OOTO Coffee',    type:'مقاهي ومشروبات', discount:35, photos:[], description:''},
     {id:'nahdi',  icon:'💊', name:'صيدلية النهدي', type:'صيدليات',         discount:20, photos:[], description:''},
     {id:'barber', icon:'✂️', name:'حلاق الطايف',   type:'حلاقة وتجميل',   discount:15, photos:[], description:''},
     {id:'kabsati',icon:'🍚', name:'مطعم كبساتي',   type:'مطاعم ومأكولات', discount:10, photos:[], description:''},
   ];
 
-  try { const s = await getDocs(collection(db,'businesses')); s.forEach(d => all.push({id:d.id,...d.data()})); } catch(e){}
+  // تتبع المتاجر المعطلة + دمج بيانات التجار
+  const inactiveNames = new Set(), inactivePhones = new Set();
   try {
     const ms = await getDocs(collection(db,'merchants'));
     ms.forEach(m => {
-      const d = m.data(), match = all.find(s => s.name===d.store_name || s.phone===d.phone);
+      const d = m.data();
+      if (d.active === false) {
+        if (d.store_name) inactiveNames.add(d.store_name);
+        if (d.phone) inactivePhones.add(d.phone);
+        return;
+      }
+      const match = staticStores.find(s => s.name===d.store_name || s.phone===d.phone);
       if (match) {
         if (d.photos?.length) match.photos = d.photos;
         if (d.logo_url) match.logo_url = d.logo_url;
@@ -632,6 +663,19 @@ async function loadStores() {
         if (d.lat) match.lat = d.lat;
         if (d.lng) match.lng = d.lng;
       }
+    });
+  } catch(e){}
+
+  // المتاجر النشطة فقط
+  const all = staticStores.filter(s => !inactiveNames.has(s.name));
+
+  try {
+    const s = await getDocs(collection(db,'businesses'));
+    s.forEach(d => {
+      const data = d.data();
+      if (data.active === false) return;
+      if (inactivePhones.has(data.phone) || inactiveNames.has(data.name)) return;
+      all.push({id:d.id,...data});
     });
   } catch(e){}
   try {
@@ -677,14 +721,14 @@ function renderStores(arr) {
     const avg = ratingsMap[s.id];
     const stars = avg ? `<span style="font-size:11px;color:#FF9500;font-weight:600">★ ${avg}</span>` : '';
     const badge = s.is_founder ? '<span class="badge badge-founder">🎖️ مؤسس</span>' : '';
-    const logo = s.logo_url ? `<img src="${s.logo_url}" style="width:100%;height:100%;object-fit:cover;border-radius:14px">` : s.icon||'🏪';
+    const logo = s.logo_url ? `<img src="${esc(s.logo_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:14px">` : s.icon||'🏪';
     const dist = userLat&&s.lat&&s.lng ? `<span style="font-size:11px;color:var(--text4)">📍 ${haversine(userLat,userLng,s.lat,s.lng).toFixed(1)} كم</span>` : '';
-    return `<button class="store-card" data-id="${s.id}">
+    return `<button class="store-card" data-id="${esc(s.id)}">
       <div class="store-logo">${logo}</div>
       <div style="flex:1">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">${badge}<span class="store-name">${s.name}</span>${stars}</div>
-        <div class="store-type">${s.type}</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:4px"><span class="discount-tag">خصم ${s.discount||0}%</span>${dist}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">${badge}<span class="store-name">${esc(s.name)}</span>${stars}</div>
+        <div class="store-type">${esc(s.type)}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px"><span class="discount-tag">خصم ${Number(s.discount)||0}%</span>${dist}</div>
       </div>
       <div class="chevron">›</div>
     </button>`;
@@ -945,7 +989,7 @@ document.getElementById('submit-r').addEventListener('click', async () => {
   const uid = localStorage.getItem('h_uid')||'guest';
   try {
     await addDoc(collection(db,'ratings'), { user_id:uid, business_id:currentStoreId, business_name:stores[currentStoreId]?.name||'', coupon_id:currentCouponId||'', discount_applied:rApplied, stars:rStars, comment:document.getElementById('r-comment').value.trim(), created_at:serverTimestamp() });
-    if (rApplied===false) await addDoc(collection(db,'complaints'), { user_id:uid, business_id:currentStoreId, created_at:serverTimestamp(), status:'open' });
+    if (rApplied===false) await addDoc(collection(db,'complaints'), { user_id:uid, business_id:currentStoreId, business_name:stores[currentStoreId]?.name||'', coupon_id:currentCouponId||'', created_at:serverTimestamp(), status:'open' });
   } catch(e){}
   rApplied=null; rStars=0;
   document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
@@ -978,7 +1022,22 @@ document.getElementById('verify-reset-btn').addEventListener('click', verifyRese
 document.getElementById('save-pass-btn').addEventListener('click', saveNewPass);
 togglePass('login-pass','toggle-login');
 togglePass('reg-pass','toggle-reg');
-togglePass('reg-pass','toggle-reg2');
+togglePass('reg-confirm','toggle-reg2');
+
+// مؤشر قوة كلمة المرور
+document.getElementById('reg-pass').addEventListener('input', function() {
+  const v = this.value, el = document.getElementById('pass-strength');
+  if (!v) { el.textContent = ''; return; }
+  let s = 0;
+  if (v.length >= 6) s++;
+  if (v.length >= 10) s++;
+  if (/[A-Z]/.test(v) || /[a-z]/.test(v)) s++;
+  if (/[0-9]/.test(v)) s++;
+  if (/[^A-Za-z0-9]/.test(v)) s++;
+  if (s <= 2) { el.textContent = '⚠️ ضعيفة'; el.style.color = 'var(--red)'; }
+  else if (s === 3) { el.textContent = '🔶 متوسطة'; el.style.color = '#FF9500'; }
+  else { el.textContent = '✅ قوية'; el.style.color = 'var(--green)'; }
+});
 
 // ══ SESSION RESTORE ══
 const savedPhone = localStorage.getItem('h_phone');

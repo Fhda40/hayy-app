@@ -1,7 +1,7 @@
 // حيّ — Service Worker
 // نسخة الكاش تُحدَّث عند كل تعديل في الملف
 
-const CACHE = 'hayy-v1';
+const CACHE = 'hayy-v2';
 const OFFLINE_URL = '/offline.html';
 
 // الأصول الأساسية للـ App Shell
@@ -9,6 +9,7 @@ const SHELL = [
   '/',
   '/index.html',
   '/admin.html',
+  '/offline.html',
   '/manifest.json',
   'https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap',
 ];
@@ -86,7 +87,7 @@ self.addEventListener('fetch', event => {
         }
         return res;
       })
-      .catch(() => caches.match(request).then(cached => cached || caches.match('/')))
+      .catch(() => caches.match(request).then(cached => cached || caches.match(OFFLINE_URL)))
   );
 });
 

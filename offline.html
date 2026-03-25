@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>حيّ — بدون إنترنت</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif}
+body{background:#F5F5F7;color:#1D1D1F;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center}
+.icon{font-size:80px;margin-bottom:24px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+h1{font-size:28px;font-weight:900;margin-bottom:12px}
+p{font-size:16px;color:#636366;line-height:1.7;max-width:280px;margin-bottom:32px}
+button{background:#1D1D1F;color:#fff;border:none;border-radius:14px;padding:16px 32px;font-size:16px;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;width:100%;max-width:280px}
+button:active{opacity:0.85}
+.hint{font-size:12px;color:#AEAEB2;margin-top:16px}
+</style>
+</head>
+<body>
+  <div class="icon">📡</div>
+  <h1>لا يوجد اتصال</h1>
+  <p>تحقق من اتصالك بالإنترنت وحاول مجدداً</p>
+  <button onclick="location.reload()">🔄 إعادة المحاولة</button>
+  <p class="hint">حيّ — شرورة</p>
+</body>
+</html>

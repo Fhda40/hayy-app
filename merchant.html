@@ -363,9 +363,10 @@ document.getElementById('btn-toggle-r').addEventListener('click',()=>{const i=do
 document.getElementById('btn-toggle-r2').addEventListener('click',()=>{const i=document.getElementById('r-confirm');i.type=i.type==='password'?'text':'password';});
 document.getElementById('btn-logout').addEventListener('click',()=>{localStorage.removeItem('m_id');localStorage.removeItem('m_phone');goS('s-welcome');});
 document.getElementById('btn-verify').addEventListener('click',doVerify);
-document.getElementById('btn-save').addEventListener('click',async()=>{
+document.getElementById('btn-save').addEventListener('click',async function(){
   const name=document.getElementById('f-name').value.trim();
   if(!name){alert('أدخل اسم النشاط');return;}
+  const btn=this; btn.disabled=true; btn.textContent='⏳ جاري الحفظ...';
   const type=document.getElementById('f-type').value.replace(/^.\s/,'');
   const discount=parseInt(document.getElementById('f-disc').value);
   const desc=document.getElementById('f-desc').value.trim();
@@ -382,6 +383,7 @@ document.getElementById('btn-save').addEventListener('click',async()=>{
     const ok=document.getElementById('save-ok'); ok.style.display='block';
     setTimeout(()=>ok.style.display='none',3000);
   }catch(e){alert('خطأ — حاول مجدداً');}
+  btn.disabled=false; btn.textContent='💾 حفظ معلومات النشاط';
 });
 
 document.getElementById('btn-check-phone').addEventListener('click',async()=>{
